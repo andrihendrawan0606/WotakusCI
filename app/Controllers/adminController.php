@@ -328,7 +328,7 @@ class adminController extends BaseController
                         ]
                         ],
                 'Poster' => [
-                            'rules' => 'max_size[Poster,2048]|is_image[Poster]|mime_in[Poster,image/jpg,image/jpeg,image/png]',
+                            'rules' => 'max_size[Poster,2048]|is_image[Poster]|mime_in[Poster,image/jpg,image/jpeg,image/png,image/webp]',
                             'errors' =>[
                                 'max_size' => 'Ukuran Gambar Brutal Banget njir',
                                 'is_image' => 'Yang dipilih bukan gambar WOILAH',
