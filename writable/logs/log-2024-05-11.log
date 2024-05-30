@@ -1,0 +1,228 @@
+CRITICAL - 2024-05-11 08:45:35 --> ErrorException: Undefined array key "genre"
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\animeInfo.php on line 38.
+ 1 APPPATH\Views\user\animeInfo.php(38): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "genre"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 38)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(99): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 08:45:54 --> ErrorException: Undefined array key "genre"
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\animeInfo.php on line 38.
+ 1 APPPATH\Views\user\animeInfo.php(38): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "genre"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 38)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(99): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 08:47:18 --> ErrorException: Undefined array key "genre"
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\animeInfo.php on line 38.
+ 1 APPPATH\Views\user\animeInfo.php(38): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "genre"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 38)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(99): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:37:07 --> ErrorException: Attempt to read property "genre" on array
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\user\animeInfo.php on line 38.
+ 1 APPPATH\Views\user\animeInfo.php(38): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Attempt to read property "genre" on array', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 38)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(99): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:38:28 --> ErrorException: Undefined array key "genre"
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\user\animeInfo.php on line 38.
+ 1 APPPATH\Views\user\animeInfo.php(38): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "genre"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 38)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(99): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:38:57 --> ErrorException: Undefined array key "genre"
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\user\animeInfo.php on line 38.
+ 1 APPPATH\Views\user\animeInfo.php(38): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "genre"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 38)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(99): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:43:21 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::select()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 22.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:43:34 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::join()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 23.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:44:02 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::join()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 23.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:44:09 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::join()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 23.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:44:29 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::join()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 23.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:47:59 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::select()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 22.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 09:48:21 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::select()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 22.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 10:01:12 --> ParseError: syntax error, unexpected token "->", expecting ";"
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 26.
+ 1 SYSTEMPATH\Autoloader\Autoloader.php(296): CodeIgniter\Autoloader\Autoloader->includeFile('C:\\xampp\\htdocs\\WotakusCI\\app\\Models\\JjkModel.php')
+ 2 SYSTEMPATH\Autoloader\Autoloader.php(272): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Models\\JjkModel')
+ 3 APPPATH\Controllers\Page.php(14): CodeIgniter\Autoloader\Autoloader->loadClass('App\\Models\\JjkModel')
+ 4 SYSTEMPATH\CodeIgniter.php(903): App\Controllers\Page->__construct()
+ 5 SYSTEMPATH\CodeIgniter.php(500): CodeIgniter\CodeIgniter->createController()
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 10:01:21 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::select()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 22.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 10:01:56 --> ErrorException: Trying to access array offset on value of type null
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\user\animeInfo.php on line 28.
+ 1 APPPATH\Views\user\animeInfo.php(28): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on value of type null', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 28)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(99): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 10:03:10 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::select()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 22.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-11 10:03:19 --> Error: Call to undefined method CodeIgniter\Database\MySQLi\Connection::select()
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Models\JjkModel.php on line 22.
+ 1 APPPATH\Controllers\Page.php(88): App\Models\JjkModel->getAnimes('Kage no Jitsuryokusha ni Naritakute')
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')

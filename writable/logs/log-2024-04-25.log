@@ -1,0 +1,166 @@
+ERROR - 2024-04-25 08:51:34 --> mysqli_sql_exception: Invalid default value for 'status' in C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php:308
+Stack trace:
+#0 C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php(308): mysqli->query('CREATE TABLE `j...', 0)
+#1 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(722): CodeIgniter\Database\MySQLi\Connection->execute('CREATE TABLE `j...')
+#2 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(636): CodeIgniter\Database\BaseConnection->simpleQuery('CREATE TABLE `j...')
+#3 C:\xampp\htdocs\WotakusCI\system\Database\Forge.php(570): CodeIgniter\Database\BaseConnection->query('CREATE TABLE `j...')
+#4 C:\xampp\htdocs\WotakusCI\app\Database\Migrations\2024-04-25-084713_JujutsuKaisen.php(55): CodeIgniter\Database\Forge->createTable('jujutsuKaisen', true)
+#5 C:\xampp\htdocs\WotakusCI\system\Database\MigrationRunner.php(867): App\Database\Migrations\JujutsuKaisen->up()
+#6 C:\xampp\htdocs\WotakusCI\system\Database\MigrationRunner.php(183): CodeIgniter\Database\MigrationRunner->migrate('up', Object(stdClass))
+#7 C:\xampp\htdocs\WotakusCI\system\Commands\Database\Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 C:\xampp\htdocs\WotakusCI\system\CLI\Commands.php(70): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 C:\xampp\htdocs\WotakusCI\system\CLI\Console.php(48): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 C:\xampp\htdocs\WotakusCI\system\Boot.php(338): CodeIgniter\CLI\Console->run()
+#11 C:\xampp\htdocs\WotakusCI\system\Boot.php(104): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#12 C:\xampp\htdocs\WotakusCI\spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#13 {main}
+CRITICAL - 2024-04-25 09:19:29 --> Error: Class "App\Controllers\JJKModel" not found
+[Method: GET, Route: animesHome]
+in APPPATH\Controllers\page.php on line 24.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:21:18 --> Error: Class "App\Controllers\JJKModel" not found
+[Method: GET, Route: animesHome]
+in APPPATH\Controllers\page.php on line 24.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:21:18 --> Error: Class "App\Controllers\JJKModel" not found
+[Method: GET, Route: animesHome]
+in APPPATH\Controllers\page.php on line 24.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:21:58 --> Error: Class "App\Controllers\JJKModel" not found
+[Method: GET, Route: animesHome]
+in APPPATH\Controllers\page.php on line 24.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:21:58 --> Error: Class "App\Controllers\JJKModel" not found
+[Method: GET, Route: animesHome]
+in APPPATH\Controllers\page.php on line 24.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:22:33 --> Error: Class "App\Controllers\JjkModel" not found
+[Method: GET, Route: animesHome]
+in APPPATH\Controllers\page.php on line 24.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:22:34 --> Error: Class "App\Controllers\JjkModel" not found
+[Method: GET, Route: animesHome]
+in APPPATH\Controllers\page.php on line 24.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:23:26 --> Error: Class "App\Controllers\JjkModel" not found
+[Method: GET, Route: animesHome]
+in APPPATH\Controllers\page.php on line 24.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:23:26 --> Error: Class "App\Controllers\JjkModel" not found
+[Method: GET, Route: animesHome]
+in APPPATH\Controllers\page.php on line 24.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:24:10 --> ErrorException: Undefined array key "slug"
+[Method: GET, Route: animesHome]
+in APPPATH\Views\animesHome.php on line 11.
+ 1 APPPATH\Views\animesHome.php(11): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "slug"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\animesHome.php', 11)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\animesHome.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('animesHome', [], true)
+ 5 APPPATH\Controllers\page.php(34): view('animesHome', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:24:33 --> ErrorException: Undefined array key "judul"
+[Method: GET, Route: animesHome]
+in APPPATH\Views\animesHome.php on line 11.
+ 1 APPPATH\Views\animesHome.php(11): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "judul"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\animesHome.php', 11)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\animesHome.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('animesHome', [], true)
+ 5 APPPATH\Controllers\page.php(34): view('animesHome', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 09:24:41 --> ErrorException: Undefined array key "content"
+[Method: GET, Route: animesHome]
+in APPPATH\Views\animesHome.php on line 12.
+ 1 APPPATH\Views\animesHome.php(12): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "content"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\animesHome.php', 12)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\animesHome.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('animesHome', [], true)
+ 5 APPPATH\Controllers\page.php(34): view('animesHome', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-04-25 10:07:59 --> ErrorException: Undefined variable $row
+[Method: GET, Route: animesHome]
+in APPPATH\Views\animesHome.php on line 8.
+ 1 APPPATH\Views\animesHome.php(8): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $row', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\animesHome.php', 8)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\animesHome.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('animesHome', [], true)
+ 5 APPPATH\Controllers\page.php(34): view('animesHome', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')

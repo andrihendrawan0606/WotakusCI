@@ -1,0 +1,733 @@
+CRITICAL - 2024-05-09 02:19:54 --> ErrorException: Undefined array key "rilis"
+[Method: GET, Route: dashboard/detail/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\admin\admin-partials\detail.php on line 28.
+ 1 APPPATH\Views\admin\admin-partials\detail.php(28): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "rilis"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\admin\\admin-partials\\detail.php', 28)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\admin\\admin-partials\\detail.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('admin/admin-partials/detail', [], true)
+ 5 APPPATH\Controllers\adminController.php(61): view('admin/admin-partials/detail', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->Lihat('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 02:51:35 --> Error: Call to undefined method CodeIgniter\HTTP\IncomingRequest::gerVar()
+[Method: GET, Route: dashboard/Tambah]
+in APPPATH\Controllers\adminController.php on line 119.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->prosesTambah()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:15:31 --> Error: Call to undefined method CodeIgniter\HTTP\IncomingRequest::gerVar()
+[Method: POST, Route: dashboard/prosesTambah]
+in APPPATH\Controllers\adminController.php on line 119.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->prosesTambah()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:19:10 --> BadMethodCallException: Call to undefined method App\Models\JjkModel::prosesTambah
+[Method: POST, Route: dashboard/prosesTambah]
+in SYSTEMPATH\Model.php on line 921.
+ 1 APPPATH\Controllers\adminController.php(124): CodeIgniter\Model->__call('prosesTambah', [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->prosesTambah()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:19:27 --> BadMethodCallException: Call to undefined method App\Models\JjkModel::prosesTambah
+[Method: POST, Route: dashboard/prosesTambah]
+in SYSTEMPATH\Model.php on line 921.
+ 1 APPPATH\Controllers\adminController.php(124): CodeIgniter\Model->__call('prosesTambah', [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->prosesTambah()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:20:40 --> BadMethodCallException: Call to undefined method App\Models\JjkModel::prosesTambah
+[Method: POST, Route: dashboard/prosesTambah]
+in SYSTEMPATH\Model.php on line 921.
+ 1 APPPATH\Controllers\adminController.php(124): CodeIgniter\Model->__call('prosesTambah', [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->prosesTambah()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:21:30 --> BadMethodCallException: Call to undefined method App\Models\JjkModel::prosesTambah
+[Method: POST, Route: dashboard/prosesTambah]
+in SYSTEMPATH\Model.php on line 921.
+ 1 APPPATH\Controllers\adminController.php(124): CodeIgniter\Model->__call('prosesTambah', [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->prosesTambah()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:22:40 --> BadMethodCallException: Call to undefined method App\Models\JjkModel::prosesTambah
+[Method: POST, Route: dashboard/prosesTambah]
+in SYSTEMPATH\Model.php on line 921.
+ 1 APPPATH\Controllers\adminController.php(124): CodeIgniter\Model->__call('prosesTambah', [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->prosesTambah()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+ERROR - 2024-05-09 04:29:52 --> mysqli_sql_exception: Column 'JudulLainnya' cannot be null in C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php:308
+Stack trace:
+#0 C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php(308): mysqli->query('INSERT INTO `ju...', 0)
+#1 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(722): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `ju...')
+#2 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(636): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `ju...')
+#3 C:\xampp\htdocs\WotakusCI\system\Database\BaseBuilder.php(2325): CodeIgniter\Database\BaseConnection->query('INSERT INTO `ju...', Array, false)
+#4 C:\xampp\htdocs\WotakusCI\system\Model.php(383): CodeIgniter\Database\BaseBuilder->insert()
+#5 C:\xampp\htdocs\WotakusCI\system\BaseModel.php(840): CodeIgniter\Model->doInsert(Array)
+#6 C:\xampp\htdocs\WotakusCI\system\Model.php(791): CodeIgniter\BaseModel->insert(Array, true)
+#7 C:\xampp\htdocs\WotakusCI\app\Controllers\adminController.php(96): CodeIgniter\Model->insert(Array)
+#8 C:\xampp\htdocs\WotakusCI\system\CodeIgniter.php(933): App\Controllers\adminController->create()
+#9 C:\xampp\htdocs\WotakusCI\system\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+#10 C:\xampp\htdocs\WotakusCI\system\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 C:\xampp\htdocs\WotakusCI\system\Boot.php(312): CodeIgniter\CodeIgniter->run()
+#12 C:\xampp\htdocs\WotakusCI\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 C:\xampp\htdocs\WotakusCI\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 C:\xampp\htdocs\WotakusCI\system\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs...')
+#15 {main}
+CRITICAL - 2024-05-09 04:29:52 --> CodeIgniter\Database\Exceptions\DatabaseException: Column 'JudulLainnya' cannot be null
+[Method: POST, Route: dashboard/create]
+in SYSTEMPATH\Database\BaseConnection.php on line 676.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2325): CodeIgniter\Database\BaseConnection->query('INSERT INTO `jujutsukaisen` (`Judul`, `Gambar`, `Desc`, `Eps`, `Durasi`, `Rilis`, `JudulLainnya`) VALUES (:Judul:, :Gambar:, :Desc:, :Eps:, :Durasi:, :Rilis:, :JudulLainnya:)', [...], false)
+ 2 SYSTEMPATH\Model.php(383): CodeIgniter\Database\BaseBuilder->insert()
+ 3 SYSTEMPATH\BaseModel.php(840): CodeIgniter\Model->doInsert([...])
+ 4 SYSTEMPATH\Model.php(791): CodeIgniter\BaseModel->insert([...], true)
+ 5 APPPATH\Controllers\adminController.php(96): CodeIgniter\Model->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->create()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:29:52 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Column 'JudulLainnya' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 313.
+ 1 SYSTEMPATH\Database\BaseConnection.php(722): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `jujutsukaisen` (`Judul`, `Gambar`, `Desc`, `Eps`, `Durasi`, `Rilis`, `JudulLainnya`) VALUES (\'kusuriya no hitorigoto\', \'KusuriyaNoHitorigoto.jpg\', \'asda\', \'21\', \'24\', \'20 Maret 2024\', NULL)')
+ 2 SYSTEMPATH\Database\BaseConnection.php(636): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `jujutsukaisen` (`Judul`, `Gambar`, `Desc`, `Eps`, `Durasi`, `Rilis`, `JudulLainnya`) VALUES (\'kusuriya no hitorigoto\', \'KusuriyaNoHitorigoto.jpg\', \'asda\', \'21\', \'24\', \'20 Maret 2024\', NULL)')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2325): CodeIgniter\Database\BaseConnection->query('INSERT INTO `jujutsukaisen` (`Judul`, `Gambar`, `Desc`, `Eps`, `Durasi`, `Rilis`, `JudulLainnya`) VALUES (:Judul:, :Gambar:, :Desc:, :Eps:, :Durasi:, :Rilis:, :JudulLainnya:)', [...], false)
+ 4 SYSTEMPATH\Model.php(383): CodeIgniter\Database\BaseBuilder->insert()
+ 5 SYSTEMPATH\BaseModel.php(840): CodeIgniter\Model->doInsert([...])
+ 6 SYSTEMPATH\Model.php(791): CodeIgniter\BaseModel->insert([...], true)
+ 7 APPPATH\Controllers\adminController.php(96): CodeIgniter\Model->insert([...])
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->create()
+ 9 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+10 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:29:52 --> [Caused by] mysqli_sql_exception: Column 'JudulLainnya' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 308.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(308): mysqli->query('INSERT INTO `jujutsukaisen` (`Judul`, `Gambar`, `Desc`, `Eps`, `Durasi`, `Rilis`, `JudulLainnya`) VALUES (\'kusuriya no hitorigoto\', \'KusuriyaNoHitorigoto.jpg\', \'asda\', \'21\', \'24\', \'20 Maret 2024\', NULL)', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(722): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `jujutsukaisen` (`Judul`, `Gambar`, `Desc`, `Eps`, `Durasi`, `Rilis`, `JudulLainnya`) VALUES (\'kusuriya no hitorigoto\', \'KusuriyaNoHitorigoto.jpg\', \'asda\', \'21\', \'24\', \'20 Maret 2024\', NULL)')
+ 3 SYSTEMPATH\Database\BaseConnection.php(636): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `jujutsukaisen` (`Judul`, `Gambar`, `Desc`, `Eps`, `Durasi`, `Rilis`, `JudulLainnya`) VALUES (\'kusuriya no hitorigoto\', \'KusuriyaNoHitorigoto.jpg\', \'asda\', \'21\', \'24\', \'20 Maret 2024\', NULL)')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2325): CodeIgniter\Database\BaseConnection->query('INSERT INTO `jujutsukaisen` (`Judul`, `Gambar`, `Desc`, `Eps`, `Durasi`, `Rilis`, `JudulLainnya`) VALUES (:Judul:, :Gambar:, :Desc:, :Eps:, :Durasi:, :Rilis:, :JudulLainnya:)', [...], false)
+ 5 SYSTEMPATH\Model.php(383): CodeIgniter\Database\BaseBuilder->insert()
+ 6 SYSTEMPATH\BaseModel.php(840): CodeIgniter\Model->doInsert([...])
+ 7 SYSTEMPATH\Model.php(791): CodeIgniter\BaseModel->insert([...], true)
+ 8 APPPATH\Controllers\adminController.php(96): CodeIgniter\Model->insert([...])
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->create()
+10 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+11 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:30:18 --> CodeIgniter\HTTP\Exceptions\HTTPException: The route for "/Dashboard/Tambah" cannot be found.
+[Method: POST, Route: dashboard/create]
+in SYSTEMPATH\HTTP\RedirectResponse.php on line 64.
+ 1 SYSTEMPATH\HTTP\RedirectResponse.php(64): CodeIgniter\HTTP\Exceptions\HTTPException::forInvalidRedirectRoute('/Dashboard/Tambah')
+ 2 SYSTEMPATH\Common.php(853): CodeIgniter\HTTP\RedirectResponse->route(false)
+ 3 APPPATH\Controllers\adminController.php(99): redirect('/Dashboard/Tambah')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->create()
+ 5 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:31:45 --> CodeIgniter\HTTP\Exceptions\HTTPException: The route for "/Dashboard/tampilTambah" cannot be found.
+[Method: POST, Route: dashboard/create]
+in SYSTEMPATH\HTTP\RedirectResponse.php on line 64.
+ 1 SYSTEMPATH\HTTP\RedirectResponse.php(64): CodeIgniter\HTTP\Exceptions\HTTPException::forInvalidRedirectRoute('/Dashboard/tampilTambah')
+ 2 SYSTEMPATH\Common.php(853): CodeIgniter\HTTP\RedirectResponse->route(false)
+ 3 APPPATH\Controllers\adminController.php(99): redirect('/Dashboard/tampilTambah')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->create()
+ 5 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:32:39 --> CodeIgniter\HTTP\Exceptions\HTTPException: The route for "/Dashboard/tambah" cannot be found.
+[Method: POST, Route: dashboard/create]
+in SYSTEMPATH\HTTP\RedirectResponse.php on line 64.
+ 1 SYSTEMPATH\HTTP\RedirectResponse.php(64): CodeIgniter\HTTP\Exceptions\HTTPException::forInvalidRedirectRoute('/Dashboard/tambah')
+ 2 SYSTEMPATH\Common.php(853): CodeIgniter\HTTP\RedirectResponse->route(false)
+ 3 APPPATH\Controllers\adminController.php(99): redirect('/Dashboard/tambah')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->create()
+ 5 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:33:32 --> CodeIgniter\HTTP\Exceptions\HTTPException: The route for "/dashboard/tampilTambah" cannot be found.
+[Method: POST, Route: dashboard/create]
+in SYSTEMPATH\HTTP\RedirectResponse.php on line 64.
+ 1 SYSTEMPATH\HTTP\RedirectResponse.php(64): CodeIgniter\HTTP\Exceptions\HTTPException::forInvalidRedirectRoute('/dashboard/tampilTambah')
+ 2 SYSTEMPATH\Common.php(853): CodeIgniter\HTTP\RedirectResponse->route(false)
+ 3 APPPATH\Controllers\adminController.php(99): redirect('/dashboard/tampilTambah')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->create()
+ 5 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 04:34:20 --> CodeIgniter\HTTP\Exceptions\HTTPException: The route for "/dashboard" cannot be found.
+[Method: POST, Route: dashboard/create]
+in SYSTEMPATH\HTTP\RedirectResponse.php on line 64.
+ 1 SYSTEMPATH\HTTP\RedirectResponse.php(64): CodeIgniter\HTTP\Exceptions\HTTPException::forInvalidRedirectRoute('/dashboard')
+ 2 SYSTEMPATH\Common.php(853): CodeIgniter\HTTP\RedirectResponse->route(false)
+ 3 APPPATH\Controllers\adminController.php(99): redirect('/dashboard')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\adminController->create()
+ 5 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\adminController))
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:13:28 --> TypeError: CodeIgniter\Database\BaseBuilder::where(): Argument #3 ($escape) must be of type ?bool, string given, called in C:\xampp\htdocs\WotakusCI\system\Model.php on line 919
+[Method: GET, Route: animesHome]
+in SYSTEMPATH\Database\BaseBuilder.php on line 699.
+ 1 SYSTEMPATH\Model.php(919): CodeIgniter\Database\BaseBuilder->where('status', 'Completed', 'On-Going')
+ 2 APPPATH\Controllers\page.php(31): CodeIgniter\Model->__call('where', [...])
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->animesHome()
+ 4 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 5 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 9 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:20:01 --> ErrorException: Undefined variable $data
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 17.
+ 1 APPPATH\Views\user\animeInfo.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $data', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 17)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(83): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:21:42 --> ErrorException: Undefined variable $data
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 17.
+ 1 APPPATH\Views\user\animeInfo.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $data', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 17)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(83): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:22:21 --> ArgumentCountError: Too few arguments to function App\Controllers\Page::AnimesDetail(), 0 passed in C:\xampp\htdocs\WotakusCI\system\CodeIgniter.php on line 933 and exactly 1 expected
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Controllers\page.php on line 76.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail()
+ 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:22:37 --> ErrorException: Undefined variable $data
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 17.
+ 1 APPPATH\Views\user\animeInfo.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $data', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 17)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(83): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:23:56 --> ErrorException: Undefined variable $data
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 17.
+ 1 APPPATH\Views\user\animeInfo.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $data', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 17)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(85): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:23:59 --> ErrorException: Undefined variable $data
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 17.
+ 1 APPPATH\Views\user\animeInfo.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $data', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 17)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(85): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:25:54 --> ErrorException: Undefined variable $data
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 17.
+ 1 APPPATH\Views\user\animeInfo.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $data', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 17)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(86): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:26:51 --> ErrorException: Undefined array key "Judul"
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 17.
+ 1 APPPATH\Views\user\animeInfo.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "Judul"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 17)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(86): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:27:26 --> ErrorException: Undefined array key "Judul"
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 17.
+ 1 APPPATH\Views\user\animeInfo.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "Judul"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 17)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(86): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:28:12 --> ErrorException: Undefined array key "Desc"
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 18.
+ 1 APPPATH\Views\user\animeInfo.php(18): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "Desc"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 18)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(86): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:30:27 --> ErrorException: Undefined array key "Judul"
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 17.
+ 1 APPPATH\Views\user\animeInfo.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "Judul"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 17)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(86): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:36:44 --> ErrorException: Trying to access array offset on value of type null
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 18.
+ 1 APPPATH\Views\user\animeInfo.php(18): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on value of type null', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 18)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(86): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:37:06 --> ErrorException: Undefined array key "Judul"
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 18.
+ 1 APPPATH\Views\user\animeInfo.php(18): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "Judul"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 18)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(86): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 07:40:52 --> ErrorException: Trying to access array offset on value of type null
+[Method: GET, Route: animesHome/animeinfo]
+in APPPATH\Views\user\animeInfo.php on line 18.
+ 1 APPPATH\Views\user\animeInfo.php(18): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on value of type null', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 18)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\page.php(87): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 08:09:13 --> ErrorException: Trying to access array offset on value of type null
+[Method: GET, Route: animesHome/animeinfo/]
+in APPPATH\Views\user\animeInfo.php on line 18.
+ 1 APPPATH\Views\user\animeInfo.php(18): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on value of type null', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 18)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(88): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('$1')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 08:15:04 --> ErrorException: Undefined array key "Judul"
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\animeInfo.php on line 18.
+ 1 APPPATH\Views\user\animeInfo.php(18): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "Judul"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 18)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(88): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 09:44:54 --> ErrorException: Undefined variable $background
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\pageLayoutInfo.php on line 15.
+ 1 APPPATH\Views\user\pageLayoutInfo.php(15): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $background', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\pageLayoutInfo.php', 15)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\pageLayoutInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\View\View.php(250): CodeIgniter\View\View->render('user/pageLayoutInfo', [], true)
+ 5 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 6 APPPATH\Controllers\Page.php(88): view('user/animeInfo', [...])
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 8 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 9 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 09:45:21 --> ErrorException: Undefined array key "image_path"
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\pageLayoutInfo.php on line 15.
+ 1 APPPATH\Views\user\pageLayoutInfo.php(15): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "image_path"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\pageLayoutInfo.php', 15)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\pageLayoutInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\View\View.php(250): CodeIgniter\View\View->render('user/pageLayoutInfo', [], true)
+ 5 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 6 APPPATH\Controllers\Page.php(88): view('user/animeInfo', [...])
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 8 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 9 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 09:46:55 --> ErrorException: Undefined array key "BackgroundCover"
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\pageLayoutInfo.php on line 15.
+ 1 APPPATH\Views\user\pageLayoutInfo.php(15): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "BackgroundCover"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\pageLayoutInfo.php', 15)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\pageLayoutInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\View\View.php(250): CodeIgniter\View\View->render('user/pageLayoutInfo', [], true)
+ 5 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 6 APPPATH\Controllers\Page.php(88): view('user/animeInfo', [...])
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 8 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 9 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 09:48:54 --> ErrorException: Undefined array key "BackgroundCover"
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\animeInfo.php on line 5.
+ 1 APPPATH\Views\user\animeInfo.php(5): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "BackgroundCover"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 5)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(88): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 09:49:33 --> ErrorException: Undefined array key "BackgroundCover"
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\animeInfo.php on line 5.
+ 1 APPPATH\Views\user\animeInfo.php(5): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "BackgroundCover"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 5)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(88): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 09:52:39 --> ErrorException: Undefined array key "BackgroundCover"
+[Method: GET, Route: animesHome/animeinfo/Jujutsu%20Kaisen]
+in APPPATH\Views\user\pageLayoutInfo.php on line 15.
+ 1 APPPATH\Views\user\pageLayoutInfo.php(15): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "BackgroundCover"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\pageLayoutInfo.php', 15)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\pageLayoutInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\View\View.php(250): CodeIgniter\View\View->render('user/pageLayoutInfo', [], true)
+ 5 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 6 APPPATH\Controllers\Page.php(88): view('user/animeInfo', [...])
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Jujutsu Kaisen')
+ 8 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 9 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+ERROR - 2024-05-09 12:00:05 --> mysqli_sql_exception: Invalid default value for 'created_at' in C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php:308
+Stack trace:
+#0 C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php(308): mysqli->query('CREATE TABLE `E...', 0)
+#1 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(722): CodeIgniter\Database\MySQLi\Connection->execute('CREATE TABLE `E...')
+#2 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(636): CodeIgniter\Database\BaseConnection->simpleQuery('CREATE TABLE `E...')
+#3 C:\xampp\htdocs\WotakusCI\system\Database\Forge.php(570): CodeIgniter\Database\BaseConnection->query('CREATE TABLE `E...')
+#4 C:\xampp\htdocs\WotakusCI\app\Database\Migrations\2024-05-09-113127_EpisodeAnime.php(45): CodeIgniter\Database\Forge->createTable('EpisodeAnime', true)
+#5 C:\xampp\htdocs\WotakusCI\system\Database\MigrationRunner.php(867): App\Database\Migrations\EpisodeAnime->up()
+#6 C:\xampp\htdocs\WotakusCI\system\Database\MigrationRunner.php(183): CodeIgniter\Database\MigrationRunner->migrate('up', Object(stdClass))
+#7 C:\xampp\htdocs\WotakusCI\system\Commands\Database\Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 C:\xampp\htdocs\WotakusCI\system\CLI\Commands.php(70): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 C:\xampp\htdocs\WotakusCI\system\CLI\BaseCommand.php(119): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 C:\xampp\htdocs\WotakusCI\system\Commands\Database\MigrateRefresh.php(87): CodeIgniter\CLI\BaseCommand->call('migrate', Array)
+#11 C:\xampp\htdocs\WotakusCI\system\CLI\Commands.php(70): CodeIgniter\Commands\Database\MigrateRefresh->run(Array)
+#12 C:\xampp\htdocs\WotakusCI\system\CLI\Console.php(48): CodeIgniter\CLI\Commands->run('migrate:refresh', Array)
+#13 C:\xampp\htdocs\WotakusCI\system\Boot.php(338): CodeIgniter\CLI\Console->run()
+#14 C:\xampp\htdocs\WotakusCI\system\Boot.php(104): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#15 C:\xampp\htdocs\WotakusCI\spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#16 {main}
+ERROR - 2024-05-09 12:05:28 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`wotakus`.`episodeanime`, CONSTRAINT `EpisodeAnime_anime_id_foreign` FOREIGN KEY (`anime_id`) REFERENCES `jujutsukaisen` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) in C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php:308
+Stack trace:
+#0 C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php(308): mysqli->query('INSERT INTO `ep...', 0)
+#1 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(722): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `ep...')
+#2 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(636): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `ep...')
+#3 C:\xampp\htdocs\WotakusCI\system\Database\BaseBuilder.php(1821): CodeIgniter\Database\BaseConnection->query('INSERT INTO `ep...', NULL, false)
+#4 C:\xampp\htdocs\WotakusCI\system\Database\BaseBuilder.php(2210): CodeIgniter\Database\BaseBuilder->batchExecute('_insertBatch', 100)
+#5 C:\xampp\htdocs\WotakusCI\app\Database\Seeds\EpisodeAnimeSeeder.php(44): CodeIgniter\Database\BaseBuilder->insertBatch(Array)
+#6 C:\xampp\htdocs\WotakusCI\system\Database\Seeder.php(147): App\Database\Seeds\EpisodeAnimeSeeder->run()
+#7 C:\xampp\htdocs\WotakusCI\system\Commands\Database\Seed.php(79): CodeIgniter\Database\Seeder->call('App\\Database\\Se...')
+#8 C:\xampp\htdocs\WotakusCI\system\CLI\Commands.php(70): CodeIgniter\Commands\Database\Seed->run(Array)
+#9 C:\xampp\htdocs\WotakusCI\system\CLI\Console.php(48): CodeIgniter\CLI\Commands->run('db:seed', Array)
+#10 C:\xampp\htdocs\WotakusCI\system\Boot.php(338): CodeIgniter\CLI\Console->run()
+#11 C:\xampp\htdocs\WotakusCI\system\Boot.php(104): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#12 C:\xampp\htdocs\WotakusCI\spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#13 {main}
+ERROR - 2024-05-09 12:08:57 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`wotakus`.`episodeanime`, CONSTRAINT `EpisodeAnime_anime_id_foreign` FOREIGN KEY (`anime_id`) REFERENCES `jujutsukaisen` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) in C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php:308
+Stack trace:
+#0 C:\xampp\htdocs\WotakusCI\system\Database\MySQLi\Connection.php(308): mysqli->query('INSERT INTO `ep...', 0)
+#1 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(722): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `ep...')
+#2 C:\xampp\htdocs\WotakusCI\system\Database\BaseConnection.php(636): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `ep...')
+#3 C:\xampp\htdocs\WotakusCI\system\Database\BaseBuilder.php(1821): CodeIgniter\Database\BaseConnection->query('INSERT INTO `ep...', NULL, false)
+#4 C:\xampp\htdocs\WotakusCI\system\Database\BaseBuilder.php(2210): CodeIgniter\Database\BaseBuilder->batchExecute('_insertBatch', 100)
+#5 C:\xampp\htdocs\WotakusCI\app\Database\Seeds\EpisodeAnimeSeeder.php(26): CodeIgniter\Database\BaseBuilder->insertBatch(Array)
+#6 C:\xampp\htdocs\WotakusCI\system\Database\Seeder.php(147): App\Database\Seeds\EpisodeAnimeSeeder->run()
+#7 C:\xampp\htdocs\WotakusCI\system\Commands\Database\Seed.php(79): CodeIgniter\Database\Seeder->call('App\\Database\\Se...')
+#8 C:\xampp\htdocs\WotakusCI\system\CLI\Commands.php(70): CodeIgniter\Commands\Database\Seed->run(Array)
+#9 C:\xampp\htdocs\WotakusCI\system\CLI\Console.php(48): CodeIgniter\CLI\Commands->run('db:seed', Array)
+#10 C:\xampp\htdocs\WotakusCI\system\Boot.php(338): CodeIgniter\CLI\Console->run()
+#11 C:\xampp\htdocs\WotakusCI\system\Boot.php(104): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#12 C:\xampp\htdocs\WotakusCI\spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#13 {main}
+CRITICAL - 2024-05-09 12:27:48 --> ErrorException: Undefined array key "title"
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\user\animeInfo.php on line 74.
+ 1 APPPATH\Views\user\animeInfo.php(74): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "title"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 74)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(90): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 12:28:05 --> ErrorException: Undefined array key "anime_id"
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\user\animeInfo.php on line 74.
+ 1 APPPATH\Views\user\animeInfo.php(74): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "anime_id"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 74)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(90): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 12:30:58 --> ErrorException: Undefined array key "title"
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\user\animeInfo.php on line 74.
+ 1 APPPATH\Views\user\animeInfo.php(74): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "title"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 74)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(90): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 12:31:38 --> ErrorException: Undefined array key "title"
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\user\animeInfo.php on line 74.
+ 1 APPPATH\Views\user\animeInfo.php(74): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "title"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 74)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(90): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 12:31:56 --> ErrorException: Undefined array key "EpsNo"
+[Method: GET, Route: animesHome/animeinfo/Kage%20no%20Jitsuryokusha%20ni%20Naritakute]
+in APPPATH\Views\user\animeInfo.php on line 74.
+ 1 APPPATH\Views\user\animeInfo.php(74): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "EpsNo"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 74)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(90): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('Kage no Jitsuryokusha ni Naritakute')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 12:35:53 --> ErrorException: Undefined array key "anime_id"
+[Method: GET, Route: animesHome/animeinfo/kusuriya%20no%20hitorigoto]
+in APPPATH\Views\user\animeInfo.php on line 75.
+ 1 APPPATH\Views\user\animeInfo.php(75): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "anime_id"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 75)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(90): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('kusuriya no hitorigoto')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 12:42:52 --> ErrorException: Undefined array key "title"
+[Method: GET, Route: animesHome/animeinfo/kusuriya%20no%20hitorigoto]
+in APPPATH\Views\user\animeInfo.php on line 75.
+ 1 APPPATH\Views\user\animeInfo.php(75): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "title"', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 75)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(90): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('kusuriya no hitorigoto')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
+CRITICAL - 2024-05-09 12:43:59 --> ErrorException: Trying to access array offset on value of type null
+[Method: GET, Route: animesHome/animeinfo/animes.html]
+in APPPATH\Views\user\animeInfo.php on line 16.
+ 1 APPPATH\Views\user\animeInfo.php(16): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on value of type null', 'C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php', 16)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\WotakusCI\\app\\Views\\user\\animeInfo.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('user/animeInfo', [], true)
+ 5 APPPATH\Controllers\Page.php(90): view('user/animeInfo', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Page->AnimesDetail('animes.html')
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Page))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(312): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\Commands\Server\rewrite.php(49): require_once('C:\\xampp\\htdocs\\WotakusCI\\public\\index.php')
