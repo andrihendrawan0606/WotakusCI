@@ -65,8 +65,12 @@
         <div class="card-body">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Total Episode : <?= esc($totalEpisode) ?> </h6>
-                <?php $slug = url_title($animes['Judul'], '-', true); ?>
-                <a href="/dashboard/detail/createEpisode/<?= esc($animes['anime_id'])  ?>/<?= $slug; ?>"><button type="button" class="btn btn-primary mt-2">Tambah Episode</button></a>
+                <?php 
+                    $slug = url_title($animes['Judul'], '-', true); 
+                    ?>
+                    <a href="<?= url_to('createEpisode', esc($animes['anime_id']), $slug); ?>">
+                        <button type="button" class="btn btn-primary mt-2">Tambah Episode</button>
+                    </a>
             </div>
             <?php if (session()->getFlashdata('pesan')) : ?>
         <div class="alert alert-success" role="alert" id="flash-alert">>

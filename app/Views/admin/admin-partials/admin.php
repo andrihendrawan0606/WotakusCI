@@ -66,22 +66,23 @@
                 <h3><?= $anime['Judul'] ?><br><span><?= $anime['JudulLainnya'] ?></span></h3>
             </div>
         </div>
-
-        <ul class="sci">
+                <ul class="sci">
             <li>
-                <?php $slug = url_title($anime['Judul'], '-', true); ?>
+                <?php 
+                $slug = url_title($anime['Judul'], '-', true); 
+                ?>
                 <button style="--color:#414141; --border:1px; --slant:.7em" class="buttonn" alt="edit">
-                    <a href="/dashboard/edit/<?= $anime['id'] ?>/<?= $slug; ?>">Edit</a>
+                    <a href="<?= url_to('edit', $anime['id'], $slug); ?>">Edit</a>
                 </button>
             </li>
             <li>
                 <button style="--color:#414141; --border:1px; --slant:.7em" class="buttonn">
-                    <a href="/dashboard/detail/<?= $anime['id']; ?>/<?= $slug; ?>">Lihat</a>
+                    <a href="<?= url_to('viewDetail', $anime['id'], $slug); ?>">Lihat</a>
                 </button>
             </li>
             <li>
-                <button class="buttonn" style="--color:#414141; --border:1px; --slant:.7em" onclick=" return confirm('apakah anda yakin ?'); " >
-                    <a href="/dashboard/delete/<?= $anime['id'] ?>/<?= $slug; ?>">Hapus</a>
+                <button class="buttonn" style="--color:#414141; --border:1px; --slant:.7em" onclick="return confirm('apakah anda yakin?');">
+                    <a href="<?= url_to('delete', $anime['id'], $slug); ?>">Hapus</a>
                 </button>
             </li>
         </ul>

@@ -75,7 +75,7 @@
             <button type="submit" class="btn btn-block create-account">Tambah</button>
         </div>
         <div class="form-group">
-            <a href="/dashboard" style="text-decoration: none;"><button type="button" class="btn btn-block create-account" style="background-color: red;">Kembali</button></a>
+            <a href="<?= url_to('dashboard') ?>" style="text-decoration: none;"><button type="button" class="btn btn-block create-account" style="background-color: red;">Kembali</button></a>
         </div>
     </form>
 

@@ -7,7 +7,7 @@
 
 
 <div class="registration-form">
-    <form action="/dashboard/edit/ProsesEdit/<?= $animes['anime_id'] ?>" method="POST" enctype="multipart/form-data">
+    <form action="<?= url_to('prosesEdit', $animes['anime_id']);  ?>" method="POST" enctype="multipart/form-data">
         <?= csrf_field(); ?>
         <input type="hidden" name="BackgroundCoverOld" value="<?= $animes['BackgroundCover'] ?>">
         <input type="hidden" name="PosterOld" value="<?= $animes['Poster'] ?>">
@@ -72,7 +72,7 @@
             <button type="submit" class="btn btn-block create-account">Edit</button>
         </div>
         <div class="form-group">
-            <a href="/dashboard"><button type="button" class="btn btn-block create-account" style="background-color: red;">Kembali</button></a>
+            <a href="<?= url_to('dashboard') ?>"><button type="button" class="btn btn-block create-account" style="background-color: red;">Kembali</button></a>
         </div>
     </form>
 </div>

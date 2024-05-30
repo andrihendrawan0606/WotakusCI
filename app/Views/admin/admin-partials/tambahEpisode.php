@@ -70,7 +70,7 @@
         </div>
         <div class="form-group">
          <?php $slug = url_title($animeId['Judul'], '-', true); ?>
-            <a href="/dashboard/detail/<?= $animeId['anime_id']; ?>/<?= $slug; ?>" style="text-decoration: none;"><button type="button" class="btn btn-block create-account" style="background-color:red;">Kembali</button></a>
+            <a href="<?= url_to('viewDetail', esc($animeId['anime_id']), $slug); ?>" style="text-decoration: none;"><button type="button" class="btn btn-block create-account" style="background-color:red;">Kembali</button></a>
         </div>
     </form>
 

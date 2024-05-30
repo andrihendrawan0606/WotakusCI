@@ -5,7 +5,7 @@
 <meta name="csrf-token" content="<?= csrf_hash() ?>">
    <div class="header">
         <div class="logo">
-            <h1><a href="/animesHome">Wotakus</a></h1>
+            <h1><a href="<?= url_to('animesHome') ?>">Wotakus</a></h1>
         </div>
         <div class="nav">
             <diV class="search">

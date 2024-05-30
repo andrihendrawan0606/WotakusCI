@@ -89,19 +89,15 @@
 <div class="episode">
     <h1><i class="fas fa-angle-double-right"></i> EPISODE</h1>
     <div class="grid-episode">
-        <?php if (isset($episode) && is_array($episode) && !empty($episode)) : ?>
+            <?php if (isset($episode) && is_array($episode) && !empty($episode)) : ?>
             <?php foreach ($episode as $anime) : ?>
                 <?php 
-                $judul = isset($anime['judul']) ? $anime['judul'] : '';
-                $id = isset($anime['id']) ? $anime['id'] : '';
-                $slug = url_title($judul, '-', true);
-                $gambarPreview = isset($anime['GambarPreview']) ? $anime['GambarPreview'] : '';
-                $deskripsi = isset($anime['deskripsi']) ? $anime['deskripsi'] : '';
+                $slug = url_title($anime['judul'], '-', true); 
                 ?>
-                <a href="/animesHome/animeinfo/PreviewVideo/<?= $id ?>/<?= $slug ?>" class="anime-section">
-                    <div class="anime-img-1" style="background-image: url(<?=base_url('assets/imgPreview/'.$gambarPreview); ?>);" ></div>
+                <a href="<?= url_to('showPreviewVideo', $anime['id'], $slug); ?>" class="anime-section">
+                    <div class="anime-img-1" style="background-image: url(<?= base_url('assets/imgPreview/' . $anime['GambarPreview']); ?>);" ></div>
                     <div class="anime-description">
-                        <h2><?= $judul ?> | <?= $deskripsi ?></h2>
+                        <h2><?= $anime['judul'] ?> | <?= $anime['deskripsi'] ?></h2>
                     </div>
                 </a>
             <?php endforeach ?>
