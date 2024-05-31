@@ -15,7 +15,7 @@
             <span><i class="icon icon-user"></i></span>
         </div>
         <div class="form-group">
-            <input type="text" name="Judul" class="form-control item <?= ($validation->hasError('Judul')) ? 'is-invalid' : '' ?>" value="<?= $animes['Judul'] ?>" id="username" placeholder="Judul" autofocus>
+            <input type="text" name="Judul" class="form-control item <?= ($validation->hasError('Judul')) ? 'is-invalid' : '' ?>" value="<?= $animes['Judul'] ?>" id="Judul" placeholder="Judul" autofocus>
             <div class="invalid-feedback">
                 <?= $validation->getError('Judul') ?>
             </div>
@@ -51,16 +51,16 @@
             </select>
         </div>
         <div class="form-group">
-            <input type="number" value="<?= $animes['Eps'] ?>" name="Eps" class="form-control item" id="phone-number" placeholder="Eps">
+            <input type="number" value="<?= $animes['Eps'] ?>" name="Eps" class="form-control item" id="Eps" placeholder="Eps">
         </div>
         <div class="form-group">
-            <input type="number" value="<?= $animes['Durasi'] ?>" name="Durasi" class="form-control item" id="birth-date" placeholder="Durasi">
+            <input type="number" value="<?= $animes['Durasi'] ?>" name="Durasi" class="form-control item" id="Durasi" placeholder="Durasi">
         </div>
         <div class="form-group">
-            <input type="date" value="<?= $animes['Rilis'] ?>" name="Rilis" class="form-control item" id="birth-date" placeholder="Rilis">
+            <input type="date" value="<?= $animes['Rilis'] ?>" name="Rilis" class="form-control item" id="Rilis" placeholder="Rilis">
         </div>
         <div class="form-group">
-            <input type="text" value="<?= $animes['JudulLainnya'] ?>" name="JudulLainnya" class="form-control item" id="birth-date" placeholder="Judul Lainnya">
+            <input type="text" value="<?= $animes['JudulLainnya'] ?>" name="JudulLainnya" class="form-control item" id="JudulLainnya" placeholder="Judul Lainnya">
         </div>
         <div class="form-group">
             <select for="Status" name="status" class="form-control item mt-4">

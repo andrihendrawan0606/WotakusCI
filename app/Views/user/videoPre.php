@@ -7,7 +7,7 @@
 
 <!--    VIDEO    -->
 <section class="video">
-    <h1><a href="#"></a> Preview <?= $episode['judul'] ?></h1>
+    <h1>Preview <?= $episode['judul'] ?></h1>
     <div class="box">
         <?php if ($episode['video_path']): ?>
         <video id="video-player" data-episode-id="<?= $episode['id'] ?>" height="550" controls>
@@ -19,8 +19,20 @@
     </div>
     <div class="ab">
         <ul>
-            <li><a href="#"><img src="<?=base_url('assets/images/before-arrow.png');?>"> Episode Sebelumnya</a></li>
-            <li><a href="#">Episode Selanjutnya <img src="<?=base_url('assets/images/next-arrow.png');?>"></a></li>
+            <?php if ($EpisodeSebelumnya): ?>
+            <li>
+                <a href="<?= url_to('showPreviewVideo', $EpisodeSebelumnya['id'], url_title($EpisodeSebelumnya['judul'], '-', true)); ?>">
+                    <img src="<?= base_url('assets/images/before-arrow.png'); ?>"> Episode Sebelumnya
+                </a>
+            </li>
+            <?php endif; ?>
+            <?php if ($EpisodeSelanjutnya): ?>
+            <li>
+                <a href="<?= url_to('showPreviewVideo', $EpisodeSelanjutnya['id'], url_title($EpisodeSelanjutnya['judul'], '-', true)); ?>">
+                    Episode Selanjutnya <img src="<?= base_url('assets/images/next-arrow.png'); ?>">
+                </a>
+            </li>
+            <?php endif; ?>
         </ul>
     </div>
 </section>

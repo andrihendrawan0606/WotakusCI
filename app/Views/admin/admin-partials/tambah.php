@@ -11,13 +11,13 @@
 
 
 <div class="registration-form">
-    <form action="/dashboard/prosesTambah" method="POST" enctype="multipart/form-data">
+    <form action="<?= url_to('prosesTambah');  ?>" method="POST" enctype="multipart/form-data">
         <?= csrf_field(); ?>
         <div class="form-icon">
             <span><i class="icon icon-user"></i></span>
         </div>
         <div class="form-group">
-            <input type="text" name="Judul" class="form-control item <?= ($validation->hasError('Judul')) ? 'is-invalid' : ''; ?>" id="username" placeholder="Judul" value="<?= old('Judul'); ?>" autofocus >
+            <input type="text" name="Judul" class="form-control item <?= ($validation->hasError('Judul')) ? 'is-invalid' : ''; ?>" id="Judul" placeholder="Judul" value="<?= old('Judul'); ?>" autofocus >
             <div class="invalid-feedback">
                 <?= $validation->getError('Judul') ?>
             </div>
@@ -53,16 +53,16 @@
             </select>
         </div>
         <div class="form-group">
-            <input type="number" name="Eps" class="form-control item <?= ($validation->hasError('Eps')) ? 'is-invalid' :'' ?>" value="<?= old('Eps'); ?>" id="phone-number" placeholder="Eps">
+            <input type="number" name="Eps" class="form-control item <?= ($validation->hasError('Eps')) ? 'is-invalid' :'' ?>" value="<?= old('Eps'); ?>" id="Eps" placeholder="Eps">
         </div>
         <div class="form-group">
-            <input type="number" name="Durasi" class="form-control item <?= ($validation->hasError('Durasi')) ? 'is-invalid' :'' ?>" value="<?= old('Durasi'); ?>" id="birth-date" placeholder="Durasi">
+            <input type="number" name="Durasi" class="form-control item <?= ($validation->hasError('Durasi')) ? 'is-invalid' :'' ?>" value="<?= old('Durasi'); ?>" id="Durasi" placeholder="Durasi">
         </div>
         <div class="form-group">
-            <input type="date" name="Rilis" class="form-control item  <?= ($validation->hasError('Rilis')) ? 'is-invalid' :'' ?>" value="<?= old('Rilis'); ?>" id="birth-date" placeholder="Rilis">
+            <input type="date" name="Rilis" class="form-control item  <?= ($validation->hasError('Rilis')) ? 'is-invalid' :'' ?>" value="<?= old('Rilis'); ?>" id="Rilis" placeholder="Rilis">
         </div>
         <div class="form-group">
-            <input type="text" name="JudulLainnya" class="form-control item <?= ($validation->hasError('JudulLainnya')) ? 'is-invalid' :'' ?>" value="<?= old('JudulLainnya'); ?>" id="birth-date"
+            <input type="text" name="JudulLainnya" class="form-control item <?= ($validation->hasError('JudulLainnya')) ? 'is-invalid' :'' ?>" value="<?= old('JudulLainnya'); ?>" id="JudulLainnyay"
                 placeholder="Judul Lainnya">
         </div>
         <div class="form-group">

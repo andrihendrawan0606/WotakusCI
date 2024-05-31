@@ -12,48 +12,48 @@
     <div class="col-6">
         <form>
             <div class="mb-3 ml-3">
-                <label for="exampleInputEmail1" class="form-label">Judul</label>
+                <label for="InputJudul" class="form-label">Judul</label>
                 <input type="email" class="form-control" disabled="disabled" id="exampleInputEmail1"
                     value="<?= $animes['Judul'] ?>" aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text"></div>
             </div>
             <div class="mb-3 ml-3">
-                <label for="exampleInputPassword1" class="form-label">Desc</label>
+                <label for="InputDesc" class="form-label">Desc</label>
                 <textarea class="form-control" style="width: 100%; height: 4em" disabled="disabled"
                     aria-label="With textarea"><?= $animes['Desc'] ?></textarea>
             </div>
             <div class="mb-3 ml-3">
-                <label for="exampleInputPassword1" class="form-label">Eps</label>
+                <label for="InputEps" class="form-label">Eps</label>
                 <input type="text" disabled="disabled" value="<?= $animes['Eps'] ?>" class="form-control"
                     id="exampleInputPassword1">
             </div>
             <div class="mb-3 ml-3">
-                <label for="exampleInputPassword1" class="form-label">Durasi</label>
+                <label for="InputDurasi" class="form-label">Durasi</label>
                 <input type="text" disabled="disabled" value="<?= $animes['Durasi'] ?> Menit" class="form-control"
                     id="exampleInputPassword1">
             </div>
             <div class="mb-3 ml-3">
-                <label for="exampleInputPassword1" class="form-label">Rilis</label>
+                <label for="InputRilis" class="form-label">Rilis</label>
                 <input type="text" disabled="disabled" value="<?= format_indo_date($animes['Rilis']); ?>"
                     class="form-control" id="exampleInputPassword1">
             </div>
             <div class="mb-3 ml-3">
-                <label for="exampleInputPassword1" class="form-label">Judul Lainnya</label>
+                <label for="InputJudulLainnya" class="form-label">Judul Lainnya</label>
                 <input type="text" disabled="disabled" value="<?= $animes['JudulLainnya'] ?>" class="form-control"
                     id="exampleInputPassword1">
             </div>
             <div class="mb-3 ml-3">
-                <label for="exampleInputPassword1" class="form-label">Genre</label>
+                <label for="InputGenre" class="form-label">Genre</label>
                 <input type="text" disabled="disabled" value="<?= $animes['genre'] ?> " class="form-control"
                     id="exampleInputPassword1">
             </div>
 
             <div class="mb-3 ml-3">
-                <label for="exampleInputPassword1" class="form-label">Status</label>
+                <label for="SelectionGenre" class="form-label">Status</label>
                 <input type="text" disabled="disabled" value="<?= $animes['status'] ?>" class="form-control"
                     id="exampleInputPassword1">
             </div>
-            <a href="/dashboard"><button type="button" class="btn btn-danger  ml-3">Kembali</button></a>
+            <a href="<?= url_to('dashboard') ?>"><button type="button" class="btn btn-danger  ml-3">Kembali</button></a>
         </form>
 
     </div>

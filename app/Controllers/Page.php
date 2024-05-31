@@ -39,25 +39,10 @@ class Page extends BaseController
 	}
     public function animesHome()
     {
-        // $animes = new JjkModel();
-
-        // /*
-        //  siapkan data untuk dikirim ke view dengan nama $newses
-        //  dan isi datanya dengan news yang sudah terbit
-        // */
-        // $data['animes'] = $animes->where('status', 'Completed' 'On-Going')->findAll();
-    
-        // // kirim data ke view
-        // echo view('animesHome', $data);
-        // $episode = $this->animeModel->getEpisode($id);
-
         $data = [
             'title' => 'Anime User',
-            // 'anime' => $this->animeModel->getAnimes($Judul),
-            // 'animes'=> $this->animeModel->getAnimes(),
-            'animes'=> $this->animeModel->paginate(10, 'jujutsukaisen'),
+            'animes'=> $this->animeModel->paginate(5, 'jujutsukaisen'),
             'pager' => $this->animeModel->pager
-            // 'episode' => $episode
         ];
         // dd($data);
                 // Kalo Detail anime tidak ada 
@@ -177,9 +162,6 @@ class Page extends BaseController
 
     public function showPreviewVideo($id, $slug)
     {
-        $anime = $this->animeModel->find($id);
-        $episode = $this->episodModel->find($id);
-        // $anime = $this->animeModel->find($episode['anime_id']);
         $episode = $this->episodModel->find($id);
         if (!$episode) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Episode tidak ditemukan.');
@@ -190,22 +172,23 @@ class Page extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime tidak ditemukan.');
         }
     
-
-
         $generatedSlug = url_title($anime['Judul'], '-', true);
         if ($slug !== $generatedSlug) {
-            // Jika slug tidak cocok, lempar pengecualian atau redirect ke URL yang benar
             return redirect()->to("/animesHome/animeinfo/PreviewVideo/$id/$generatedSlug");
         }
+    
+        $previousEpisode = $this->episodModel->getPreviousEpisode($anime['id'], $id);
+        $nextEpisode = $this->episodModel->getNextEpisode($anime['id'], $id);
+    
         $data = [
-            'title' => 'Wotakus | ' .$anime['Judul'] .' | '. $episode['judul'],
+            'title' => 'Wotakus | ' . $anime['Judul'] . ' | ' . $episode['judul'],
             'anime' => $anime,
-            'episode' =>  $episode,
+            'episode' => $episode,
+            'EpisodeSebelumnya' => $previousEpisode,
+            'EpisodeSelanjutnya' => $nextEpisode,
         ];
-
-        //  dd($data);
-
-         return view('user/videoPre',  $data);
+    
+        return view('user/videoPre', $data);
     }
 
     public function incrementView($episodeId)

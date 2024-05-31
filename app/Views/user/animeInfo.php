@@ -10,9 +10,9 @@
 <div class="container" id="body">
     <div class="img-depan">
         <?php if (isset($anime['Poster'])): ?>
-        <img src="<?= base_url('assets/images/' . $anime['Poster']) ?>">
+            <img src="<?= base_url('assets/images/' . $anime['Poster']) ?>">
         <?php else: ?>
-        <p>Poster tidak tersedia</p>
+            <p>Poster tidak tersedia</p>
         <?php endif; ?>
         <a href="https://youtu.be/f7R6NA4Yo00?si=6RFLWw3p7xT3gE59" target="_blank">
             <h1>TRAILER</h1>
@@ -32,7 +32,7 @@
                 <?php endforeach ?>
                 <?php else: ?>
                     <p>Genre Kosong</p>
-                    <?php endif; ?>
+                <?php endif; ?>
             </ul>
         </div>
         <div class="infoBox">
@@ -84,8 +84,6 @@
 </div>
 
 <!--    Episode    -->
-
-
 <div class="episode">
     <h1><i class="fas fa-angle-double-right"></i> EPISODE</h1>
     <div class="grid-episode">
@@ -97,7 +95,7 @@
                 <a href="<?= url_to('showPreviewVideo', $anime['id'], $slug); ?>" class="anime-section">
                     <div class="anime-img-1" style="background-image: url(<?= base_url('assets/imgPreview/' . $anime['GambarPreview']); ?>);" ></div>
                     <div class="anime-description">
-                        <h2><?= $anime['judul'] ?> | <?= $anime['deskripsi'] ?></h2>
+                        <h2><?= $anime['Judul'] ?> | <?= $anime['deskripsi'] ?></h2>
                     </div>
                 </a>
             <?php endforeach ?>

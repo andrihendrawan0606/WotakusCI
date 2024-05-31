@@ -20,6 +20,22 @@ class EpisodeModel extends Model
         return $this->where(['anime_id' =>  $id])->first();
     }
 
+    public function getPreviousEpisode($animeId, $currentEpisodeId)
+    {
+        return $this->where('anime_id', $animeId)
+                    ->where('id <', $currentEpisodeId)
+                    ->orderBy('id', 'desc')
+                    ->first();
+    }
+
+    public function getNextEpisode($animeId, $currentEpisodeId)
+    {
+        return $this->where('anime_id', $animeId)
+                    ->where('id >', $currentEpisodeId)
+                    ->orderBy('id', 'asc')
+                    ->first();
+    }
+
     // protected bool $allowEmptyInserts = false;
     // protected bool $updateOnlyChanged = true;
 

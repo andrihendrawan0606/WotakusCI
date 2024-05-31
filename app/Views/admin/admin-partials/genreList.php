@@ -6,8 +6,13 @@
         <div class="card-body">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Total Genre : <?= esc($genres) ?> </h6>
-                <a href=""><button type="button" class="btn btn-primary mt-2">Tambah Genre</button></a>
+                <a href="<?= url_to('genreTambah') ?>"><button type="button" class="btn btn-primary mt-2">Tambah Genre</button></a>
             </div>
+            <?php if (session()->getFlashdata('pesan')) : ?>
+                <div class="alert alert-success" role="alert" id="flash-alert">>
+                    <?= session()->getFlashdata('pesan'); ?>
+                </div>
+            <?php endif; ?>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -25,8 +30,8 @@
                             <td><?= $anime['genre'] ?></td>
                             <td><?= $anime['created_at'] ?></td>
                             <td>
-                                <a href=""><button type="button" class="btn btn-warning">Edit</button></a>
-                                <a href=""><button type="button" class="btn btn-danger">Hapus</button></a>
+                                <!-- <a href=""><button type="button" class="btn btn-warning">Edit</button></a> -->
+                                <a href="<?= url_to('deleteGenre', $anime['id']); ?>"><button type="button" class="btn btn-danger">Hapus</button></a>
                             </td>
                         </tr>
                         <?php endforeach ?>

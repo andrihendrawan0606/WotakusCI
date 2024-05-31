@@ -70,6 +70,47 @@ class adminController extends BaseController
         echo view('admin/admin-partials/genreList', $data);
     }
 
+    public function genreTambah()
+    {
+        $data = [
+            'title' => ' | Form Tambah Genre',
+            'validation' => \Config\Services::validation()
+        ];
+
+        return view('admin/admin-partials/tambahGenre', $data);
+    }
+
+    public function genreProses()
+    {
+        if(!$this->validate([
+            'genre' =>[
+                'rules'=>'required',
+                'error'=>[
+                    'required' => '{field} Genre Harus diisi'
+                ]    
+                ]
+        ])){
+             return redirect()->to('genreTambah')->withInput();
+        }
+
+        $genreName = $this->request->getPost('genre');
+
+        $this->genreModel->insert([
+                'genre' => $genreName,
+            ]);
+
+        session()->setFlashData('pesan','Data Udah ditambah');
+        return redirect()->to('genreList')->withInput();
+    }
+
+    public function deleteGenre($id)
+    {
+        $genre = $this->genreModel->find($id);
+
+        $this->genreModel->delete($id);
+        session()->setFlashdata('pesan', 'Data Genre udah keapus');
+        return redirect()->to('genreList');
+    }
 
 //--------------------------------------------------------------------------
     
@@ -88,17 +129,6 @@ class adminController extends BaseController
 
     public function Lihat($id, $slug)
     {
-        // $animes = new JjkModel();
-        // $animes = $this->animeModel->getAnimes($Judul);
-		// $animes['animes'] = $animes->where('id', $id)->first();
-
-        // $data = [
-        //     'title' => 'Detail Anime',
-        //     // 'anime' => $this->animeModel->getGenre(),
-        //     'animes'=> $this->animeModel->getAnimeWithGenres($Judul)
-            
-        // ];
-
         $anime = $this->animeModel->getAnimeWithGenres($id);
         if (!$anime) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime dengan ID ' . $id . ' tidak ditemukan.');
@@ -129,13 +159,12 @@ class adminController extends BaseController
         
 
         // dd($data);
-
-        return view('admin/admin-partials/detail', $data);
-
         // Kalo Detail anime tidak ada 
         if(empty($data['animes'])){
             throw new \Codeigniter\Exception\PageNotFoundException('Judul Anime'.$Judul.'Tidak ada');
         }
+
+        return view('admin/admin-partials/detail', $data);
     }
 
 //--------------------------------------------------------------------------

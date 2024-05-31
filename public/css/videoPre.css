@@ -236,79 +236,79 @@
   }
 
   /* VIDEO SECTION */
+/* VIDEO SECTION */
 .video {
-    margin: 30px 130px 0 130px;
+  margin: 30px 130px 0 130px;
 }
 
 .video h1 {
-    margin: 0 0 25px 0;
-    font-size: 30px;
-    font-weight: bold;
-    font-family: "Ubuntu", "Roboto", sans-serif;
-    color: #E2E2E2;
+  margin: 0 0 25px 0;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: "Ubuntu", "Roboto", sans-serif;
+  color: #E2E2E2;
 }
 
 .video h1 a {
-    text-decoration: none;
-    color: #E2E2E2;
+  text-decoration: none;
+  color: #E2E2E2;
 }
 
 .video .box {
-    background-color: #000;
-    text-align: center;
+  background-color: #000;
+  text-align: center;
 }
 
 .video .ab {
-    margin: 20px 0;
+  margin: 20px 0;
 }
 
 .video .ab ul {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  list-style: none;
 }
 
 .video .ab ul li {
-    list-style: none;
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .video .ab ul li:hover {
-    list-style: none;
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 .video .ab ul li:active {
-    list-style: none;
-    opacity: 1;
+  opacity: 1;
 }
 
 .video .ab ul li a {
-    font-size: 20px;
-    font-weight: 400;
-    font-family: "Ubuntu", "Roboto", sans-serif;
-    color: #E2E2E2;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 10px 20px;
-    border-radius: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
+  font-size: 20px;
+  font-weight: 400;
+  font-family: "Ubuntu", "Roboto", sans-serif;
+  color: #E2E2E2;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
 }
 
 .video .ab ul li a img {
-    width: 20px;
-    height: 20px;
-    object-fit: cover;
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
 }
 
 .video .ab ul li:nth-child(1) a img {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .video .ab ul li:nth-child(2) a img {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 /*  FOOTER  */

@@ -11,7 +11,7 @@
 
 
 <div class="registration-form">
-    <form action="/dashboard/detail/prosesEpisode" method="POST" enctype="multipart/form-data">
+    <form action="<?= url_to('prosesEpisode');  ?>" method="POST" enctype="multipart/form-data">
         <?= csrf_field(); ?>
         <div class="form-icon">
             <span><i class="icon icon-user"></i></span>
