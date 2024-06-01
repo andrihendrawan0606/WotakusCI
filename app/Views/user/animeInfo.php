@@ -23,12 +23,11 @@
     <div class="info">
         <h1><?= $anime['Judul'] ?></h1>
         <p><?= $anime['Desc']?></p>
-
         <div class="genre">
             <ul>
             <?php if (isset($anime['genre'])): ?>
                 <?php foreach ($anime ['genre'] as $genre) : ?>
-                <li><a href="#"><?= esc($genre) ?></a></li>
+                <li><a href="<?= url_to('animesbyGenre', $genre['id'], url_title($genre['genre'], '-', TRUE)); ?>"><?= esc($genre['genre']) ?></a></li>
                 <?php endforeach ?>
                 <?php else: ?>
                     <p>Genre Kosong</p>
@@ -95,14 +94,14 @@
                 <a href="<?= url_to('showPreviewVideo', $anime['id'], $slug); ?>" class="anime-section">
                     <div class="anime-img-1" style="background-image: url(<?= base_url('assets/imgPreview/' . $anime['GambarPreview']); ?>);" ></div>
                     <div class="anime-description">
-                        <h2><?= $anime['Judul'] ?> | <?= $anime['deskripsi'] ?></h2>
+                        <h2><?= $anime['Judul'] ?> | <?= $anime['judul'] ?></h2>
                     </div>
                 </a>
             <?php endforeach ?>
-        <?php else : ?>
-            <p>Belum ada Episode yang tayang</p>
-        <?php endif ?>
+                <?php else : ?>
+                    <p>Belum ada Episode yang tayang</p>
+                <?php endif ?>
+        </div>
     </div>
-</div>
 <br>
 <?= $this->endSection() ?>

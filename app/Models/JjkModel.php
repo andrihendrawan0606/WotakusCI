@@ -83,12 +83,28 @@ class JjkModel extends Model
 
     public function getAnimeWithGenres($id)
     {
+        $builder = $this->db->table('jujutsukaisen');
+        $builder->select('*')->select('GROUP_CONCAT(genre.id, ":", genre.genre) AS genre'); // Use 'name' instead of 'genre' for clarity
+        $builder->join('animegenreepisode', 'jujutsukaisen.id = animegenreepisode.anime_id');
+        $builder->join('genre', 'animegenreepisode.genre_id = genre.id');
+        $builder->where('jujutsukaisen.id', $id); // Use where clause with actual title
+        $builder->groupBy('jujutsukaisen.id');
 
+        $query = $builder->get();
+    
+        if ($query->getNumRows() === 0) {
+            return null; // Return null if no anime found
+        }
+    
+        return $query->getRowArray();
+    }
+
+    public function getAnimeWithGenresAdmin($id)
+    {
         $builder = $this->db->table('jujutsukaisen');
         $builder->select('*')->select('GROUP_CONCAT(genre.genre) AS genre'); // Use 'name' instead of 'genre' for clarity
         $builder->join('animegenreepisode', 'jujutsukaisen.id = animegenreepisode.anime_id');
         $builder->join('genre', 'animegenreepisode.genre_id = genre.id');
-        // $builder->join('episodeanime', 'episodeanime.anime_id = jujutsukaisen.id');
         $builder->where('jujutsukaisen.id', $id); // Use where clause with actual title
         $builder->groupBy('jujutsukaisen.id');
 
@@ -122,8 +138,13 @@ class JjkModel extends Model
         ->getResultArray();
     }
 
-    public function genre()
+    public function getAnimesByGenre($genreId)
     {
-        return $this->belongsToMany('Genre', 'animegenreepisode', 'genre_id', 'anime_id');
+        return $this->db->table('jujutsukaisen')
+            ->select('jujutsukaisen.*')
+            ->join('animegenreepisode', 'animegenreepisode.anime_id = jujutsukaisen.id')
+            ->where('animegenreepisode.genre_id', $genreId)
+            ->get()
+            ->getResultArray();
     }
 }

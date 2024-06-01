@@ -98,7 +98,7 @@
                             <td>
                                 <a href=""><button type="button" class="btn btn-warning">Edit</button></a>
                                 <?php $slug = url_title($animes['Judul'], '-', true); ?>
-                                <a href="/dashboard/HapusEpisode/<?= $anime['id'] ?>/<?= $slug; ?>"><button type="button" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin?');">Hapus</button></a>
+                                <a href="<?= url_to('deleteEpisode', $anime['id'], $slug); ?>"><button type="button" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin?');">Hapus</button></a>
                             </td>
                         </tr>
                         <?php endforeach ?>

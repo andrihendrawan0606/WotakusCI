@@ -1,11 +1,6 @@
 <?= $this->extend('admin/admin-partials/index') ?>
 <?= $this->section('content') ?>
 
-
-
-
-
-
 <div class="registration-form">
     <form action="<?= url_to('prosesGenre');  ?>" method="POST" enctype="multipart/form-data">
         <?= csrf_field(); ?>

@@ -29,12 +29,11 @@ if (query.length > 2) { // Minimal 3 Huruf buat search
                     imgBox.innerHTML += animeCard;
                 });
             } else {
-                imgBox.innerHTML = '<p>Gak ada njir</p>';
+                imgBox.innerHTML = '<p>Gak ada bjir</p>';
             }
         })
         .catch(error => console.error('Error fetching data:', error));
 } else {
-    // Restore the original content if the query is less than 3 characters
     // Balikin susunan anime ke awal kalo kata kurang dari 3 
     fetch('/animesHome')
         .then(response => response.text())

@@ -10,7 +10,7 @@
     <hr class="sidebar-divider my-0">
     <!-- Nav Item - Dashboard -->
     <li class="nav-item <?= (current_url() == url_to('dashboard')) ? 'active' : '' ?>">
-        <a class="nav-link" href="/dashboard">
+        <a class="nav-link" href="<?= url_to('dashboard') ?>">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Dashboard</span></a>
     </li>
@@ -18,7 +18,7 @@
     <hr class="sidebar-divider">
     <!-- Nav Item - Tables -->
     <li class="nav-item <?= (current_url() == url_to('genreList')) ? 'active' : '' ?>">
-        <a class="nav-link" href="/genreList">
+        <a class="nav-link" href="<?= url_to('genreList') ?>">
         <i class="fas fa-fw fa-table"></i>
         <span>Genre</span></a>
     </li>

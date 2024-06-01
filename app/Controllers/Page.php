@@ -20,28 +20,12 @@ class Page extends BaseController
         $this->episodeViews = new EpisodeView();
         // $this->episodeModel = new Genre();
     }
-	public function about()
-	{
-		// echo "about page";
-        return view('about');
-	}
     
-    public function contact()
-	{
-		// echo "contact page";
-        $data['name'] = "Petani Kode";
-	echo view("contact", $data);
-	}
-    
-    public function faqs()
-	{
-		// echo "Faqs page";
-	}
     public function animesHome()
     {
         $data = [
-            'title' => 'Anime User',
-            'animes'=> $this->animeModel->paginate(5, 'jujutsukaisen'),
+            'title' => 'Animes | ',
+            'animes'=> $this->animeModel->paginate(10, 'jujutsukaisen'),
             'pager' => $this->animeModel->pager
         ];
         // dd($data);
@@ -50,17 +34,29 @@ class Page extends BaseController
                     throw new \Codeigniter\Exception\PageNotFoundException('Judul Anime'.$Judul.'Tidak ada');
                 }
 
-        return view('animesHome',$data);
-        // dd($data);
-		
-		// if(!$data['animes']){
-		// 	throw PageNotFoundException::forPageNotFound();
-		// }
-		// echo view('admin/admin-partials/detail', $data);
-
-
-
+        return view('animesHome' ,$data);
     }
+
+    public function genres()
+    {
+        $data = [
+            'title' => 'Genres | ',
+            'genres' => $this->genreModel->getGenre()
+        ];
+
+        return view('user/animebyGenre', $data);
+    }
+    
+    public function animesbyGenre($genreId, $namaGenre)
+    {
+        $data = [
+            'title' => 'Anime berdasarkan genre',
+            'animes' => $this->animeModel->getAnimesByGenre($genreId),
+            'genre' => $this->genreModel->find($genreId)
+        ];
+        return view('user/viewAnimebyGenre', $data);
+    }
+
 
     public function searchAnimePage()
     {
@@ -73,27 +69,20 @@ class Page extends BaseController
         return $this->response->setJSON([]);
     }
 
-    public function viewAnimes($slug)
-    {
-        $animes = new NewsModel();
-		$data['animes'] = $animes->where([
-			'slug' => $slug,
-			'status' => 'Completed'])->first();
-
-        // tampilkan 404 error jika data tidak ditemukan
-		if (!$data['animes']) {
-			throw PageNotFoundException::forPageNotFound();
-		}
-
-		echo view('welcome_message', $data);
-    }
-
     public function AnimesDetail($id, $slug)
     {
 
         $anime = $this->animeModel->getAnimeWithGenres($id);
-        if (isset($anime['genre'])) {
-            $anime['genre'] = explode(',', $anime['genre']);
+
+        if (!empty($anime['genre'])) {
+            $genres = explode(',', $anime['genre']);
+            $anime['genre'] = array_map(function($genre) {
+                list($id, $genre) = explode(':', $genre);
+                return [
+                    'id' => $id,
+                    'genre' => trim($genre)
+                ];
+            }, $genres);
         } else {
             $anime['genre'] = [];
         }
@@ -246,7 +235,7 @@ class Page extends BaseController
         // $recentAnime = $recentAnime ? json_decode($recentAnime, true) : [];
 
         $data = [
-            'title' => 'Recent Anime Viewed',
+            'title' => 'Recent Anime Viewed | ',
             'recentAnime' => $recentAnime
         ];
 
@@ -271,19 +260,15 @@ class Page extends BaseController
 
 
 
-    public function showGenre($title)
-    {
-        // $episodeModel = new EpisodeModel();
-        // $data['episodes'] = $episodeModel->where('anime_id', $animeId)->findAll();
-        // dd($data);
+    // public function showGenre($title)
+    // {
+    //     $data = [
+    //         'title' => 'Genre',
+    //         'anime' => $this->GenreModel->getGenre($title),
+    //         'animes'=> $this->GenreModel->getGenre()
+    //     ];
 
-        $data = [
-            'title' => 'Genre',
-            'anime' => $this->GenreModel->getGenre($title),
-            'animes'=> $this->GenreModel->getGenre()
-        ];
-
-        return view('user/animeInfo', $data);
-    }
+    //     return view('user/animeInfo', $data);
+    // }
 
 }

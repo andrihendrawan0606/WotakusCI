@@ -17,7 +17,7 @@ padding: 50px 0;
 }
 
 .registration-form .form-icon{
-text-align: center;
+  text-align: center;
   background-color: #5891ff;
   border-radius: 50%;
   font-size: 40px;
@@ -94,4 +94,28 @@ border-radius: 20px;
       font-size: 30px;
       line-height: 70px;
   }
+}
+
+.form-icon {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+.image-thumbnail {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+.create-account {
+  background-color: #5cb85c;
+  color: white;
+}
+.create-account:hover {
+  background-color: #4cae4c;
+}
+
+/* Buat ngubah warna selected item */
+.choices__list--multiple .choices__item {
+  background-color: #A325EC; /* Change selected item background color */
+  color: #fff; /* Change selected item text color */
+  border-radius: 50px; /* Add border radius to selected items */
 }

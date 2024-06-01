@@ -8,8 +8,8 @@
 	</div>
 
 	<!-- Content Row -->
-	<a href="/dashboard/tampilTambah"><button type="button" class="btn btn-primary  ml-3">Tambah Anime</button></a>
-	<input type="text" id="search-input" placeholder="Cari anime...">
+	<a href="<?= url_to('tampilTambah');  ?>"><button type="button" class="btn btn-primary ml-3">Tambah Anime</button></a>
+	<input type="text" id="search-input" class="form-control ml-3 mt-3 col-6" placeholder="Cari anime...">
     <div id="search-results"></div>
 		<div class="container-p">
 			<div class="row">
@@ -50,11 +50,11 @@
 					</div>
 				</div>
 				
-    <?php if (session()->getFlashdata('pesan')) : ?>
-        <div class="alert alert-success" role="alert" id="flash-alert">>
-            <?= session()->getFlashdata('pesan'); ?>
-        </div>
-    <?php endif; ?>
+        <?php if (session()->getFlashdata('pesan')) : ?>
+            <div class="alert alert-success" role="alert" id="flash-alert">>
+                <?= session()->getFlashdata('pesan'); ?>
+            </div>
+        <?php endif; ?>
 
 <?php foreach ($animes as $anime) : ?>
     <div class="card-p" data-judul="<?= strtolower($anime['Judul']) ?>">
@@ -71,7 +71,7 @@
                 <?php 
                 $slug = url_title($anime['Judul'], '-', true); 
                 ?>
-                <button style="--color:#414141; --border:1px; --slant:.7em" class="buttonn" alt="edit">
+                <button style="--color:#000000; --border:1px; --slant:.7em" class="buttonn" alt="edit">
                     <a href="<?= url_to('edit', $anime['id'], $slug); ?>">Edit</a>
                 </button>
             </li>
@@ -119,6 +119,7 @@
     });
 });
 
+// Transisi Flash alert
 setTimeout(function() {
         var alert = document.getElementById('flash-alert');
         if (alert) {

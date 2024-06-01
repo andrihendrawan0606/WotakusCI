@@ -6,10 +6,6 @@
 
 <?= $this->section('content') ?>
 
-
-
-
-
 <div class="registration-form">
     <form action="<?= url_to('prosesEpisode');  ?>" method="POST" enctype="multipart/form-data">
         <?= csrf_field(); ?>
@@ -23,21 +19,6 @@
             <div class="invalid-feedback" >
             </div>
         </div>
-        <!-- <div class="custom-file">
-            <input type="file" name="BackgroundCover" id="fileBackgroundCover" class="custom-file-input "  onchange="previewImg()">
-            <div class="invalid-feedback" >
-        
-            </div>
-            <label class="custom-file-label" id="custom-file-label" for="customFile">Background Cover</label>
-            <div class="mt-2 ml-2">
-                <img src="/assets/images/default.jpg" style="width: 10em;" id="img-preview" class="image-thumbnail img-Preview">
-            </div>
-        </div> -->
-        <!-- <div class="custom-file  mb-5">
-            <input type="file" name="Poster" id="Poster" class="custom-file-input " id="customFile" onchange="previewImgPoster()">
-            <div class="invalid-feedback" >
-
-            </div> -->
         <div class="form-group">
             <textarea type="text" name="Deskripsi" class="form-control item " value="" id="Desc" placeholder="Desckripsi"></textarea>
         </div>

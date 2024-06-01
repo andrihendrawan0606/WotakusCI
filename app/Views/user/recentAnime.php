@@ -1,7 +1,10 @@
 <?= $this->extend('animesLayout/pageLayout') ?>
+<?= $this->section('Judul') ?>
+<?= $title?>
+<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="section">
+<div class="section mb-5">
         <h1><i class="fas fa-angle-double-right"></i> RECENT ANIMES VIEWED</h1>
         <div class="img-box">
         <?php if (empty($recentAnime)): ?>
@@ -18,20 +21,7 @@
             <?php endforeach ?>
         <?php endif; ?>
         </div>
-        <div class="pagination">
-            <ul>
         
-                <li class="btn prev"><span><i class="fas fa-angle-left"></i> Prev</span></li>
-                <li class="numb active"><span>1</span></li>
-                <li class="numb"><span>2</span></li>
-                <li class="dots"><span>...</span></li>
-                <li class="numb"><span>4</span></li>
-                <li class="numb"><span>5</span></li>
-                <li class="dots"><span>...</span></li>
-                <li class="numb"><span>7</span></li>
-                <li class="btn next"><span>Next <i class="fas fa-angle-right"></i></span></li>
-            </ul>
-        </div>
     </div>
 	
 <?= $this->endSection() ?>

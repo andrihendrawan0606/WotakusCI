@@ -129,7 +129,8 @@ class adminController extends BaseController
 
     public function Lihat($id, $slug)
     {
-        $anime = $this->animeModel->getAnimeWithGenres($id);
+        $anime = $this->animeModel->getAnimeWithGenresAdmin($id);
+        
         if (!$anime) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime dengan ID ' . $id . ' tidak ditemukan.');
         }
@@ -203,7 +204,7 @@ class adminController extends BaseController
             'judul' =>[
                 'rules'=>'required',
                 'error'=>[
-                    'required' => '{field} Anime Harus diisi'
+                    'required' => '{field} Episode Anime Harus diisi'
                 ]    
                 ],
             'episodeNumber' =>[
@@ -228,7 +229,10 @@ class adminController extends BaseController
             ]
                     
         ])){
-             return redirect()->to('/dashboard/detail/createEpisode')->withInput();
+            $anime_id = $this->request->getPost('anime_id');
+            $anime = $this->animeModel->find($anime_id);
+            $slug = url_title($anime['Judul'], '-', true);
+            return redirect()->to("/dashboard/detail/createEpisode/{$anime_id}/{$slug}")->withInput();
         }
 
 
@@ -261,7 +265,6 @@ class adminController extends BaseController
             $judul = $this->request->getPost('judul');
             $Deskripsi = $this->request->getPost('Deskripsi');
 
-            // dd($judul,$Desc,$Eps,$Durasi,$Rilis,$JudulLainnya,$status,$namaBackgroundCover,$namaPoster,$id_genre);
 
             // dd($genres);
 
@@ -284,7 +287,7 @@ class adminController extends BaseController
             }
         
             $slug = url_title($anime['Judul'], '-', true);
-            session()->setFlashData('pesan','Data Udah ditambah');
+            session()->setFlashData('pesan','Episode Udah ditambah');
             return redirect()->to("/dashboard/detail/{$anime_id}/{$slug}")->withInput();
     }
 
@@ -323,13 +326,12 @@ class adminController extends BaseController
 
     public function tampilTambah()
     {
-        // session();
+        session();
         $data = [
             'title' => ' | Form Tambah Anime',
             'animes' => $this->animeModel->getAnimes(),
             // 'id' => $this->animeModel->getId(),
             'genres' => $this->genreModel->getGenre(),
-            // 'anime' => $this->animeModel->getAnimeWithGenres(),
             'validation' => \Config\Services::validation()
         ];
 
@@ -352,16 +354,16 @@ class adminController extends BaseController
                         'rules' => 'max_size[BackgroundCover,2048]|is_image[BackgroundCover]|mime_in[BackgroundCover,image/jpg,image/jpeg,image/png,image/webp]',
                         'errors' =>[
                             'max_size' => 'Ukuran Gambar Brutal Banget njir',
-                            'is_image' => 'Yang dipilih bukan gambar WOILAH',
-                            'mime_in'  => 'Yang dipilih bukan gambar WOILAH'
+                            'is_image' => 'Yang dipilih bukan gambar bjir',
+                            'mime_in'  => 'Yang dipilih bukan gambar bjir'
                         ]
                         ],
                 'Poster' => [
                             'rules' => 'max_size[Poster,2048]|is_image[Poster]|mime_in[Poster,image/jpg,image/jpeg,image/png,image/webp]',
                             'errors' =>[
                                 'max_size' => 'Ukuran Gambar Brutal Banget njir',
-                                'is_image' => 'Yang dipilih bukan gambar WOILAH',
-                                'mime_in'  => 'Yang dipilih bukan gambar WOILAH'
+                                'is_image' => 'Yang dipilih bukan gambar bjir',
+                                'mime_in'  => 'Yang dipilih bukan gambar bjir'
                             ]
                             ],
                 'Desc' =>[
@@ -394,11 +396,11 @@ class adminController extends BaseController
                             'required'  => '{field} Harus diisi',
                             ]
                             ],
-                'genre' =>[
-                            'rules'=>'required',
-                            'error'=>[
-                            'required'  => '{field} Harus diisi',
-                            ]
+                'genre' => [
+                                'rules' => 'required',
+                                'errors' => [
+                                    'required' => 'Genre Harus diisi',
+                                ]
                             ],
                 // 'genre_id' =>[
                 //             'rules'=>'required',
@@ -409,7 +411,7 @@ class adminController extends BaseController
                         
             ])){
                 // $validation = \Config\Services::validation();
-                 return redirect()->to('/dashboard/tampilTambah')->withInput();
+                return redirect()->to('/dashboard/tampilTambah')->withInput()->with('validation', \Config\Services::validation());
             }
                 // dd('berhasil');
 

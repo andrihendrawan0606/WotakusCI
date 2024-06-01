@@ -22,6 +22,7 @@
             </li>
         </a>
         <?php endforeach ?>
+        
         <?php if ($pager->hasNextPage()) : ?>
         <a href="<?= $pager->getNextPage() ?>">
             <li class="btn ">

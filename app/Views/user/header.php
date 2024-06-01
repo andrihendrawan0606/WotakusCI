@@ -17,9 +17,9 @@
             </diV>
             <div class="nav-list">
                 <ul>
-                    <li><a href="/recentAnime">Recent</a></li>
-                    <li><a href="/animesHome">Animes</a></li>
-                    <li><a href="#">On going Anime</a></li>
+                <li class="<?= (current_url() == url_to('recentAnime')) ? 'active' : '' ?>" ><a href="<?= url_to('recentAnime'); ?>">Recent</a></li>
+                <li class="<?= (current_url() == url_to('animesHome')) ? 'active' : '' ?>" ><a href="<?= url_to('animesHome'); ?>">Animes</a></li>
+                <li class="<?= (current_url() == url_to('genres')) ? 'active' : '' ?>" ><a href="<?= url_to('genres'); ?>">Genre</a></li>
                 </ul>
             </div>
         </div>
