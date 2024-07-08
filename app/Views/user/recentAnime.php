@@ -11,10 +11,7 @@
             <p>No recent anime viewed.</p>
         <?php else: ?>
             <?php foreach ($recentAnime as $anime) : ?>
-                <?php 
-                $slug = url_title($anime['Judul'], '-', true); 
-                ?>
-                <a href="<?= url_to('animeDetail', $anime['id'], $slug); ?>">
+                <a href="<?= url_to('animeDetail', $anime['slug']); ?>">
                     <img src="<?= base_url('assets/images/' . $anime['Poster']); ?>" alt="">
                     <p><?= $anime['Judul'] ?></p>
                 </a>

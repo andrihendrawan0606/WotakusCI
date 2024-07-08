@@ -25,6 +25,11 @@ class EpisodeAnime extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255,
 			],
+			'slug-episode' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => true
+            ],
 			'episode_number'       => [
 				'type'           => 'INT',
 				'constraint'     => 11,
@@ -48,7 +53,7 @@ class EpisodeAnime extends Migration
 
 		// Membuat primary key dan foreign key
 		$this->forge->addKey('id', TRUE);
-		$this->forge->addForeignKey('anime_id', 'JujutsuKaisen', 'id', 'CASCADE', 'CASCADE');
+		$this->forge->addForeignKey('anime_id', 'animes', 'id', 'CASCADE', 'CASCADE');
         // $this->forge->addForeignKey('anime_id', 'JujutsuKaisen', 'id', 'CASCADE', 'CASCADE');
 		// Membuat tabel anime
 		$this->forge->createTable('EpisodeAnime', TRUE);

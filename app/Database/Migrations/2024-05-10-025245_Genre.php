@@ -19,6 +19,11 @@ class Genre extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
+            'slug_genre' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => true
+            ],
 			'genre_id'       => [
 				'type'           => 'INT',
 				'constraint'     => 5,

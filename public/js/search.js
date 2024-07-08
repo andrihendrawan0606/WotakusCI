@@ -21,7 +21,7 @@ if (query.length > 2) { // Minimal 3 Huruf buat search
                 data.forEach(anime => {
                     const slug = anime.Judul.toLowerCase().replace(/\s+/g, '-');
                     const animeCard = `
-                        <a href='/animesHome/animeinfo/${anime.id}/${slug}' data-judul="${anime.Judul.toLowerCase()}" class="animeCard">
+                        <a href='/anime/${slug}' data-judul="${anime.Judul.toLowerCase()}" class="animeCard">
                             <img src="${BASE_URL}/assets/images/${anime.Poster}" alt="">
                             <p>${anime.Judul}</p>
                         </a>

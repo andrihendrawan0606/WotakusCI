@@ -9,7 +9,7 @@ class EpisodeModel extends Model
     protected $table            = 'episodeanime';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $allowedFields    = ['anime_id', 'judul', 'episode_number','deskripsi','GambarPreview','video_path'];
+    protected $allowedFields    = ['anime_id', 'judul','slug-episode', 'episode_number','deskripsi','GambarPreview','video_path'];
 
     public function getEpisode($id = false)
     {
@@ -20,6 +20,17 @@ class EpisodeModel extends Model
         return $this->where(['anime_id' =>  $id])->first();
     }
 
+    public function getEpisodeBySlug($animeSlug, $episodeSlug)
+    {
+        return $this->db->table('episodeanime')
+            ->select('episodeanime.*, animes.slug as anime_slug, episodeanime.slug-episode as episode_slug')
+            ->join('animes', 'episodeanime.anime_id = animes.id')
+            ->where('animes.slug', $animeSlug)
+            ->where('episodeanime.slug-episode', $episodeSlug)
+            ->get()
+            ->getRowArray();
+    }
+    
     public function getPreviousEpisode($animeId, $currentEpisodeId)
     {
         return $this->where('anime_id', $animeId)
@@ -27,13 +38,36 @@ class EpisodeModel extends Model
                     ->orderBy('id', 'desc')
                     ->first();
     }
-
+    
     public function getNextEpisode($animeId, $currentEpisodeId)
     {
         return $this->where('anime_id', $animeId)
                     ->where('id >', $currentEpisodeId)
                     ->orderBy('id', 'asc')
                     ->first();
+    }
+
+    public function getAllEpisodesByAnimeId($animeId)
+    {
+        return $this->where('anime_id', $animeId)
+                    ->orderBy('id', 'asc')
+                    ->findAll();
+    }
+
+    public function createSlug($episodeNumber)
+    {
+        // Membuat slug dari judul anime dan episode number
+        $slug ='episode-' . $episodeNumber;
+        $uniqueSlug = $slug;
+    
+
+        // $i = 1;
+        // while ($this->where('slug-episode', $uniqueSlug)->first()) {
+        //     $uniqueSlug = $slug . '-' . $i;
+        //     $i++;
+        // }
+    
+        return $uniqueSlug;
     }
 
     // protected bool $allowEmptyInserts = false;

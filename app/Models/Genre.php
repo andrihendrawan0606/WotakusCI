@@ -12,7 +12,7 @@ class Genre extends Model
     // protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     // protected $protectFields    = true;
-    protected $allowedFields    = ['genre_id','genre'];
+    protected $allowedFields    = ['genre_id','genre','slug_genre'];
 
     public function getGenre($genre = false)
     {
@@ -23,10 +23,16 @@ class Genre extends Model
         return $this->where(['genre' =>  $genre])->first();
     }
 
-    public function animes()
+    // public function animes()
+    // {
+    //     return $this->belongsToMany('JjkModel', 'AnimeGenre', 'anime_id', 'genre_id');
+    // }
+
+    public function getGenreBySlug($slug)
     {
-        return $this->belongsToMany('JjkModel', 'animegenreepisode', 'anime_id', 'genre_id');
+        return $this->where('slug_genre', $slug)->first();
     }
+
 
     
 

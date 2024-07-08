@@ -1,18 +1,12 @@
 
-  
-  
   .card {
-    width: 30%;
-    height: 50%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-  
-    width: 30%;
-    height: 50%;
-    /* padding: 35px; */
+    max-width: 30%;
+    height: 10%;
+    padding: 0;
     margin-left: 4%;
-  
     border: 1px solid rgba(255, 255, 255, .25);
     border-radius: 20px;
     background-color: rgba(255, 255, 255, 0.45);

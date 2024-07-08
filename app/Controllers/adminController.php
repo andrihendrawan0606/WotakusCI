@@ -1,10 +1,17 @@
 <?php namespace App\Controllers;
 
+use App\Models\NewsModel;
+use App\Models\UsersModel;
+use App\Models\TagModel;
+use App\Models\NewsTagModel;
+use App\Models\NewsMediaModel;
 use App\Models\JjkModel;
 use App\Models\Genre;
 use App\Models\AnimeGenreEpisode;
 use App\Models\EpisodeModel;
 use App\Models\EpisodeView;
+use App\Models\SeriLainnya;
+use App\Models\AnimeTypeModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\Files\File;
 
@@ -16,12 +23,29 @@ class adminController extends BaseController
     protected $animeModel;
     public function __construct()
     {
+        $this->newsModel = new NewsModel();
+        $this->userModel = new UsersModel();
+        $this->tagModel = new TagModel();
+        $this->newsTagModel = new NewsTagModel();
+        $this->newsMediaModel = new NewsMediaModel();
         $this->animeModel = new JjkModel();
         $this->genreModel = new Genre();
         $this->animeGenreModel = new AnimeGenreEpisode();
         $this->episodeModel = new EpisodeModel();
         $this->episodeViews = new EpisodeView();
+        $this->seriLainnya = new SeriLainnya();
+        $this->animeType = new AnimeTypeModel();
     }
+
+    public function userInfo()
+    {
+        $infoUser = $this->userModel->getUserDetail();
+
+        $data = [
+            'user' => $infoUser
+        ];
+    }
+
 	public function dashboard()
 	{
         // $animes = new JjkModel();
@@ -94,22 +118,58 @@ class adminController extends BaseController
         }
 
         $genreName = $this->request->getPost('genre');
+        $slug = $this->animeModel->createSlug($genreName);
 
         $this->genreModel->insert([
                 'genre' => $genreName,
+                'slug_genre' => $slug
             ]);
 
         session()->setFlashData('pesan','Data Udah ditambah');
         return redirect()->to('genreList')->withInput();
     }
 
+    public function updateGenre($slug)
+    {
+        $genre = $this->genreModel->where('slug_genre', $slug)->first();
+    
+        if (!$genre) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Genre with slug ' . $slug . ' not found');
+        }
+    
+        if (!$this->validate([
+            'genre' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Genre Harus diisi'
+                ]
+            ]
+        ])) {
+            return redirect()->to('genreEdit/' . $slug)->withInput();
+        }
+    
+        $genreName = $this->request->getPost('genre');
+        $newSlug = $this->animeModel->createSlug($genreName);
+    
+        $this->genreModel->update($genre['id'], [
+            'genre' => $genreName,
+            'slug_genre' => $newSlug
+        ]);
+    
+        session()->setFlashdata('pesan', 'Data berhasil diupdate');
+        return redirect()->to('genreList')->withInput();
+    }
+
     public function deleteGenre($id)
     {
         $genre = $this->genreModel->find($id);
-
+    
+        if (!$genre) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Genre tidak ditemukan'])->setStatusCode(404);
+        }
+    
         $this->genreModel->delete($id);
-        session()->setFlashdata('pesan', 'Data Genre udah keapus');
-        return redirect()->to('genreList');
+        return $this->response->setJSON(['status' => 'success', 'message' => 'Data Genre berhasil dihapus']);
     }
 
 //--------------------------------------------------------------------------
@@ -127,60 +187,65 @@ class adminController extends BaseController
 
 //--------------------------------------------------------------------------
 
-    public function Lihat($id, $slug)
+    public function Lihat($slug)
     {
-        $anime = $this->animeModel->getAnimeWithGenresAdmin($id);
-        
+        $anime = $this->animeModel->getAnimeWithGenresAdmin($slug);
+
         if (!$anime) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime dengan ID ' . $id . ' tidak ditemukan.');
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Anime tidak ditemukan');
         }
 
-        $generatedSlug = url_title($anime['Judul'], '-', true);
-        if ($slug !== $generatedSlug) {
-            // Jika slug tidak cocok, lempar pengecualian atau redirect ke URL yang benar
-            return redirect()->to("/dashboard/detail/$id/$generatedSlug");
-        }
-        // $anime['genre'] = explode(',', $anime['genre']);
-        // $episode['episode_number'] = explode(',', $anime['judul']);
-        $episode = $this->animeModel->getEpisode($id);
+        $episode = $this->animeModel->getEpisode($anime['id']);
         $totalEpisode = count($episode);
-        // Ambil view count untuk setiap episode
+
         foreach ($episode as &$ep) {
             $viewRecord = $this->episodeViews->where('episode_id', $ep['id'])->first();
             $ep['view_count'] = $viewRecord ? $viewRecord['view_count'] : 0;
         }
 
         $data = [
-            'title' => '| Detail Anime | ' .$anime['Judul'],
+            'title' => '| Detail Anime | ' . $anime['Judul'],
             'animes' => $anime,
-            // 'anime' => $this->animeModel->getEpisode($Judul)
             'episode' =>  $episode,
             'totalEpisode' => $totalEpisode,
         ];
-        
 
-        // dd($data);
-        // Kalo Detail anime tidak ada 
-        if(empty($data['animes'])){
-            throw new \Codeigniter\Exception\PageNotFoundException('Judul Anime'.$Judul.'Tidak ada');
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON($data['episode']);
+        }
+
+        if (empty($data['animes'])) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Judul Anime' . $Judul . 'Tidak ada');
         }
 
         return view('admin/admin-partials/detail', $data);
     }
 
+    public function fetchEpisodes($id)
+    {
+        $episodes = $this->animeModel->getEpisode($id);
+
+        foreach ($episodes as &$ep) {
+            $viewRecord = $this->episodeViews->where('episode_id', $ep['id'])->first();
+            $ep['view_count'] = $viewRecord ? $viewRecord['view_count'] : 0;
+        }
+
+        return $this->response->setJSON(['data' => $episodes]);
+    }
+
 //--------------------------------------------------------------------------
 
-    public function createEpisode($id, $slug)
+    public function createEpisode($slug)
     {
 
-        $anime = $this->animeModel->getAnimeWithGenres($id);
+        $anime = $this->animeModel->getAnimeWithGenresAdmin($slug);
         if (!$anime) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime dengan ID ' . $id . ' tidak ditemukan.');
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Anime tidak ditemukan');
         }
 
         $generatedSlug = url_title($anime['Judul'], '-', true);
         if ($slug !== $generatedSlug) {
-            // Jika slug tidak cocok, lempar pengecualian atau redirect ke URL yang benar
+            // Jika slug tidak cocok, lempar pengecualian atau redirect ke URL yang bener
             return redirect()->to("/dashboard/detail/prosesEpisode/$id/$generatedSlug");
         }
         // $episode['anime_id'] = $id;
@@ -213,16 +278,16 @@ class adminController extends BaseController
                             'required'  => '{field} Anime Harus diisi',
                         ]    
                         ],
-            'Deskripsi' =>[
-                        'rules'=>'required',
-                        'error'=>[
-                            'required'  => '{field} Harus diisi',
-                        ]    
-                        ],
+            // 'Deskripsi' =>[
+            //             'rules'=>'required',
+            //             'error'=>[
+            //                 'required'  => '{field} Harus diisi',
+            //             ]    
+            //             ],
             'video_path' => [
-                            'rules' => 'uploaded[video_path]|max_size[video_path,102400]|ext_in[video_path,mp4,avi,mkv]',
+                            'rules' => 'max_size[video_path,102400]|ext_in[video_path,mp4,avi,mkv]',
                             'errors' => [
-                                'uploaded' => 'Video harus diunggah',
+                          
                                 'max_size' => 'Ukuran video maksimal 100MB',
                                 'ext_in' => 'Format video harus mp4, avi, atau mkv'
                             ]
@@ -232,37 +297,44 @@ class adminController extends BaseController
             $anime_id = $this->request->getPost('anime_id');
             $anime = $this->animeModel->find($anime_id);
             $slug = url_title($anime['Judul'], '-', true);
-            return redirect()->to("/dashboard/detail/createEpisode/{$anime_id}/{$slug}")->withInput();
+            return redirect()->to("/dashboard/detail/createEpisode/{$slug}")->withInput();
         }
 
 
         $videoFile = $this->request->getFile('video_path');
         if ($videoFile->isValid() && !$videoFile->hasMoved()) {
             $newName = $videoFile->getName();
-            $videoFile->move(FCPATH . 'assets/videos', $newName);
+            $videoFile->move(FCPATH . 'assets/videos', $newName);   
         } else {
-            // Handle error if the video file is not valid or has moved
             session()->setFlashData('error', 'Upload video failed.');
-            return redirect()->to('/dashboard/detail/createEpisode')->withInput();
+            $anime_id = $this->request->getPost('anime_id');
+            $anime = $this->animeModel->find($anime_id);
+            $slug = url_title($anime['Judul'], '-', true);
+            return redirect()->to("/dashboard/detail/createEpisode/{$slug}")->withInput();
         }
         
 
+          // Mengelola pengunggahan gambar preview
         $fileGambarPreview = $this->request->getFile('gambarPreview');
-        // Kalo gk upload gambar
-        if($fileGambarPreview->getError() == 4){
+        if ($fileGambarPreview->getError() == 4) {
             $namaGambarPreview = 'default.jpg';
-        }else{
-
-            $namaGambarPreview = $fileGambarPreview->getName();
-            // Directori Gambar 
-            $fileGambarPreview->move('assets/imgPreview', $namaGambarPreview);
-            // Ambil nama file
-            // $fileBackgroundCover = $namaBackgroundCover->getName();
+        } else {
+            if ($fileGambarPreview->isValid() && !$fileGambarPreview->hasMoved()) {
+                // Menghasilkan nama file unik dengan nambahin timestamp
+                $originalPreviewName = $fileGambarPreview->getName();
+                $namaGambarPreview = time() . '_' . $originalPreviewName;
+                $fileGambarPreview->move('assets/imgPreview', $namaGambarPreview);
+            } else {
+                session()->setFlashData('error', 'Upload gambar preview gagal.');
+                return redirect()->to("/dashboard/detail/createEpisode/{$slug}")->withInput();
+            }
         }
 
             $anime_id = $this->request->getPost('anime_id');
             $episodeNumber = $this->request->getPost('episodeNumber');
             $judul = $this->request->getPost('judul');
+            $anime = $this->animeModel->find($anime_id);
+            $slug = $this->episodeModel->createSlug($episodeNumber);
             $Deskripsi = $this->request->getPost('Deskripsi');
 
 
@@ -272,6 +344,7 @@ class adminController extends BaseController
                 'anime_id' => $anime_id,
                 'episode_number' => $episodeNumber,
                 'judul' => $judul,
+                'slug-episode' => $slug,
                 'deskripsi' => $Deskripsi,
                 'GambarPreview' => $namaGambarPreview,
                 'video_path' => $newName
@@ -288,39 +361,118 @@ class adminController extends BaseController
         
             $slug = url_title($anime['Judul'], '-', true);
             session()->setFlashData('pesan','Episode Udah ditambah');
-            return redirect()->to("/dashboard/detail/{$anime_id}/{$slug}")->withInput();
+            return redirect()->to("/dashboard/detail/{$anime['slug']}")->withInput();
     }
 
 //--------------------------------------------------------------------------
-    
-    public function create()
-    {
-        // lakukan validasi
-        $validation =  \Config\Services::validation();
-        $validation->setRules(['Judul' => 'required']);
-        $isDataValid = $validation->withRequest($this->request)->run();
 
-        // jika data valid, simpan ke database
-        if($isDataValid){
-            $animes = new JjkModel();
-            $animes->insert_batch([
-                "Judul" => $this->request->getPost('Judul'),
-                "Gambar" => $this->request->getPost('Gambar'),
-                "Desc" => $this->request->getPost('Desc'),
-                "Eps" => $this->request->getPost('Eps'),
-                "Durasi" => $this->request->getPost('Durasi'),
-                "Rilis" => $this->request->getPost('Rilis'),
-                "JudulLainnya" => $this->request->getPost('JudulLainnya'),
-                "genre_id" => $this->request->getPost('genre_id'),
-                "Status" => $this->request->getPost('status'),
-                // "slug" => url_title($this->request->getPost('slug'), '-', TRUE)
-            ]);
-            return redirect()->to('/dashboard');
+    public function updateEpisode()
+    {
+        $id = $this->request->getPost('id');
+
+        if (!$this->validate([
+            'judul' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Episode Anime Harus diisi'
+                ]
+            ],
+            'episodeNumber' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Anime Harus diisi'
+                ]
+            ],
+            'Deskripsi' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Harus diisi'
+                ]
+            ],
+            'video_path' => [
+                'rules' => 'max_size[video_path,102400]|ext_in[video_path,mp4,avi,mkv]',
+                'errors' => [
+                    'max_size' => 'Ukuran video maksimal 100MB',
+                    'ext_in' => 'Format video harus mp4, avi, atau mkv'
+                ]
+            ]
+        ])) {
+            return $this->response->setStatusCode(400)->setJSON(['error' => $this->validator->getErrors()]);
         }
-		
-        // tampilkan form create
-        return redirect()->to('/dashboard/tampilTambah');
+
+        $oldVideoPath = $this->request->getPost('old_video_path');
+        $videoFile = $this->request->getFile('video_path');
+        $newName = null;
+
+        if ($videoFile && $videoFile->isValid() && !$videoFile->hasMoved()) {
+            $newName = $videoFile->getName();
+            $videoFile->move(FCPATH . 'assets/videos', $newName);
+
+            // Hapus video lama
+            if ($oldVideoPath && file_exists(FCPATH . 'assets/videos/' . $oldVideoPath)) {
+                unlink(FCPATH . 'assets/videos/' . $oldVideoPath);
+            }
+        }
+
+        $fileGambarPreview = $this->request->getFile('gambarPreview');
+        if ($fileGambarPreview && $fileGambarPreview->isValid() && !$fileGambarPreview->hasMoved()) {
+            $originalPreviewName = $fileGambarPreview->getName();
+            $namaGambarPreview = time() . '_' . $originalPreviewName;
+            $fileGambarPreview->move('assets/imgPreview', $namaGambarPreview);
+        }
+
+        $anime_id = $this->request->getPost('anime_id');
+        $episodeNumber = $this->request->getPost('episodeNumber');
+        $judul = $this->request->getPost('judul');
+        $Deskripsi = $this->request->getPost('Deskripsi');
+
+        $animeData = [
+            'episode_number' => $episodeNumber,
+            'judul' => $judul,
+            'deskripsi' => $Deskripsi,
+        ];
+
+        if (isset($namaGambarPreview)) {
+            $animeData['GambarPreview'] = $namaGambarPreview;
+        }
+
+        if (isset($newName)) {
+            $animeData['video_path'] = $newName;
+        }
+
+        $this->episodeModel->update($id, $animeData);
+        session()->setFlashdata('pesan', 'Episode berhasil diupdate');
+        return $this->response->setJSON(['success' => true]);
     }
+            
+    // public function create()
+    // {
+    //     // lakukan validasi
+    //     $validation =  \Config\Services::validation();
+    //     $validation->setRules(['Judul' => 'required']);
+    //     $isDataValid = $validation->withRequest($this->request)->run();
+
+    //     // jika data valid, simpan ke database
+    //     if($isDataValid){
+    //         $animes = new JjkModel();
+    //         $animes->insert_batch([
+    //             "Judul" => $this->request->getPost('Judul'),
+    //             "Gambar" => $this->request->getPost('Gambar'),
+    //             "Desc" => $this->request->getPost('Desc'),
+    //             "Eps" => $this->request->getPost('Eps'),
+    //             "Durasi" => $this->request->getPost('Durasi'),
+    //             "Rilis" => $this->request->getPost('Rilis'),
+    //             "JudulLainnya" => $this->request->getPost('JudulLainnya'),
+    //             "genre_id" => $this->request->getPost('genre_id'),
+    //             "Status" => $this->request->getPost('status'),
+    //             // "slug" => url_title($this->request->getPost('slug'), '-', TRUE)
+    //         ]);
+    //         return redirect()->to('/dashboard');
+    //     }
+		
+    //     // tampilkan form create
+    //     return redirect()->to('/dashboard/tampilTambah');
+    // }
 
 //--------------------------------------------------------------------------
 
@@ -332,6 +484,7 @@ class adminController extends BaseController
             'animes' => $this->animeModel->getAnimes(),
             // 'id' => $this->animeModel->getId(),
             'genres' => $this->genreModel->getGenre(),
+            'typeAnime' => $this->animeType->findAll(),
             'validation' => \Config\Services::validation()
         ];
 
@@ -345,7 +498,7 @@ class adminController extends BaseController
     {
             if(!$this->validate([
                 'Judul' =>[
-                    'rules'=>'required|is_unique[jujutsukaisen.Judul]',
+                    'rules'=>'required|is_unique[animes.Judul]',
                     'error'=>[
                         'required' => '{field} Anime Harus diisi'
                     ]    
@@ -402,12 +555,9 @@ class adminController extends BaseController
                                     'required' => 'Genre Harus diisi',
                                 ]
                             ],
-                // 'genre_id' =>[
-                //             'rules'=>'required',
-                //             'error'=>[
-                //             'required'  => '{field} Harus diisi',
-                //             ]
-                //             ],
+                'seriLainnya' => [
+                                'rules' => 'permit_empty',
+                            ]
                         
             ])){
                 // $validation = \Config\Services::validation();
@@ -426,7 +576,6 @@ class adminController extends BaseController
                 // Directori Gambar 
                 $fileBackgroundCover->move('assets/images', $namaBackgroundCover);
                 // Ambil nama file
-                // $fileBackgroundCover = $namaBackgroundCover->getName();
             }
 
             $filePoster = $this->request->getFile('Poster');
@@ -442,19 +591,18 @@ class adminController extends BaseController
 
             }
 
-            // $fmt = $this->request->getVar('Rilis');
-            // $fmt = new \IntlDateFormatter('id_ID', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE);
-            // $fmt->setPattern('EEEE, MMMM yyyy'); // Pola untuk "Rabu, Mei 2024"
-
             // $id_anime = $this->request->getPost('id');
             $judul = $this->request->getPost('Judul');
+            $slug = $this->animeModel->createSlug($judul);
             $Desc = $this->request->getPost('Desc');
             $Eps = $this->request->getPost('Eps');
             $Durasi = $this->request->getPost('Durasi');
             $Rilis = $this->request->getPost('Rilis');
             $JudulLainnya = $this->request->getPost('JudulLainnya');
+            $typeid = $this->request->getPost('typeAnime');
             $status = $this->request->getPost('status');
             $id_genre = $this->request->getPost('genre');
+            $seriLainnya = $this->request->getPost('seriLainnya');
 
             // dd($judul,$Desc,$Eps,$Durasi,$Rilis,$JudulLainnya,$status,$namaBackgroundCover,$namaPoster,$id_genre);
 
@@ -462,6 +610,7 @@ class adminController extends BaseController
 
             $animeData = [
                 'Judul' => $judul,
+                'slug' => $slug,
                 'BackgroundCover' => $namaBackgroundCover,
                 'Poster' => $namaPoster,
                 'Desc' => $Desc,
@@ -469,21 +618,12 @@ class adminController extends BaseController
                 'Durasi' => $Durasi,
                 'Rilis' => $Rilis,
                 'JudulLainnya' => $JudulLainnya,
+                'typeId' => $typeid,
                 'status' => $status,
+                'statusTayang' => 'draft'
             ];
 
             $idData = $this->animeModel->insert($animeData, true);
-            
-
-
-            // $animeId = $this->animeModel->insertID();
-
-            // $animeGenreData = [
-            //     'anime_id' => $animeId, // Menggunakan ID anime yang baru diinsert
-            //     'genre_id' => $id_genre
-            // ];
-
-            // $this->animeGenreModel->insert($animeGenreData);
 
             foreach ($id_genre as $genreId) {
                 $this->animeGenreModel->insert([
@@ -492,82 +632,25 @@ class adminController extends BaseController
                 ]);
             }
 
-            // $this->animeModel->save([
-            //     'Judul' => $judul,
-            //     'BackgroundCover' => $namaBackgroundCover,
-            //     'Poster' => $namaPoster,
-            //     'Desc' => $Desc,
-            //     'Eps' => $Eps,
-            //     'Durasi' =>$Durasi,
-            //     'Rilis' => $Rilis,
-            //     'JudulLainnya' => $JudulLainnya,
-            //     'status' => $status,
-            //     // 'genre_id' => $genres
-            // ]);
-
-            // $this->animeGenreModel->save([
-            //     // 'anime_id' => $id_anime,
-            //     'genre_id' => $id_genre
-            // ]);
-
+            if ($seriLainnya) {
+                foreach ($seriLainnya as $relatedAnimeId) {
+                    $this->seriLainnya->insert([
+                        'anime_id' => $idData,
+                        'seriLainnya_id' => $relatedAnimeId
+                    ]);
+                }
+            }
         
-            session()->setFlashData('pesan','Data Udah ditambah');
+            session()->setFlashData('pesan','Anime dengan Judul ' .$animeData['Judul']. ' Berhasil ditambah');
             return redirect()->to('/dashboard')->withInput();
-
-
-
-
-
-            // $validationRule = [
-            //     'BackgroundCover' => [
-            //         'label' => 'Image File',
-            //         'rules' => [
-            //             'uploaded[BackgroundCover]',
-            //             'is_image[BackgroundCover]',
-            //             'mime_in[BackgroundCover,image/jpg,image/jpeg,image/gif,image/png,image/webp]',
-            //             'max_size[BackgroundCover,100]',
-            //             'max_dims[BackgroundCover,1024,768]',
-            //         ],
-            //     ],
-            //     'Gambar' => [
-            //         'label' => 'Image File',
-            //         'rules' => [
-            //             'uploaded[Gambar]',
-            //             'is_image[Gambar]',
-            //             'mime_in[Gambar,image/jpg,image/jpeg,image/gif,image/png,image/webp]',
-            //             'max_size[Gambar,100]',
-            //             'max_dims[Gambar,1024,768]',
-            //         ],
-            //     ],
-            // ];
-            // if (! $this->validateData([], $validationRule)) {
-            //     $data = ['errors' => $this->validator->getErrors()];
-    
-            //     return view('admin/admin-partials/tambah', $data);
-            // }
-    
-            // $img = $this->request->getFile('BackgroundCover');
-            // $img = $this->request->getFile('Gambar');
-    
-            // if (! $img->hasMoved()) {
-            //     $filepath = WRITEPATH . 'uploads/' . $img->store();
-    
-            //     $data = ['uploaded_fileinfo' => new File($filepath)];
-    
-            //     return view('/Dashboard', $data);
-            // }
-    
-            // $data = ['errors' => 'The file has already been moved.'];
-    
-            // return view('admin/admin-partials/tambah', $data);
         
     }
 
 //--------------------------------------------------------------------------
 
-    public function edit($id, $slug)
+    public function edit($slug)
     {
-    $anime = $this->animeModel->getAnimeWithGenres($id);
+    $anime = $this->animeModel->getAnimeWithGenresAdmin($slug);
     
     if (empty($anime)) {
         throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime dengan ID ' . $id . ' tidak ditemukan.');
@@ -580,9 +663,10 @@ class adminController extends BaseController
         }
 
     // Ambil genre yang sudah dipilih
-    $selectedGenre = $this->animeModel->selectedGenre($id);
-    
-    // Pastikan genre ada sebelum menggunakan explode
+    $selectedGenre = $this->animeModel->selectedGenre($anime['id']);
+    $relatedAnime = $this->animeModel->getRelatedAnime($anime['id']);
+
+   
     if (!empty($anime['genre'])) {
         $anime['genre'] = explode(',', $anime['genre']);
     } else {
@@ -598,6 +682,9 @@ class adminController extends BaseController
         // 'totalEpisode' => $totalEpisode,
         'genres' => $this->genreModel->getGenre(),
         'selectedGenre' => $selectedGenre,
+        'relatedAnime' => $relatedAnime,
+        'typeAnime' => $this->animeType->findAll(),
+        'animess' => $this->animeModel->findall(),
         'validation' => \Config\Services::validation()
     ];
     // dd($data);
@@ -630,32 +717,60 @@ class adminController extends BaseController
         }
         
         $fileBackgroundCover = $this->request->getFile('BackgroundCover');
-    
-        if ($fileBackgroundCover->getError() == 4) {
+        $backgroundCoverReset = $this->request->getPost('BackgroundCoverReset');
+        $posterReset = $this->request->getPost('PosterReset');
+        
+        // Background Cover
+        if ($backgroundCoverReset == '1') {
+            $namafileBackgroundCover = 'default.jpg';
+            // Hapus gambar lama jika bukan gambar default
+            if ($this->request->getVar('BackgroundCoverOld') !== 'default.jpg') {
+                unlink('assets/images/' . $this->request->getVar('BackgroundCoverOld'));
+            }
+        } else if ($fileBackgroundCover->getError() == 4) {
             $namafileBackgroundCover = $this->request->getVar('BackgroundCoverOld');
         } else {
             $namafileBackgroundCover = $fileBackgroundCover->getRandomName();
             $fileBackgroundCover->move('assets/images', $namafileBackgroundCover);
-            unlink('assets/images/' . $this->request->getVar('BackgroundCoverOld'));
+            // Hapus gambar lama jika bukan gambar default
+            if ($this->request->getVar('BackgroundCoverOld') !== 'default.jpg') {
+                unlink('assets/images/' . $this->request->getVar('BackgroundCoverOld'));
+            }
         }
-    
+        
+        // Poster
         $filePoster = $this->request->getFile('Poster');
-    
-        if ($filePoster->getError() == 4) {
+        if ($posterReset == '1') {
+            $namaPoster = 'default1.jpg';
+            // Hapus gambar lama jika bukan gambar default
+            if ($this->request->getVar('PosterOld') !== 'default1.jpg') {
+                unlink('assets/images/' . $this->request->getVar('PosterOld'));
+            }
+        } else if ($filePoster->getError() == 4) {
             $namaPoster = $this->request->getVar('PosterOld');
         } else {
             $namaPoster = $filePoster->getRandomName();
             $filePoster->move('assets/images', $namaPoster);
-            unlink('assets/images/' . $this->request->getVar('PosterOld'));
+            // Hapus gambar lama jika bukan gambar default
+            if ($this->request->getVar('PosterOld') !== 'default1.jpg') {
+                unlink('assets/images/' . $this->request->getVar('PosterOld'));
+            }
         }
 
         $genre = $this->request->getPost('genre');
-
-
+        $serilainnya = $this->request->getPost('seriLainnya');
+        $judul = $this->request->getPost('Judul');
+        $slug = $this->animeModel->createSlug($judul);
+        $typeid = $this->request->getPost('typeAnime');
+        $statustayang = $this->request->getPost('status_tayang') ?? 'draft';
+        // Debugging: Lihat nilai status_tayang
+        // var_dump($statustayang);
+        // exit;
     
         $animeData = [
             'id' => $id,
-            'Judul' => $this->request->getPost('Judul'),
+            'Judul' => $judul,
+            'slug' => $slug,
             'BackgroundCover' => $namafileBackgroundCover,
             'Poster' => $namaPoster,
             'Desc' => $this->request->getPost('Desc'),
@@ -663,7 +778,9 @@ class adminController extends BaseController
             'Durasi' => $this->request->getPost('Durasi'),
             'Rilis' => $this->request->getPost('Rilis'),
             'JudulLainnya' => $this->request->getPost('JudulLainnya'),
+            'typeId' => $typeid,
             'status' => $this->request->getPost('status'),
+            'statusTayang' => $statustayang
         ];
 
         // dd($genre,$animeData);
@@ -678,8 +795,21 @@ class adminController extends BaseController
                 'genre_id' => $genreId
             ]);
         }
+
+         
+        $this->seriLainnya->where('anime_id', $id)->delete();
+
+        // Masukkan data seri lainnya
+        if ($serilainnya) {
+            foreach ($serilainnya as $relatedAnimeId) {
+                $this->seriLainnya->insert([
+                    'anime_id' => $id,
+                    'seriLainnya_id' => $relatedAnimeId
+                ]);
+            }
+        }
     
-        session()->setFlashData('pesan', 'Data Udah diubah');
+        session()->setFlashData('pesan', 'Anime dengan Judul ' . $judul . ' Berhasil diubah');
     
         return redirect()->to('/dashboard');
 
@@ -687,7 +817,8 @@ class adminController extends BaseController
     
 //--------------------------------------------------------------------------
 
-	public function deleteEpisode($id, $slug){
+	public function deleteEpisode($id){
+        
         $episode = $this->episodeModel->find($id);
 
         if (!$episode) {
@@ -701,12 +832,6 @@ class adminController extends BaseController
         if (!$anime) {
             // Anime tidak ditemukan
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime tidak ditemukan.');
-        }
-    
-        $generatedSlug = url_title($anime['Judul'], '-', true);
-        if ($slug !== $generatedSlug) {
-            // Jika slug tidak cocok, lempar pengecualian atau redirect ke URL yang benar
-            return redirect()->to("/dashboard/delete/$id/$generatedSlug");
         }
     
         // Hapus Gambar Preview jika bukan default
@@ -724,17 +849,17 @@ class adminController extends BaseController
     
         // Hapus data episode dari database
         $this->episodeModel->delete($id);
-        session()->setFlashdata('pesan', 'Episode sudah dihapus.');
+        session()->setFlashdata('pesan',  $episode['slug-episode'] . ' sudah dihapus.');
     
         // Redirect ke halaman detail anime
-        return redirect()->to("/dashboard/detail/{$anime['id']}/{$generatedSlug}");
+        return redirect()->to("/dashboard/detail/{$anime['slug']}");
     }
 
 //--------------------------------------------------------------------------
 
-    public function delete($id)
-    {
-    $anime = $this->animeModel->find($id);
+public function delete($slug)
+{
+    $anime = $this->animeModel->where('slug', $slug)->first();
 
     if (!$anime) {
         // Anime tidak ditemukan
@@ -758,13 +883,174 @@ class adminController extends BaseController
     }
 
     // Hapus data dari database
-    $this->animeModel->delete($id);
-    session()->setFlashdata('pesan', 'Data udah keapus');
-    return redirect()->to('/dashboard');
+    $this->animeModel->delete($anime['id']);
+    session()->setFlashdata('pesan', 'Anime dengan Judul ' . $anime['Judul'] . ' sudah dihapus');
+    return $this->response->setJSON(['success' => true]);
+}
+
+    // public function testTambah()
+    // {
+    //     return view('admin/admin-partials/testTambah');
+    // }
+    public function NewsList()
+    {
+        $data = [
+            'title' => ' | List News',
+            // 'animes' => $this->animeModel->getAnimes(),
+            // 'id' => $this->animeModel->getId(),
+            'news' => $this->newsModel->getNewsWithAuthor(),
+            'tags' => $this->tagModel->findAll(),
+            'validation' => \Config\Services::validation()
+        ];
+
+        // dd($data);
+        return view('admin/admin-partials/newsList', $data);
     }
 
-    public function testTambah()
+    public function TambahNews()
     {
-        return view('admin/admin-partials/testTambah');
+        $data = [
+            'title' => ' | Form Tambah News',
+            'tags' => $this->tagModel->findAll(),
+            'validation' => \Config\Services::validation()
+        ];
+
+        // dd($data);
+        return view('admin/admin-partials/tambahNews', $data);
+    }
+
+
+    public function SaveNews()
+    {
+        if (!$this->validate([
+            'JudulNews' => [
+                'rules' => 'required|is_unique[news.Judul]',
+                'errors' => [
+                    'required' => '{field} Anime Harus diisi',
+                    'is_unique' => '{field} sudah ada'
+                ]
+            ],
+            'tags' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Harus diisi',
+                ]
+            ],
+            'isi' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Harus diisi',
+                ]
+            ],
+        ])) {
+            return redirect()->to('/dashboard/tambahNews')->withInput()->with('validation', \Config\Services::validation());
+        }
+    
+        $JudulNews = $this->request->getPost('JudulNews');
+        $subJudulNews = $this->request->getPost('subJudulNews');
+        $isiNews = $this->request->getPost('isi');
+        $id_tags = $this->request->getPost('tags');
+        $gambarPreviewNews = $this->request->getFile('previewGambarNews');
+    
+        // Debugging: Print the data
+
+        // echo "<pre>";
+        // print_r([
+        //     'JudulNews' => $JudulNews,
+        //     'isi' => $isiNews,
+        //     'tags' => $id_tags,
+        //     'waktu_penayangan' => $waktu_penayangan
+        // ]);
+        // echo "</pre>";
+        // exit;
+    
+
+        // Lanjutkan kode jika data udah benar
+        $session = session();
+        $user_id = $session->get('id');
+
+
+        if ($gambarPreviewNews && $gambarPreviewNews->isValid() && !$gambarPreviewNews->hasMoved()) {
+            $gambarPreviewName = $gambarPreviewNews->getRandomName();
+            $gambarPreviewNews->move('assets/imgPreview', $gambarPreviewName);
+        } else {
+            $gambarPreviewName = null; // or a default image name
+        }
+        // // Set locale to Indonesian
+        // setlocale(LC_TIME, 'id_ID.UTF-8');
+        // $waktu_penayangan = strftime('%A, %d %B %Y');
+    
+        // Get current date in YYYY-MM-DD format
+        $waktu_penayangan = date('Y-m-d');
+        $slug = $this->newsModel->createSlug($JudulNews);
+
+        $newsData = [
+            'Judul' => $JudulNews,
+            'slug' => $slug,
+            'subJudul' => $subJudulNews,
+            'isiKonten' => $isiNews,
+            'user_id' => $user_id,
+            'waktu_penayangan' => $waktu_penayangan,
+            'preview_gambar' => $gambarPreviewName
+        ];
+    
+        $idData = $this->newsModel->insert($newsData, true);
+    
+        foreach ($id_tags as $tagsId) {
+            $this->newsTagModel->insert([
+                'news_id' => $idData,
+                'tag_id' => $tagsId
+            ]);
+        }
+    
+        session()->setFlashData('pesan', 'Data Udah ditambah');
+        return redirect()->to('/newsList')->withInput();
+    }
+    
+    public function uploadGambarNews()
+    {
+        if ($this->request->getFile('file')){
+            $dataFile = $this->request->getFile('file');
+            $fileName = $dataFile->getName();
+            $dataFile->move("uploads/berkas/", $fileName);
+            echo base_url("uploads/berkas/$fileName");
+        }
+    }
+
+    public function deleteGambarNews()
+    {
+        $src = $this->request->getVar('src');
+
+        if ($src) {
+            // DIR'/uploads/berkas/download.jpg'
+            $filePath = FCPATH . ltrim($src, '/');
+
+            if (file_exists($filePath)) {
+                if (unlink($filePath)) {
+                    return $this->response->setStatusCode(200)->setBody("Delete berhasil");
+                } else {
+                    return $this->response->setStatusCode(500)->setBody("Gagal menghapus file");
+                }
+            } else {
+                return $this->response->setStatusCode(404)->setBody("File tidak ditemukan");
+            }
+        } else {
+            return $this->response->setStatusCode(400)->setBody("Tidak ada src yang diberikan");
+        }
+    }
+
+    public function listGambar()
+    {
+        $files = array_filter(glob('uploads/berkas/*'), 'is_file');
+        $response = [];
+        foreach ($files as $file) {
+            if (strpos($file, "index.html")) {
+                continue;
+            }
+            $response[] = basename($file);
+        }
+        header("Content-Type:application/json");
+        echo json_encode($response);
+        die();
     }
 }

@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class AnimeGenreEpisode extends Model
 {
-    protected $table            = 'animegenreepisode';
+    protected $table            = 'AnimeGenre';
     protected $primaryKey       = 'anime_id';
     // protected $useAutoIncrement = true;
     // protected $returnType       = 'array';
@@ -30,11 +30,11 @@ class AnimeGenreEpisode extends Model
         $db = \Config\Database::connect();
 
         $query = $db->query("
-            SELECT jujutsukaisen.id, jujutsukaisen.Judul, GROUP_CONCAT(genre.genre) as genres
-            FROM jujutsukaisen
-            JOIN animegenreepisode ON jujutsukaisen.id = animegenreepisode.anime_id
-            WHERE jujutsukaisen.id = ?
-            GROUP BY jujutsukaisen.id, jujutsukaisen.Judul", [$Judul]);
+            SELECT animes.id, animes.Judul, GROUP_CONCAT(genre.genre) as genres
+            FROM animes
+            JOIN AnimeGenre ON animes.id = AnimeGenre.anime_id
+            WHERE animes.id = ?
+            GROUP BY animes.id, animes.Judul", [$Judul]);
 
         return $query->getRow();
     }
