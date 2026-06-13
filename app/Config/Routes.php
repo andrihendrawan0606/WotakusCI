@@ -21,28 +21,28 @@ $routes->group('auth', function ($routes) {
 });
 
 $routes->group('dashboard', ['filter' => 'adminCheck'], function($routes) {
-    $routes->get('/', 'AdminController::dashboard', ['as' => 'dashboard']);
-    $routes->get('admin/chartData', 'AdminController::chartDataAjax');
+    $routes->get('/', 'adminController::dashboard', ['as' => 'dashboard']);
+    $routes->get('admin/chartData', 'adminController::chartDataAjax');
     $routes->get('profile', 'DashboardController::profile');
-    $routes->get('searchAnime', 'AdminController::search', ['as' => 'dashboardSearchAnime']);
-    $routes->get('detail/(:segment)', 'AdminController::lihat/$1', ['as' => 'viewDetail']);
-    $routes->get('fetchEpisodes/(:num)', 'AdminController::fetchEpisodes/$1');
-    $routes->post('delete/(:any)', 'AdminController::delete/$1', ['as' => 'delete']);
-    $routes->get('HapusEpisode/(:any)', 'AdminController::deleteEpisode/$1', ['as' => 'deleteEpisode']);
-    $routes->delete('delete-all-episodes/(:num)', 'AdminController::deleteAllEpisodes/$1', ['as' => 'deleteAllEpisodes']);
-    $routes->get('tampilTambah', 'AdminController::tampilTambah', ['as' => 'tampilTambah']);
-    $routes->get('edit/(:segment)', 'AdminController::edit/$1/$2', ['as' => 'edit']);
-    $routes->post('edit/ProsesEdit/(:segment)', 'AdminController::ProsesEdit/$1', ['as' => 'prosesEdit']);
-    $routes->post('prosesTambah', 'AdminController::prosesTambah', ['as' => 'prosesTambah']);
-    $routes->get('checkDuplicateTitle', 'AdminController::checkDuplicateTitle',['as' => 'checkDuplicateTitle']);
-    $routes->get('checkDuplicateMalId', 'AdminController::checkDuplicateMalId',['as' => 'checkDuplicateMalId']);
-    $routes->get('Logs','AdminController::adminLogsPage',['as' => 'Logs']);
-    $routes->get('downloadLogsPdf', 'AdminController::downloadLogsPdf', ['as' => 'downloadLogsPdf']);
-    $routes->post('purgeOldLogs', 'AdminController::purgeOldLogs', ['as' => 'purgeOldLogs']);
-    $routes->get('JadwalRilis','AdminController::jadwalRilis',['as' => 'JadwalRilis']);
-    $routes->post('saveJadwalRilis', 'AdminController::saveJadwalRilis', ['as' => 'saveJadwalRilis']);
-    $routes->post('HapusAnimeJadwal/(:num)', 'AdminController::deleteAnimeJadwal/$1',['as' => 'deleteAnimeJadwal']);
-    $routes->get('profileAdmin', 'AdminController::profileAdmin', ['as' => 'profileAdmin']);
+    $routes->get('searchAnime', 'adminController::search', ['as' => 'dashboardSearchAnime']);
+    $routes->get('detail/(:segment)', 'adminController::lihat/$1', ['as' => 'viewDetail']);
+    $routes->get('fetchEpisodes/(:num)', 'adminController::fetchEpisodes/$1');
+    $routes->post('delete/(:any)', 'adminController::delete/$1', ['as' => 'delete']);
+    $routes->get('HapusEpisode/(:any)', 'adminController::deleteEpisode/$1', ['as' => 'deleteEpisode']);
+    $routes->delete('delete-all-episodes/(:num)', 'adminController::deleteAllEpisodes/$1', ['as' => 'deleteAllEpisodes']);
+    $routes->get('tampilTambah', 'adminController::tampilTambah', ['as' => 'tampilTambah']);
+    $routes->get('edit/(:segment)', 'adminController::edit/$1/$2', ['as' => 'edit']);
+    $routes->post('edit/ProsesEdit/(:segment)', 'adminController::ProsesEdit/$1', ['as' => 'prosesEdit']);
+    $routes->post('prosesTambah', 'adminController::prosesTambah', ['as' => 'prosesTambah']);
+    $routes->get('checkDuplicateTitle', 'adminController::checkDuplicateTitle',['as' => 'checkDuplicateTitle']);
+    $routes->get('checkDuplicateMalId', 'adminController::checkDuplicateMalId',['as' => 'checkDuplicateMalId']);
+    $routes->get('Logs','adminController::adminLogsPage',['as' => 'Logs']);
+    $routes->get('downloadLogsPdf', 'adminController::downloadLogsPdf', ['as' => 'downloadLogsPdf']);
+    $routes->post('purgeOldLogs', 'adminController::purgeOldLogs', ['as' => 'purgeOldLogs']);
+    $routes->get('JadwalRilis','adminController::jadwalRilis',['as' => 'JadwalRilis']);
+    $routes->post('saveJadwalRilis', 'adminController::saveJadwalRilis', ['as' => 'saveJadwalRilis']);
+    $routes->post('HapusAnimeJadwal/(:num)', 'adminController::deleteAnimeJadwal/$1',['as' => 'deleteAnimeJadwal']);
+    $routes->get('profileAdmin', 'adminController::profileAdmin', ['as' => 'profileAdmin']);
     $routes->get('fetchAnimeData/(:any)/(:num)', 'AdminController::fetchAnimeData/$1/$2');
 
     $routes->post('studios/update/(:num)', 'StudioController::update/$1', ['as' => 'updateStudio']);
@@ -51,20 +51,29 @@ $routes->group('dashboard', ['filter' => 'adminCheck'], function($routes) {
     $routes->get('studios/fetchGlobal/(:num)', 'StudioController::fetchGlobalStudios/$1', ['as' => 'syncGlobalStudio']);
 
     // --- Routes Baru: User Management ---
-    $routes->get('users', 'AdminController::manajemenUsers', ['as' => 'manageUsers']);
-    $routes->get('users/tambah', 'AdminController::tampilTambahUserAdmin', ['as' => 'tampilTambahUser']);
-    $routes->post('users/prosesTambah', 'AdminController::prosesTambahUserAdmin', ['as' => 'prosesTambahUser']);
-    $routes->get('users/edit/(:any)', 'AdminController::tampilEditUserAdmin/$1', ['as' => 'editUser']);
-    $routes->post('users/update/(:any)', 'AdminController::prosesEditUserAdmin/$1', ['as' => 'prosesEditUser']);
-    $routes->post('users/delete/(:any)', 'AdminController::hapusUserAdmin/$1', ['as' => 'hapusUser']);
+
+    $routes->get('users', 'adminController::manajemenUsers', ['as' => 'manageUsers']);
+    $routes->get('users/tambah', 'adminController::tampilTambahUserAdmin', ['as' => 'tampilTambahUser']);
+    $routes->post('users/prosesTambah', 'adminController::prosesTambahUserAdmin', ['as' => 'prosesTambahUser']);
+    $routes->get('users/edit/(:any)', 'adminController::tampilEditUserAdmin/$1', ['as' => 'editUser']);
+    $routes->post('users/update/(:any)', 'adminController::prosesEditUserAdmin/$1', ['as' => 'prosesEditUser']);
+    $routes->post('users/delete/(:any)', 'adminController::hapusUserAdmin/$1', ['as' => 'hapusUser']);
 
     $routes->group('detail', function($routes) {
-        $routes->get('createEpisode/(:segment)', 'AdminController::createEpisode/$1/$2', ['as' => 'createEpisode']);
-        $routes->post('prosesEpisode', 'AdminController::prosesEpisode', ['as' => 'prosesEpisode']);
-        $routes->post('updateEpisode', 'AdminController::updateEpisode', ['as' => 'updateEpisode']);
-        $routes->post('uploadTempVideo', 'AdminController::uploadTempVideo', ['as' => 'uploadTempVideo']);
-        $routes->post('deleteTempVideo', 'AdminController::deleteTempVideo', ['as' => 'deleteTempVideo']);
+        $routes->get('createEpisode/(:segment)', 'adminController::createEpisode/$1/$2', ['as' => 'createEpisode']);
+        $routes->post('prosesEpisode', 'adminController::prosesEpisode', ['as' => 'prosesEpisode']);
+        $routes->post('updateEpisode', 'adminController::updateEpisode', ['as' => 'updateEpisode']);
+        $routes->post('uploadTempVideo', 'adminController::uploadTempVideo', ['as' => 'uploadTempVideo']);
+        $routes->post('deleteTempVideo', 'adminController::deleteTempVideo', ['as' => 'deleteTempVideo']);
     });
+});
+
+$routes->group('genreList', ['filter' => 'adminCheck'], function($routes) {
+    $routes->get('/', 'adminController::genreList', ['as' => 'genreList']);
+    $routes->get('tambahGenre', 'adminController::genreTambah', ['as' => 'genreTambah']);
+    $routes->post('tambahGenre/prosesGenre', 'adminController::genreProses', ['as' => 'prosesGenre']);
+    $routes->post('editGenre/updateGenre/(:any)', 'AdminController::updateGenre/$1', ['as' => 'updateGenre']);
+    $routes->post('deleteGenre/(:any)', 'adminController::deleteGenre/$1', ['as' => 'deleteGenre']);
 });
 
 // $routes->group('', function($routes) {
