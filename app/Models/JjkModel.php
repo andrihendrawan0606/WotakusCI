@@ -199,8 +199,8 @@ class JjkModel extends Model
         $builder->select('GROUP_CONCAT(DISTINCT studios.nama_studio SEPARATOR ", ") AS all_studios');
         
         // SEMUA JOIN HARUS 'LEFT' AGAR DATA YANG KOSONG (NULL) TETAP DITARIK
-        $builder->join('AnimeGenre', 'animes.id = AnimeGenre.anime_id', 'left');
-        $builder->join('genre', 'AnimeGenre.genre_id = genre.id', 'left'); // <- Tadi salah di sini
+        $builder->join('animegenre', 'animes.id = animegenre.anime_id', 'left');
+        $builder->join('genre', 'animegenre.genre_id = genre.id', 'left'); // <- Tadi salah di sini
         
         $builder->join('anime_studios', 'animes.id = anime_studios.anime_id', 'left');
         $builder->join('studios', 'anime_studios.studio_id = studios.id', 'left');
@@ -225,10 +225,10 @@ class JjkModel extends Model
         '); // <--- Tambahkan all_studios di sini
     
         $builder->join('serilainnya', 'animes.id = serilainnya.anime_id', 'left');
-        $builder->join('animes AS related_anime', 'serilainnya.seriLainnya_id = related_anime.id', 'left');
-        $builder->join('AnimeGenre', 'animes.id = AnimeGenre.anime_id', 'left');
+        $builder->join('animes AS related_anime', 'serilainnya.serilainnya_id = related_anime.id', 'left');
+        $builder->join('animegenre', 'animes.id = animegenre.anime_id', 'left');
         $builder->join('animetipe', 'animes.typeId = animetipe.id', 'left');
-        $builder->join('genre', 'AnimeGenre.genre_id = genre.id', 'left');
+        $builder->join('genre', 'animegenre.genre_id = genre.id', 'left');
         
         // --- TAMBAHKAN JOIN STUDIO DI BAWAH INI ---
         $builder->join('anime_studios', 'animes.id = anime_studios.anime_id', 'left');
@@ -252,8 +252,8 @@ class JjkModel extends Model
     {
         $builder = $this->db->table('animes');
         $builder->select('*')->select('GROUP_CONCAT(genre.id, ":", genre.genre) AS genre'); 
-        $builder->join('AnimeGenre', 'animes.id = AnimeGenre.anime_id');
-        $builder->join('genre', 'AnimeGenre.genre_id = genre.id');
+        $builder->join('animegenre', 'animes.id = animegenre.anime_id');
+        $builder->join('genre', 'animegenre.genre_id = genre.id');
         $builder->where('animes.id', $id); 
         $builder->groupBy('animes.id');
 
@@ -282,7 +282,7 @@ class JjkModel extends Model
 
     public function selectedGenre($id)
     {
-        return $this->db->table('AnimeGenre')
+        return $this->db->table('animegenre')
         ->select('genre_id')
         ->where('anime_id', $id)
         ->get()
@@ -293,9 +293,9 @@ class JjkModel extends Model
     {
         return $this->db->table('animes')
             ->select('animes.*')
-            ->join('AnimeGenre', 'AnimeGenre.anime_id = animes.id')
+            ->join('animegenre', 'animegenre.anime_id = animes.id')
             ->where('statusTayang', 'published')
-            ->where('AnimeGenre.genre_id', $genreId)
+            ->where('animegenre.genre_id', $genreId)
             ->limit($perPage, $offset)
             ->get()
             ->getResultArray();
@@ -304,8 +304,8 @@ class JjkModel extends Model
     public function countAnimesByGenre($genreId)
     {
         return $this->db->table('animes')
-            ->join('AnimeGenre', 'AnimeGenre.anime_id = animes.id')
-            ->where('AnimeGenre.genre_id', $genreId)
+            ->join('animegenre', 'animegenre.anime_id = animes.id')
+            ->where('animegenre.genre_id', $genreId)
             ->countAllResults();
     }
 
@@ -314,7 +314,7 @@ class JjkModel extends Model
     {
     return $this->db->table('serilainnya')
                     ->select('animes.*')
-                    ->join('animes', 'animes.id = serilainnya.seriLainnya_id')
+                    ->join('animes', 'animes.id = serilainnya.serilainnya_id')
                     ->where('serilainnya.anime_id', $animeId)
                     ->get()
                     ->getResultArray();
