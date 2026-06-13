@@ -298,8 +298,8 @@ class Page extends BaseController
     
         // Filter: Genre (Multi-select)
         if (!empty($selectedGenres)) {
-            $builder->join('AnimeGenre', 'animes.id = AnimeGenre.anime_id')
-                    ->whereIn('AnimeGenre.genre_id', $selectedGenres)
+            $builder->join('animegenre', 'animes.id = animegenre.anime_id')
+                    ->whereIn('animegenre.genre_id', $selectedGenres)
                     ->groupBy('animes.id');
         }
     
