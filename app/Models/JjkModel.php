@@ -20,9 +20,8 @@ class JjkModel extends Model
         $client = \Config\Services::curlrequest();
         
         try {
-            // Tembak API Python yang berjalan di localhost:8000
             $response = $client->request('GET', "http://127.0.0.1:8000/api/recommend/{$userId}", [
-                'timeout' => 5, // Jangan terlalu lama agar web tidak hang jika Python mati
+                'timeout' => 5, 
                 'http_errors' => false
             ]);
 
@@ -46,7 +45,6 @@ class JjkModel extends Model
                 
                 $animesFromDb = $builder->findAll();
 
-                // GABUNGKAN DATA: Masukkan 'similarity_score' dan 'base_anime' (Alasan) ke dalam data anime DB
                 $finalRecommendations = [];
                 foreach ($recommendationData as $rec) {
                     foreach ($animesFromDb as $dbAnime) {
@@ -93,8 +91,6 @@ class JjkModel extends Model
                 // Ambil ID
                 $animeIds = array_column($recommendationData, 'anime_id');
 
-                // Ambil data lengkap dari DB
-                // Gunakan FIELD() di ORDER BY agar urutan dari Python (skor tertinggi) tidak berantakan saat diambil dari DB
                 $idString = implode(',', $animeIds);
                 $builder = $this->select('animes.*, animetipe.tipeAnime')
                                 ->join('animetipe', 'animetipe.id = animes.typeId', 'left')
@@ -103,7 +99,7 @@ class JjkModel extends Model
                 
                 $animesFromDb = $builder->findAll();
 
-                // Masukkan Badge dan Reason (Alasan) dari Python ke hasil akhir
+
                 $finalRecommendations = [];
                 foreach ($recommendationData as $rec) {
                     foreach ($animesFromDb as $dbAnime) {
@@ -182,7 +178,7 @@ class JjkModel extends Model
     public function getRandomAnimesWithType($limit = 5)
     {
         // Ganti 'avg_rating' menjadi 'rating_user'
-        return $this->select('animes.*, animeTipe.tipeAnime, AVG(anime_ratings.rating) as rating_user')
+        return $this->select('animes.*, animetipe.tipeAnime, AVG(anime_ratings.rating) as rating_user')
                     ->join('animetipe', 'animes.typeId = animetipe.id')
                     ->join('anime_ratings', 'anime_ratings.anime_id = animes.id', 'left')
                     ->groupBy('animes.id')
@@ -190,26 +186,6 @@ class JjkModel extends Model
                     ->limit($limit)
                     ->findAll();
     }
-
-    // public function getAnimeWithGenresSlug($slug)
-    // {
-    //     $builder = $this->db->table('animes');
-        
-    //     $builder->select('*')->select('GROUP_CONCAT(genre.id, ":", genre.genre, ":", genre.slug_genre) AS genre'); 
-    //     $builder->join('AnimeGenre', 'animes.id = AnimeGenre.anime_id');
-    //     $builder->join('genre', 'AnimeGenre.genre_id = genre.id','genre.slug-genre');
-    //     $builder->join('animetipe', 'animes.typeId = animetipe.id');
-    //     $builder->where('animes.slug', $slug); 
-    //     $builder->groupBy('animes.id');
-
-    //     $query = $builder->get();
-    
-    //     if ($query->getNumRows() === 0) {
-    //         return null; 
-    //     }
-    
-    //     return $query->getRowArray();
-    // }
 
     public function getAnimeWithGenresSlug($slug)
     {
@@ -421,7 +397,6 @@ class JjkModel extends Model
         // 2. Gabungkan data anime dengan hasil perhitungan views tadi
         return $this->select('animes.*, animetipe.tipeAnime, IFNULL(view_data.total_sum, 0) as total_views')
                     ->join('animetipe', 'animetipe.id = animes.typeId', 'left')
-                    // Join ke hasil subquery
                     ->join("($viewSubquery) as view_data", 'view_data.anime_id = animes.id', 'left')
                     ->orderBy('total_views', 'DESC')
                     ->limit($limit)
