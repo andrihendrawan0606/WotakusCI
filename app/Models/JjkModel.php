@@ -389,11 +389,11 @@ class JjkModel extends Model
     {
         // 1. Buat subquery untuk menghitung total views per anime secara akurat
         $viewSubquery = $this->db->table('episode_views')
-            ->select('EpisodeAnime.anime_id, SUM(episode_views.view_count) as total_sum')
-            ->join('EpisodeAnime', 'EpisodeAnime.id = episode_views.episode_id')
-            ->groupBy('EpisodeAnime.anime_id')
+            ->select('episodeanime.anime_id, SUM(episode_views.view_count) as total_sum')
+            ->join('episodeanime', 'episodeanime.id = episode_views.episode_id')
+            ->groupBy('episodeanime.anime_id')
             ->getCompiledSelect();
-    
+            
         // 2. Gabungkan data anime dengan hasil perhitungan views tadi
         return $this->select('animes.*, animetipe.tipeAnime, IFNULL(view_data.total_sum, 0) as total_views')
                     ->join('animetipe', 'animetipe.id = animes.typeId', 'left')
