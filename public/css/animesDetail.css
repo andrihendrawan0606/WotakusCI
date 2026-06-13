@@ -61,16 +61,17 @@ a:hover {
 /* HEADER */
 
 .header {
-  margin: 25px 130px 0 130px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  /* padding: 10px 20px; */
+  margin-left: 50px;
+  /* margin-top: 40px; */
 }
 
-.header .logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.logo img {
+  max-height: 120px; /* Atur tinggi maksimum gambar sesuai kebutuhan */
+  /* Anda bisa menambahkan properti lain seperti width, margin, dll. jika diperlukan */
 }
 
 
@@ -225,431 +226,899 @@ a:hover {
 
 /* ANIME INFO */
 
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  /* margin: 100px; */
-  width: auto; /* or 100% */
+:root {
+  --primary-neon: #ac11e9;
+  --dark-surface: #1a1a1a;
+  --glass-border: rgba(255, 255, 255, 0.05);
 }
 
-@media(min-width: 768px) {
-  .container {
-      flex-direction: row;
-      margin: 35px 130px 0 130px;
-  }
+.anime-detail-wrapper {
+  max-width: 1870px;
+  margin: 50px auto;
+  padding: 0 25px;
 }
 
-.container .img-depan {
+/* Poster Container */
+.poster-container-premium {
   position: relative;
-  height: 480px;
-  margin-bottom: 20px;
-}
-
-.container .img-depan img {
-    width: 320px;
-    height: 480px;
-    object-fit: cover;
-    border-radius: 30px;
-}
-
-.container .img-depan a {
-  position: absolute;
-  top: 0;
-  left: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  max-height: 800px; 
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  text-align: center;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: 0.2s;
-  z-index: 10000;
-  border-radius: 30px;
+  background: #111;
 }
 
-.container .img-depan a h1 {
-  margin-bottom: 10px;
-  font-size: 25px;
-  font-weight: 300;
-  font-family: "Ubuntu", "Roboto", sans-serif;
-  color: #E2E2E2;
-}
-
-.container .img-depan a img {
-  width: 50px;
-  height: 50px;
-}
-
-.container .img-depan a:hover {
-  opacity: 1;
-}
-
-.container .info {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    flex-direction: column;
-    width: 100%;
-    height: 600px;
-}
-
-.container .info h1 {
-    margin: 5px 0 10px 35px;
-    font-size: 35px;
-    font-weight: bold;
-    font-family: "Ubuntu", "Roboto", sans-serif;
-    color: #E2E2E2;
-    width: 100%;
-}
-
-@media(min-width: 768px) {
-  .container .info h1 {
-      margin: 5px 0 10px 35px;
-      font-size: 35px;
-      text-align: left;
-  }
-}
-
-.container .info p {
-    width: 120%;
-    /* margin: 5px 0 50px 35px; */
-    margin-right: 50%;
-    font-size: 20px;
-    font-weight: 200;
-    font-family: "Noto Sans JP", "Roboto", sans-serif;
-    color: #F4F4F4;
-    line-height: 1.6;
-    text-align: justify;
-}
-
-/* .container .info p:nth-child(4) {
+/* Gambar Poster */
+.main-poster-img {
+  width: 100%;
+  height: 800px; 
+  object-fit: cover; 
+  object-position: top center; 
   display: block;
-  width: 100%; */
-  /* margin: 5px 0 50px 35px; */
-  /* margin-right: 50%;
-  font-size: 20px;
-  font-weight: normal;
-  font-family: "Noto Sans JP", "Roboto", sans-serif;
-  color: #F4F4F4;
-  line-height: 1.6;
-  text-align: justify; */
-/* } */
-
-/* .container .info p:nth-child(4):hover { */
-  /* width: 100%; */
-  /* margin: 5px 0 50px 35px; */
-  /* margin-right: 50%;
-  font-size: 20px;
-  font-weight: normal;
-  font-family: "Noto Sans JP", "Roboto", sans-serif;
-  color: #3370DC;
-  line-height: 1.6;
-  text-align: justify; */
-/* } */
-
-@media(min-width: 768px) {
-  .container .info p {
-      margin: 5px 0 10px 35px;
-      font-size: 20px;
-  }
+  transition: transform 0.5s ease;
 }
 
-.container .info .genre ul {
-    margin: 10px 0 10px 35px;
-}
-
-@media(min-width: 768px) {
-  .container .info .genre ul {
-      margin: 10px 0 10px 35px;
-      text-align: left;
-  }
-}
-
-.container .info .genre ul li {
-    list-style: none;
-    display: inline-block;
-    margin-right: 5px;
-}
-
-
-.container .info .genre ul li a {
-    text-decoration: none;
-    color: #F4F4F4;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 5px 15px;
-    border-radius: 50px;
-    font-size: 15px;
-    font-weight: normal;
-    font-family: "Noto Sans JP", "Roboto", sans-serif;
-}
-
-.container .info .genre ul li a:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-.container .info .genre ul li a:active {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-.container .info .infoBox {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin: 10px 0px 10px 35px;
-    width: 100%;
-}
-
-@media(min-width: 768px) {
-  .container .info .infoBox .type-anime  {
-      flex-direction: row;
-      margin: 10px 0px 10px 35px;
-  }
-}
-
-.container .info .infoBox .adicional,
-.container .info .infoBox .sekuel,
-.container .info .infoBox .title-alternative,
-.container .info .infoBox .type-anime {
-    margin-bottom: 20px;
-}
-
-@media(min-width: 768px) {
-    .container .info .infoBox .adicional .type-anime {
-        margin-right: 90px;
-        margin-bottom: 0;
-    }
-
-    .container .info .infoBox .sekuel .type-anime {
-        margin-right: 60px;
-        margin-bottom: 0;
-    }
-}
-
-.container .info .infoBox .adicional h2,
-.container .info .infoBox .title-alternative h2,
-.container .info .infoBox .type-anime h2  {
-    font-size: 20px;
-    font-weight: bold;
-    font-family: "Ubuntu", "Roboto", sans-serif;
-    color: #E2E2E2;
-}
-
-.container .info .infoBox .adicional ul,
-.container .info .infoBox .sekuel ul,
-.container .info .infoBox .title-alternative ul,
-.container .info .infoBox .type-anime ul  {
-    margin: 10px 0;
-    padding-left: 0;
-    list-style: none;
-}
-
-@media(min-width: 768px) {
-    .container .info .infoBox .adicional ul,
-    .container .info .infoBox .sekuel ul,
-    .container .info .infoBox .title-alternative ul,
-    .container .info .infoBox .type-anime ul {
-        margin: 10px 50px 0 0;
-    }
-}
-
-.container .info .infoBox .adicional ul li,
-.container .info .infoBox .sekuel ul li,
-.container .info .infoBox .title-alternative ul li,
-.container .info .infoBox .type-anime ul li  {
-    font-size: 15px;
-    font-weight: lighter;
-    font-family: "Noto Sans JP", "Roboto", sans-serif;
-    color: #E8E8E8;
-    margin-top: 10px;
-}
-
-.container .info .infoBox .sekuel .type-anime ul li a {
-    color: #E8E8E8;
-}
-
-.container .info .infoBox .adicional ul li img,
-.container .info .infoBox .sekuel ul li img,
-.container .info .infoBox .title-alternative ul li img,
-.container .info .infoBox .type-anime ul li img {
-    width: 20px;
-    height: 20px;
-    object-fit: cover;
-    margin-right: 10px;
-}
-
-.container .info .infoBox .adicional ul li,
-.container .info .infoBox .sekuel ul li,
-.container .info .infoBox .title-alternative ul li,
-.container .info .infoBox .type-anime ul li {
-    display: flex;
-    align-items: center;
-}
-
-.container .info .infoBox .sekuel .type-anime ul li a {
-    color: #E8E8E8;
-}
-
-/* episode */
-
-.episode {
-  margin-top: 20px;
-
-}
-
-@media(min-width: 768px) {
-  .episode {
-      margin: 35px 130px 0 130px;
-  }
-}
-
-.episode h1 {
-  margin-bottom: 20px;
-  font-size: 25px;
-  font-weight: bold;
-  font-family: "Ubuntu", "Roboto", sans-serif;
-  color: #E2E2E2;
-}
-
-.episode h1 i {
-  color: #ac11e9;
-}
-
-.episode .grid-episode {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 10%;
-}
-
-@media(min-width: 576px) {
-  .episode .grid-episode {
-      grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media(min-width: 768px) {
-  .episode .grid-episode {
-      grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media(min-width: 992px) {
-  .episode .grid-episode {
-      grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-.episode .grid-episode a {
-  text-decoration: none;
-}
-
-.episode .grid-episode .anime-description h2 {
-  font-size: 15px;
-  margin-top: 10px;
-  font-weight: 300;
-  font-family: "Ubuntu", "Roboto", sans-serif;
-}
-
-.episode .grid-episode .anime-section .watching {
-  position: relative;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 10000;
-}
-
-.episode .grid-episode .anime-section .watching h1 {
-  font-size: 15px;
-  font-weight: 500;
-  font-family: "Ubuntu", "Roboto", sans-serif;
-  margin: 0;
+/* Penyesuaian Overlay Trailer agar mengikuti tinggi baru */
+.trailer-play-overlay {
   position: absolute;
-  bottom: 25px;
-  text-align: center;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: 0.3s;
+  text-decoration: none !important;
 }
 
-.episode .grid-episode .anime-section .watching img {
+.poster-container-premium:hover .trailer-play-overlay { opacity: 1; }
+
+.play-btn-neon {
+  width: 60px;
+  height: 60px;
+  background: var(--primary-neon);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  box-shadow: 0 0 20px var(--primary-neon);
+  margin-bottom: 10px;
+}
+
+/* Info Text Styling */
+.anime-main-title {
+  font-size: 2.5rem; /* Sesuaikan ukuran font */
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  margin: 0;
+  word-wrap: break-word; /* Memastikan teks panjang pecah ke bawah */
+}
+
+/* --- PERBAIKAN GENRE PILLS --- */
+.genre-pills {
+  display: flex;
+  flex-wrap: wrap; /* Agar pill turun ke bawah jika tidak muat */
+  gap: 8px; /* Jarak antar pill yang lebih konsisten */
+}
+
+.genre-pills .pill {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ccc;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  margin-right: 0; /* Reset margin lama */
+  margin-bottom: 0; /* Diatur oleh gap */
+  border: 1px solid var(--glass-border);
+  transition: 0.3s;
+}
+
+.genre-pills .pill:hover { background: var(--primary-neon); color: #fff; text-decoration: none; }
+
+.pill-type {
+  background: var(--primary-neon);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.text-description {
+  color: #aaa;
+  line-height: 1.8;
+  font-size: 1rem;
+  max-width: 800px;
+}
+.title-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Tombol tetap di atas meskipun judul 3 baris */
+  width: 100%;
+  gap: 20px;
+}
+
+.title-left {
+  flex: 1; /* Mengambil sisa ruang yang ada */
+  min-width: 0; /* Penting agar text wrapping bekerja di flexbox */
+}
+.btn-fav-modern {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap; /* Mencegah teks tombol pecah jadi 2 baris */
+  transition: 0.3s;
+}
+
+.btn-fav-modern.active {
+  background: rgba(255, 46, 99, 0.15);
+  border-color: #ff2e63;
+  color: #ff2e63;
+  box-shadow: 0 0 15px rgba(255, 46, 99, 0.2);
+}
+
+.btn-fav-modern:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-fav-modern i {
+  font-size: 14px;
+}
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 768px) {
+  .anime-detail-wrapper {
+      margin: 20px auto;
+      padding: 0 15px;
+  }
+
+  .anime-main-title {
+      font-size: 1.6rem;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 15px !important;
+  }
+
+  /* Favorit Button Full Width */
+  .btn-fav-modern {
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 20px;
+  }
+
+  /* Sinergi Rating Bar di Mobile */
+  .user-rating-bar .d-flex {
+      flex-direction: column; /* Tumpuk Beri Skor dan Status ke bawah */
+      align-items: center !important;
+      text-align: center;
+  }
+
+  .divider-vertical {
+      width: 100%;
+      height: 1px; /* Jadi garis horizontal */
+      margin: 15px 0 !important;
+  }
+
+  .rate-now {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .stars-input {
+      justify-content: center; /* Tengahkan bintang */
+  }
+
+  /* Bento Info Grid (Agar rapi 2 kolom di mobile) */
+  .info-bento-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+  }
+  
+  /* Item terakhir (Rating User) biasanya lebar, buat dia span 2 kolom */
+  .info-bento-grid .bento-item:last-child {
+      grid-column: span 2;
+  }
+
+  .synopsis-box h6 {
+      text-align: center;
+  }
+
+  .text-description {
+      text-align: justify;
+      font-size: 0.9rem;
+  }
+}
+
+.user-rating-section {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  display: inline-block;
+}
+.user-rating-bar {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 12px 20px;
+  border-radius: 20px;
+  display: block; /* Ubah dari inline-block ke block */
+  min-width: unset !important; /* Hapus 400px yang bikin rusak */
+  width: 100%; /* Full width mengikuti layar */
+}
+
+/* Star Input Logic (Reverse order for CSS hack) */
+
+.stars-input input { display: none; }
+
+.stars-input label {
+  font-size: 1.4rem !important; /* Perkecil ukuran bintang di mobile */
+  color: #444;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin: 0 1px !important;
+}
+
+/* Hover & Checked State */
+.stars-input label:hover,
+.stars-input label:hover ~ label,
+.stars-input input:checked ~ label {
+  color: #ffcc00;
+  text-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+}
+
+.stars-input label:active { transform: scale(0.8); }.user-rating-section {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  display: inline-block;
+}
+
+/* Star Input Logic (Reverse order for CSS hack) */
+.stars-input {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.stars-input input { display: none; }
+
+.stars-input label {
+  font-size: 1.8rem;
+  color: #444;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin: 0 2px;
+}
+
+/* Hover & Checked State */
+.stars-input label:hover,
+.stars-input label:hover ~ label,
+.stars-input input:checked ~ label {
+  color: #ffcc00;
+  text-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+}
+
+.btn-cancel-rate {
   width: 25px;
   height: 25px;
+  background: rgba(255, 62, 62, 0.1);
+  border: 1px solid rgba(255, 62, 62, 0.2);
+  color: #ff3e3e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-cancel-rate:hover {
+  background: #ff3e3e;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255, 62, 62, 0.4);
+}
+
+.divider-vertical {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.badge-status-rate {
+  background: rgba(172, 17, 233, 0.1);
+  color: #ac11e9;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.stars-input label:active { transform: scale(0.8); }
+.swal2-container {
+  z-index: 2147483647  !important; /* Angka sangat tinggi agar di depan navbar */
+}
+.anime-toast-popup {
+  background: rgba(20, 20, 20, 0.9) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(172, 17, 233, 0.4) !important;
+  border-radius: 15px !important;
+  padding: 10px 15px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  margin-top: 20px !important; /* Jarak agar tidak menabrak bar atas browser */
+  margin-right: 20px !important;
+  z-index: 2147483647  !important; 
+}
+
+.text-rating-nonlogin{
+  color: white;
+}
+
+/* Layout isi notifikasi */
+.custom-notif-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-align: left;
+  min-width: 200px; /* Beri lebar minimal agar proporsional */
+}
+
+.notif-icon {
+  width: 35px;
+  height: 35px;
+  background: #ac11e9;
+  color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(172, 17, 233, 0.5);
+}
+
+.notif-text {
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.notif-text strong {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.notif-text span {
+  font-size: 11px;
+  color: #aaa;
+}
+
+/* Progress bar ungu neon */
+.anime-toast-progress {
+  background: #ac11e9 !important;
+}
+
+/* Mencegah icon bawaan SweetAlert muncul agar tidak double */
+.swal2-icon {
+  display: none !important;
+}
+
+/* Rating Badge */
+.badge-soft-primary {
+  background: rgba(172, 17, 233, 0.1);
+  color: #ac11e9;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* Bento Grid Info */
+.info-bento-grid {
+  display: grid;
+  /* Ini akan otomatis menyesuaikan jumlah kolom berdasarkan lebar layar */
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+  gap: 15px;
+}
+
+.bento-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bento-content {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.bento-content small {
+  color: #888; /* Warna title yang konsisten */
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.main-value {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.max-val {
+  color: #555; /* Membuat /10.0 tidak terlalu mencolok */
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* KHUSUS VOTER COUNT */
+.voter-count {
+  font-size: 11px;
+  color: #aaa; /* Warna abu-abu terang agar kontras dengan background gelap */
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.voter-count i {
+  font-size: 10px;
+  color: #ac11e9; /* Ikon user tetap ungu tapi teksnya putih/abu */
+}
+
+.bento-item i { color: var(--primary-neon); font-size: 1.2rem; }
+.bento-item small { color: white; display: block; text-transform: uppercase; font-size: 10px; font-weight: 800; }
+.bento-item span { color: #ddd; font-weight: 700; font-size: 14px; }
+
+/* Meta Cards */
+.meta-card {
+  background: #151515;
+  padding: 20px;
+  border-radius: 20px;
+  height: 100%;
+  border: 1px solid var(--glass-border);
+}
+
+.meta-card h6 { color: #666; text-transform: uppercase; font-weight: 800; font-size: 11px; margin-bottom: 10px; }
+.related-link { display: block; color: #ac11e9; font-weight: 600; margin-bottom: 5px; font-size: 14px; }
+
+/* Episode Cards */
+.episode-modern-grid {
+  display: grid;
+  /* Kita kembalikan ke ukuran ideal, misal minimal 200px agar rapi 5-6 kolom */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px; /* Jarak antar kotak */
+  width: 100%;
+}
+
+.episode-item {
+  width: 100%; /* WAJIB: Agar kartu di dalamnya mengikuti lebar grid */
+}
+
+.episode-card-modern {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.05); /* Glassmorphism */
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-decoration: none !important;
+}
+
+.episode-card-modern:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--primary-neon);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.ep-img-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9; /* Sangat penting agar semua kotak seragam tingginya */
+  background-size: cover;
+  background-position: center;
+}
+
+/* Container Kontrol */
+.ep-controls-wrapper {
+  display: flex;
+  gap: 15px;
+}
+
+.skeleton-card-ep {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.skeleton-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-text-row {
+  padding: 18px 20px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Animasi Fade In untuk Hasil Asli */
+.fade-in-smooth {
+  animation: fadeInSmooth 0.5s ease forwards;
+}
+
+@keyframes fadeInSmooth {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Style Pagination Wrapper episode */
+.ep-pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Jarak antar kotak */
+  margin-top: 40px;
+  min-height: 50px; /* Jaga tinggi container agar tidak goyang saat angka hilang */
+}
+
+/* Tombol Angka Halaman */
+.page-pill, .page-nav-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888;
+  width: 42px; /* Ukuran kotak seragam */
+  height: 42px;
+  border-radius: 12px;
+  display: flex; /* Gunakan flex untuk centering */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.page-pill:hover {
+  color: #fff;
+  border-color: var(--primary-neon);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.page-pill.active {
+  background: var(--primary-neon);
+  color: #fff;
+  border-color: var(--primary-neon);
+  box-shadow: 0 0 20px rgba(172, 17, 233, 0.4);
+}
+
+/* Tombol Prev/Next (Icon) */
+.page-nav-pill {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #666;
+  padding: 0 15px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.page-nav-pill i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px; /* Perkecil ikon sedikit agar proporsional */
+  pointer-events: none;
+}
+
+.page-pill:hover, .page-nav-pill:hover {
+  color: #fff;
+  border-color: var(--primary-neon);
+  background: rgba(172, 17, 233, 0.1);
+  transform: translateY(-2px);
+}
+
+.page-nav-pill:not(:disabled):hover {
+  color: #fff;
+  border-color: var(--primary-neon);
+}
+
+.page-nav-pill:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+
+/* Search Box Modern */
+.ep-search-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 8px 15px;
+  display: flex;
+  align-items: center;
+  width: 250px;
+  transition: 0.3s;
+}
+
+.ep-search-box:focus-within {
+  border-color: var(--primary-neon);
+  box-shadow: 0 0 15px rgba(172, 17, 233, 0.2);
+}
+
+.ep-search-box i { color: #555; font-size: 14px; }
+.ep-search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  margin-left: 10px;
+  font-size: 13px;
+  width: 100%;
+}
+
+/* Sort Pills */
+.ep-sort-pills {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sort-pill {
+  background: transparent;
+  border: none;
+  color: #666;
+  width: 38px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sort-pill.active {
+  background: var(--primary-neon);
+  color: white;
+  box-shadow: 0 0 15px rgba(172, 17, 233, 0.4);
+}
+
+.sort-pill:hover:not(.active) { color: #fff; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ep-controls-wrapper { width: 100%; margin-top: 20px; }
+  .ep-search-box { flex: 1; }
+}
+
+.ep-play-icon {
   position: absolute;
-  top: -85px;
-}
-
-.episode .grid-episode .anime-img-1 {
-  position: relative;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  width: 100%;
-  height: 115px;
-  border-radius: 15px;
-}
-
-.episode .grid-episode .anime-section .anime-img-1::before {
-  content: '';
-  position: relative;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  transform: translate(-50%, -50%);
-  background-color: #000;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
-  z-index: 10000;
+  transition: 0.3s;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.episode-card-modern:hover .ep-play-icon { opacity: 1; }
+
+.ep-text {
+  padding: 15px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  transition: 0.2s;
-  border-radius: 15px;
+}
+.ep-label {
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+}
+.ep-views {
+  color: #888;
+  font-size: 11px;
+  font-weight: 600;
+}
+.ep-views i {
+  color: var(--primary-neon);
+  margin-right: 4px;
 }
 
+@media (max-width: 768px) {
+  .anime-main-title { font-size: 2rem; }
+  .main-info-content { text-align: center; }
+  .info-bento-grid { justify-content: center; }
+}
+/* --- PERBAIKAN GRID EPISODE MOBILE --- */
+@media (max-width: 600px) {
+  /* 1. Paksa Grid Menjadi 2 Kolom */
+  .episode-modern-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px !important; /* Jarak lebih rapat agar pas di layar HP */
+  }
 
-.episode .grid-episode .anime-section:hover .anime-img-1::before {
-  opacity: 0.5;
+  /* 2. Sesuaikan Padding & Font di dalam Card */
+  .ep-text {
+      padding: 10px 12px !important;
+      flex-direction: column; /* Tumpuk teks Episode dan Views agar tidak tabrakan */
+      align-items: flex-start !important;
+      gap: 4px;
+  }
+
+  .ep-label {
+      font-size: 13px !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+  }
+
+  .ep-views {
+      font-size: 9px !important;
+  }
+
+  /* 3. Merapikan Header (Daftar Episode + Search + Sort) */
+  .episode-section-modern h2.section-heading {
+      font-size: 1.2rem !important;
+      width: 100%;
+      margin-bottom: 15px !important;
+      text-align: left;
+  }
+
+  .ep-controls-wrapper {
+      width: 100% !important;
+      flex-direction: row !important; /* Biarkan search dan sort sejajar */
+      gap: 10px !important;
+  }
+
+  .ep-search-box {
+      flex: 1 !important; /* Search mengambil sisa ruang */
+      width: auto !important;
+      padding: 6px 12px !important;
+  }
+
+  .ep-sort-pills {
+      flex-shrink: 0; /* Biarkan tombol sort ukurannya tetap */
+  }
+
+  .sort-pill {
+      width: 34px !important;
+      height: 32px !important;
+  }
+
+  /* 4. Sesuaikan Skeleton agar 2 kolom juga */
+  #epSearchSkeleton {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px !important;
+  }
+}
+.recommendation-section {
+  /* Samakan padding dengan Hero dan Detail Section agar lurus dari atas ke bawah */
+  padding: 0 40px; 
+  margin-top: 60px;
+  margin-bottom: 80px;
+  max-width: 1930px; /* Batasi lebar agar tidak terlalu melebar di monitor besar */
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.episode .grid-episode .anime-section:hover .anime-img-1::after {
-  opacity: 1;
-}
-
-
-
-.episode .grid-episode .anime-img-current-episode {
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+/* Grid Rekomendasi */
+.recommendation-section .img-box {
+  display: grid;
+  /* auto-fill akan otomatis menambah kolom, minmax menjaga ukuran card tetap ideal */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+  gap: 25px; /* Jarak antar card */
   width: 100%;
-  height: 115px;
-  border-radius: 15px;
-
+  justify-content: start; /* Tetap rata kiri jika baris terakhir tidak penuh */
 }
 
-.episode .grid-episode .anime-section .anime-img-current-episode::before {
-  content: '';
-  position: relative;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  transform: translate(-50%, -50%);
-  background-color: #000;
-  opacity: 0.7;
-  z-index: 10000;
+/* Penyesuaian Judul Section agar sejajar */
+.section-heading {
+  padding-left: 0; /* Pastikan tidak ada offset tambahan */
+  margin-bottom: 25px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
   display: flex;
-  justify-content: center;
   align-items: center;
-  border-radius: 15px;
+  gap: 10px;
 }
 
+/* Responsif untuk HP agar tidak terlalu lebar paddingnya */
+@media (max-width: 768px) {
+  .recommendation-section {
+      padding: 0 20px;
+  }
+  .recommendation-section .img-box {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 15px;
+  }
+}
+
+/* Alert Belum Login Di Anime Info */
+.anime-swal-popup {
+  border-radius: 25px !important;
+  border: 1px solid rgba(172, 17, 233, 0.3) !important;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5) !important;
+  padding: 2rem !important;
+}
+
+.anime-swal-title {
+  font-family: 'Ubuntu', sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px;
+}
+
+.anime-swal-confirm {
+  border-radius: 50px !important;
+  padding: 12px 35px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  font-size: 14px !important;
+  box-shadow: 0 5px 15px rgba(172, 17, 233, 0.4);
+  transition: 0.3s !important;
+}
+
+.anime-swal-confirm:hover {
+  box-shadow: 0 0 25px rgba(172, 17, 233, 0.6) !important;
+  transform: translateY(-2px);
+}
+
+.anime-swal-cancel {
+  border-radius: 50px !important;
+  padding: 12px 35px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: 0.3s !important;
+}
+
+.anime-swal-cancel:hover {
+  background-color: #444 !important;
+}
+
+.swal2-icon.swal2-info {
+  border-color: #ac11e9 !important;
+  color: #ac11e9 !important;
+}
+/* Ending Alert Belum Login */
 
 /*  FOOTER  */
 .footer-basic {
@@ -724,11 +1193,15 @@ a:hover {
   margin-left: -1.65em;
 }
 .h2{
-  margin-left: 15em;
-  margin-bottom: 20.6em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* margin-left: 20; */
 }
 
-
+.swal2-container {
+  z-index: 9999 !important;
+}
 
 .center {
   display: flex;
@@ -918,7 +1391,7 @@ a:hover {
   transform: translate(-50%, -50%);
   background-color: #000;
   opacity: 0;
-  z-index: 10000;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;

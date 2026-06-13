@@ -12,10 +12,8 @@ $(document).ready(function () {
         maxItemText: function (maxItemCount) {
             return 'Maksimal ' + maxItemCount + ' Genre yang dapat dipilih.';
         },
-        // uniqueItemText: 'Item ini udah dipilih.',
         noResultsText: 'Gak ada Genre nya cok aowkaow',
         noChoicesText: 'Tidak ada pilihan yang tersedia',
-        // searchPlaceholderValue: 'Mulai mengetik untuk mencari...',
         placeholder: true,
         placeholderValue: 'Pilih Maks 7 Genre',
         loadingText: 'Memuat...'
@@ -36,10 +34,8 @@ $(document).ready(function () {
         maxItemText: function (maxItemCount) {
             return 'Maksimal ' + maxItemCount + ' Tag yang dapat dipilih.';
         },
-        // uniqueItemText: 'Item ini sudah dipilih.',
         noResultsText: 'Gak ada tag nya cok aowkaow',
         noChoicesText: 'Tidak ada pilihan yang tersedia',
-        // searchPlaceholderValue: 'Mulai mengetik untuk mencari...',
         placeholder: true,
         placeholderValue: 'Pilih Maks 2 Tags',
         loadingText: 'Memuat...'

@@ -1,49 +1,63 @@
-const icon = document.querySelector('.icon');
-const search = document.querySelector('.search');
-icon.onclick = function () {
-    search.classList.toggle('active');
-}
+// const searchInput = document.getElementById('mysearch');
+// const resultsDropdown = document.getElementById('search-results');
+// const clearBtn = document.getElementById('clear-btn');
 
-document.addEventListener('DOMContentLoaded', function() {
-const searchInput = document.getElementById('mysearch');
+// document.addEventListener('DOMContentLoaded', function() {
+//     searchInput.addEventListener('input', function() {
+//         const query = searchInput.value.trim();
 
-searchInput.addEventListener('input', function() {
-const query = searchInput.value.trim().toLowerCase();
+//         clearBtn.style.display = query.length > 0 ? 'block' : 'none';
 
-if (query.length > 2) { // Minimal 3 Huruf buat search
-    fetch(`/animesHome/searchAnimePage?query=${query}`)
-        .then(response => response.json())
-        .then(data => {
-            const imgBox = document.querySelector('.img-box');
-            imgBox.innerHTML = ''; // Clear current content Hapus susuan card anime sekarang
+//         if (query.length > 2) {
+//             resultsDropdown.style.display = 'block';
+//             resultsDropdown.innerHTML = '<div style="padding:20px; text-align:center; color:#888;">Mencari...</div>';
 
-            if (data.length > 0) {
-                data.forEach(anime => {
-                    const slug = anime.Judul.toLowerCase().replace(/\s+/g, '-');
-                    const animeCard = `
-                        <a href='/anime/${slug}' data-judul="${anime.Judul.toLowerCase()}" class="animeCard">
-                            <img src="${BASE_URL}/assets/images/${anime.Poster}" alt="">
-                            <p>${anime.Judul}</p>
-                        </a>
-                    `;
-                    imgBox.innerHTML += animeCard;
-                });
-            } else {
-                imgBox.innerHTML = '<p>Gak ada bjir</p>';
-            }
-        })
-        .catch(error => console.error('Error fetching data:', error));
-} else {
-    // Balikin susunan anime ke awal kalo kata kurang dari 3 
-    fetch('/animesHome')
-        .then(response => response.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const originalContent = doc.querySelector('.img-box').innerHTML;
-            document.querySelector('.img-box').innerHTML = originalContent;
-        })
-        .catch(error => console.error('Error restoring content:', error));
-}
-});
-});
+//             fetch(`/animes-home/searchAnimePage?query=${query}`)
+//                 .then(response => response.json())
+//                 .then(data => {
+//                     resultsDropdown.innerHTML = ''; 
+
+//                     if (data.length > 0) {
+//                         data.forEach(anime => {
+//                             const imgSrc = anime.Poster.startsWith('http') 
+//                                 ? anime.Poster 
+//                                 : `${BASE_URL}/assets/images/${anime.Poster}`;
+
+//                             const type = anime.tipeAnime || 'Anime'; 
+//                             const status = anime.status || 'Unknown';
+
+//                             const animeRow = `
+//                                 <a href='/anime/${anime.slug}' class="result-item">
+//                                     <img src="${imgSrc}" alt="${anime.Judul}">
+//                                     <div class="result-info">
+//                                         <span class="res-title">${anime.Judul}</span>
+//                                         <span class="res-meta">${type} • ${status}</span>
+//                                     </div>
+//                                 </a>
+//                             `;
+//                             resultsDropdown.innerHTML += animeRow;
+//                         });
+//                     } else {
+//                         resultsDropdown.innerHTML = '<div style="padding:20px; text-align:center; color:#888;">Gak ada hasil, nih...</div>';
+//                     }
+//                 })
+//                 .catch(error => console.error('Error:', error));
+//         } else {
+//             resultsDropdown.style.display = 'none';
+//         }
+//     });
+// });
+
+// function clearSearch() {
+//     searchInput.value = '';
+//     clearBtn.style.display = 'none';
+//     resultsDropdown.style.display = 'none';
+//     searchInput.focus();
+// }
+
+// // Tutup kalo klik di luar
+// document.addEventListener('click', (e) => {
+//     if (!e.target.closest('.search-wrapper')) {
+//         resultsDropdown.style.display = 'none';
+//     }
+// });

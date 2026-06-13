@@ -1,22 +1,189 @@
+.container-fluid {
+  width: 100% !important;
+  max-width: 100% !important;
+}
 
-  .card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    max-width: 30%;
-    height: 10%;
-    padding: 0;
-    margin-left: 4%;
-    border: 1px solid rgba(255, 255, 255, .25);
-    border-radius: 20px;
-    background-color: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
-  
-    backdrop-filter: blur(15px);
+/* Poster Wrapper */
+.poster-wrapper-detail {
+  position: relative;
+  border-radius: 20px;
+}
+
+.main-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  max-height: 550px;
+}
+
+.status-overlay {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+/* Info Card Style */
+.info-card {
+  background: #ffffff;
+  border-radius: 20px;
+}
+
+.ls-1 { letter-spacing: 1px; font-size: 0.75rem; }
+.text-description { line-height: 1.7; color: #525f7f; font-size: 0.95rem; text-align: justify;}
+
+/* Soft Badges */
+.badge-soft-primary {
+  background-color: #f0f2ff;
+  color: #5e72e4;
+  font-weight: 600;
+}
+
+/* Grid Info */
+.detail-grid {
+  background-color: #fafbff;
+  border-radius: 12px;
+  border: 1px solid #edf2f9;
+}
+
+.detail-grid .col-md {
+  flex-basis: 0;
+  flex-grow: 1;
+  max-width: 100%;
+  padding: 10px;
+}
+.detail-grid .col-md-3 {
+  border-color: #edf2f9 !important;
+}
+
+.text-warning {
+  color: #ffc107 !important; /* Warna kuning emas untuk bintang */
+}
+
+.font-weight-bold {
+  font-size: 14px;
+  color: #32325d;
+}
+
+.detail-grid small {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Table Card Styling */
+.card { border-radius: 15px; }
+.card-header { border-bottom: 1px solid #f1f3f9 !important; }
+
+.table thead th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8898aa;
+  padding: 15px;
+}
+
+.table tbody td {
+  vertical-align: middle;
+  padding: 15px;
+  color: #32325d;
+}
+
+/* Buttons */
+.btn-group-custom .btn {
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Shadow Custom */
+.shadow-sm { box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15) !important; }
+
+@media (max-width: 768px) {
+  /* 1. Kurangi padding luar agar tidak memakan layar */
+  .container-fluid.py-4.px-4 {
+      padding: 15px 10px !important;
+  }
+
+  /* 2. Header: Judul & Tombol Kembali */
+  .info-card .d-flex.justify-content-between {
+      flex-direction: column;
+  }
+  .info-card .btn-outline-secondary {
+      margin-top: 15px;
+      width: 100%; /* Tombol kembali jadi full width */
+      text-align: center;
+      background-color: #f8f9fc;
+  }
+
+  /* 3. Poster Anime: Bikin lebih rounded dan proporsional */
+  .main-poster {
+      border-radius: 15px !important;
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+  }
+
+  /* 4. PERBAIKAN GRID INFORMASI (Rating, Eps, dll) */
+  /* Kita ubah dari border kaku menjadi Card/Pill modern ala Tailwind */
+  .detail-grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr); /* Bikin 2 kolom rapi */
+      gap: 12px;
+      border: none !important; /* Hilangkan garis atas/bawah */
+      padding: 0 !important;
   }
   
-  .card-footer {
-    font-size: 0.65em;
-    color: #446;
+  .detail-grid > div {
+      border-right: none !important; /* Hilangkan garis pemisah bawaan Bootstrap */
+      background-color: #f8f9fa; /* Warna background soft */
+      border-radius: 12px; /* Melengkung ala Tailwind */
+      padding: 12px 10px;
+      text-align: center; /* Teks di tengah */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  }
+
+  .detail-grid > div small {
+      font-size: 0.65rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+  }
+
+  .detail-grid > div span {
+      font-size: 0.9rem;
+      display: block; /* Agar turun ke bawah teksnya */
+  }
+
+  /* 5. Susunan Tombol Action (Tambah, Edit, Hapus) */
+  .card-header {
+      flex-direction: column;
+      align-items: flex-start !important;
   }
   
+  .btn-group-custom {
+      display: flex;
+      flex-direction: column; /* Tombol numpuk ke bawah */
+      gap: 10px;
+      width: 100%;
+      margin-top: 15px !important;
+  }
+  
+  .btn-group-custom .btn {
+      width: 100%; /* Tombol memanjang penuh */
+      margin-right: 0 !important;
+      padding: 10px;
+  }
+
+  /* 6. Atur ukuran teks Sinopsis agar enak dibaca */
+  .text-description {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #4a5568; /* Warna abu-abu Tailwind */
+  }
+}

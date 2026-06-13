@@ -25,6 +25,7 @@ class Pager extends BaseConfig
         'default_simple' => 'CodeIgniter\Pager\Views\default_simple',
         'default_head'   => 'CodeIgniter\Pager\Views\default_head',
         'anime_pagination' => 'App\Views\Pagers\anime_pagination',
+        'dashboard_pagination' => 'App\Views\Pagers\dashboard_pagination',
     ];
 
     /**

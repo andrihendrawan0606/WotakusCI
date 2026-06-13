@@ -13,8 +13,11 @@
         "php": "^8.1",
         "ext-intl": "*",
         "ext-mbstring": "*",
+        "dompdf/dompdf": "^3.1",
         "laminas/laminas-escaper": "^2.13",
-        "psr/log": "^3.0"
+        "midtrans/midtrans-php": "^2.5",
+        "psr/log": "^3.0",
+        "stichoza/google-translate-php": "^5.2"
     },
     "require-dev": {
         "codeigniter/coding-standard": "^1.7",

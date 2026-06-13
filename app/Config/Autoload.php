@@ -90,5 +90,5 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $helpers = ['tanggal','date'];
+    public $helpers = ['tanggal','date','time','view_helper','anime','slug','mapAnimeStatus_helper','translateTextGoogle'];
 }

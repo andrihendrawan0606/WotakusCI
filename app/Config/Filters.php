@@ -35,6 +35,8 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'auth'          => \App\Filters\AuthCheck::class,
+        'adminCheck'    => \App\Filters\AdminCheck::class,
+        'userCheck'     => \App\Filters\UserCheck::class,
     ];
 
     /**
@@ -105,6 +107,19 @@ class Filters extends BaseFilters
      * @var array<string, array<string, list<string>>>
      */
     public array $filters = [
-        'auth' => ['before' => ['dashboard/*']]
+        'auth' => ['before' => ['dashboard/*']],
+        'adminCheck' => [
+            'before' => [
+                'dashboard/*',
+                // Rute admin lainnya
+            ],
+        ],
+        'userCheck' => [
+            'before' => [
+                'recentAnime', // History wajib login karena mencatat data user
+                'profileUser', // Halaman profil user wajib login
+                // Rute user lainnya
+            ],
+        ],
     ];
 }

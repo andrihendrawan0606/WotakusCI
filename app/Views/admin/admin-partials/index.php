@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Dashboard <?= $this->renderSection('Judul') ?> </title>
+    <title><?= $this->renderSection('Judul') ?> </title>
 
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
@@ -24,6 +24,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/14.0.0/material-components-web.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
@@ -52,7 +54,7 @@
         }
         .center-table .desc {
             display: inline-block;
-            width: auto; /* Jangan atur ke 100% karena itu akan menyebabkan elemen mengisi seluruh sel */
+            width: auto; 
             text-align: justify;
             font-size: 13px;
         }
@@ -148,18 +150,18 @@
         }
         .frame-image {
             max-width: 100%;
-            max-height: 300px; /* Adjust the max-height as needed */
-            object-fit: contain; /* This will keep the aspect ratio */
+            max-height: 300px;
+            object-fit: contain; 
         }
         .position-relative {
             width: 100%;
-            height: 300px; /* Adjust the height as needed */
-            border: 1px solid #ddd; /* Optional: Adds a border to the frame */
+            height: 300px; 
+            border: 1px solid #ddd; 
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            background-color: #f8f8f8; /* Optional: Adds a background color to the frame */
+            background-color: #f8f8f8; 
         }
         .image-thumbnail {
             width: auto;
@@ -188,13 +190,12 @@
             background-color: #007bff;
         }
         .custom-progress::-webkit-progress-value {
-            background-color: purple; /* Warna hijau */
+            background-color: purple; 
         }
         .custom-progress::-moz-progress-bar {
-            background-color: #28a745; /* Warna hijau */
+            background-color: #28a745; 
         }
-        /* .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; }
-        .toggle.ios .toggle-handle { border-radius: 20px; } */
+
 
 
  
@@ -245,13 +246,10 @@
     </a>
 
   
-    <!-- Bootstrap core JavaScript-->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
     <script src="<?= base_url('assets/vendor/jquery/jquery.min.js') ?>"></script>
     <script src="<?= base_url('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
-    <!-- Core plugin JavaScript-->
     <script src="<?= base_url('assets/vendor/jquery-easing/jquery.easing.min.js') ?>"></script>
-    <!-- Custom scripts for all pages-->
     <script src="<?= base_url('js/sb-admin-2.min.js') ?>"></script>
     <script src="<?= base_url('js/genreSelector.js') ?>"></script>
     <script src="<?= base_url('js/previewImg.js') ?>"></script>
@@ -259,8 +257,10 @@
     <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap5-toggle@5.1.1/js/bootstrap5-toggle.ecmas.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- <script type="text/javascript" src="cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script> -->
-    
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
    
     <!-- <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script> -->
@@ -273,23 +273,40 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const links = document.querySelectorAll('a');
-        const loadingOverlay = document.querySelector('.loading-overlay');
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('a');
+    const loadingOverlay = document.querySelector('.loading-overlay');
 
     links.forEach(link => {
         link.addEventListener('click', function(event) {
-        // Periksa apakah link tidak memiliki target _blank, tidak href "#", dan tidak memiliki javascript:
-        if (link.getAttribute('target') !== '_blank' && link.getAttribute('href') !== '#' && !link.href.startsWith('javascript:')) {
-            loadingOverlay.style.display = 'flex';
-        }
+            const href = link.getAttribute('href');
+            
+            // 1. Cek apakah link membuka tab baru
+            const isExternal = link.getAttribute('target') === '_blank';
+            
+            // 2. Cek apakah link adalah Anchor/Tab (dimulai dengan #)
+            const isAnchor = href && href.startsWith('#');
+            
+            // 3. Cek apakah link adalah fungsi javascript
+            const isJS = link.href.startsWith('javascript:');
+            
+            // 4. Cek apakah link memiliki atribut toggle (Bootstrap Tab/Modal)
+            const isToggle = link.hasAttribute('data-toggle') || link.hasAttribute('data-bs-toggle');
+
+            // LOGIKA: Tampilkan loading HANYA jika BUKAN anchor, BUKAN toggle tab, BUKAN external, dan BUKAN javascript
+            if (!isExternal && !isAnchor && !isJS && !isToggle && href !== null) {
+                loadingOverlay.style.display = 'flex';
+            }
         });
     });
 
+    // Pastikan loading tertutup saat halaman dimuat kembali
     window.addEventListener('pageshow', function(event) {
-        loadingOverlay.style.display = 'none';
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+        }
     });
-    });
+});
 
     
     $(document).ready(function() {
@@ -370,96 +387,7 @@
             }
         }
 
-        function displayFileDetails() {
-            const fileInput = document.getElementById('video_path');
-            const videoContainer = document.getElementById('video-container');
-            const videoPreview = document.getElementById('video-preview');
-            const videoSource = document.getElementById('video-source');
-            const dropZone = document.getElementById('drop-zone');
-            const loadingBar = document.getElementById('loading-bar');
-            const progressBar = document.getElementById('progress-bar');
 
-            const file = fileInput.files[0];
-
-            if (file) {
-                // Hide drop zone
-                dropZone.classList.add('hide');
-                
-                // Show loading bar
-                loadingBar.style.display = 'block';
-                videoPreview.style.display = 'none';
-
-                const reader = new FileReader();
-
-                reader.onloadstart = () => {
-                    progressBar.value = 0;
-                };
-
-                reader.onprogress = (e) => {
-                    if (e.lengthComputable) {
-                        const percentLoaded = Math.round((e.loaded / e.total) * 100);
-                        progressBar.value = percentLoaded;
-                    }
-                };
-
-                reader.onload = () => {
-                    // Hide loading bar
-                    loadingBar.style.display = 'none';
-
-                    // Update video source and type
-                    videoSource.src = reader.result;
-                    videoSource.type = file.type;
-                    videoPreview.load();
-                    videoPreview.style.display = 'block';
-                    videoContainer.style.display = 'block';
-                };
-
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function removeVideo() {
-            const fileInput = document.getElementById('video_path');
-            const videoContainer = document.getElementById('video-container');
-            const videoPreview = document.getElementById('video-preview');
-            const videoSource = document.getElementById('video-source');
-            const dropZone = document.getElementById('drop-zone');
-
-            // Clear input file
-            fileInput.value = '';
-
-            // Hide video container
-            videoContainer.style.display = 'none';
-            
-            // Hide video preview
-            videoPreview.style.display = 'none';
-            videoSource.src = '';
-
-            // Show drop zone
-            dropZone.classList.remove('hide');
-        }
-
-        // Drag and Drop
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('video_path');
-
-        dropZone.addEventListener('click', () => fileInput.click());
-
-        dropZone.addEventListener('dragover', (event) => {
-            event.preventDefault();
-            dropZone.classList.add('dragover');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
-
-        dropZone.addEventListener('drop', (event) => {
-            event.preventDefault();
-            dropZone.classList.remove('dragover');
-            fileInput.files = event.dataTransfer.files;
-            displayFileDetails();
-        });
     </script>
     
     <?= $this->renderSection('scripts') ?>

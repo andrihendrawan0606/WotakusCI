@@ -51,6 +51,16 @@ abstract class BaseController extends Controller
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
+        if (session()->get('isLoggedIn')) {
+            $userModel = new \App\Models\UsersModel();
+            
+            // Opsional: Hanya update jika selisih waktu terakhir sudah lebih dari 1 menit 
+            // agar tidak terlalu membebani database (Query Spam)
+            $userModel->update(session()->get('id'), [
+                'last_activity' => date('Y-m-d H:i:s')
+            ]);
+        }
+
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();

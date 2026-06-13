@@ -12,7 +12,8 @@ class Users extends Migration
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
-                'auto_increment' => true
+                'auto_increment' => true,
+				'unsigned'       => true,
             ],
             'nama' => [
                 'type' => 'VARCHAR',
@@ -41,6 +42,14 @@ class Users extends Migration
                 'type' => 'ENUM',
                 'constraint' => ['active', 'inactive'],
                 'default' => 'active'
+            ],
+            'last_login' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'last_activity' => [
+                'type' => 'DATETIME',
+                'null' => true,
             ],
             'created_at' => [
                 'type'    => 'DATETIME',

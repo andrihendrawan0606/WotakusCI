@@ -75,19 +75,49 @@ class Animes extends Migration
 				'constraint'     => ['draft', 'published'],
 				'default'        => 'draft',
 			],
-            'created_at DATETIME DEFAULT CURRENT_TIMESTAMP'
+            'mal_id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+				'unsigned'   => true,
+                'null' => true
+			],
+			'mal_score' => [
+				'type'       => 'DECIMAL',
+                'constraint' => '3,2',
+                'default'    => 0.00,
+			],
+			'source' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '50',
+                'null'       => true,
+            ],
+			'season' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '20',
+                'null'       => true,
+            ],
+            'release_year' => [
+                'type'       => 'INT',
+                'constraint' => 4,
+                'null'       => true,
+            ],
+			'avg_rating' => [
+				'type'       => 'DECIMAL',
+				'constraint' => '3,2',
+				'default'    => 0.00,
+				'null'       => true
+			],
+            'created_at DATETIME DEFAULT CURRENT_TIMESTAMP',
 		]);
 
 		// Membuat primary key
 		$this->forge->addKey('id', TRUE);
-		// $this->forge->addForeignKey('typeId', 'animeTipe', 'id', 'CASCADE', 'CASCADE');
-		// Membuat tabel anime
 		$this->forge->createTable('animes', TRUE);
     }
     
 
     public function down()
     {
-        $this->forge->dropTable('animes');
+        $this->forge->dropTable('animes', 'mal_score');
     }
 }

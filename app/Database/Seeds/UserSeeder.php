@@ -33,7 +33,13 @@ class UserSeeder extends Seeder
                 'SeriLainnya' => 'Jujutsu Kaisen Season 2',
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                // 'mal_id'          => 40748,
+                'mal_score'       => 8.63,
+                'source'          => 'Manga',
+                'season'          => 'fall',
+                'release_year'    => 2020,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Boku no Hero Academia ',
@@ -49,7 +55,13 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 3,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                // 'mal_id'          => 31964,
+                'mal_score'       => 7.87,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2016,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Kage no Jitsuryokusha ni Naritakute',
@@ -65,7 +77,13 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 4,
                 'status' => 'On-Going',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                // 'mal_id'          => 12413,
+                'mal_score'       => 7.22,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2016,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Kusuriya no hitorigoto',
@@ -81,7 +99,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 2,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 4.21,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2012,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'The Two Sides of Voice Actor Radio',
@@ -97,7 +120,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 5.11,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2022,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Jujutsu Kaisen 2',
@@ -113,7 +141,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 8.11,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2022,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Spy x Family',
@@ -129,7 +162,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 9.12,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2020,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Classroom Of Elite',
@@ -145,7 +183,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 7.24,
+                'source'          => 'Light Novel',
+                'season'          => 'spring',
+                'release_year'    => 2018,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Kingmetsu No Yaiba',
@@ -161,7 +204,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 10,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2020,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Kimetsu no Yaiba: Hashira Geiko-hen',
@@ -177,7 +225,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'On-Going',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 9,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2022,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'One Punch Man',
@@ -193,7 +246,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 9.12,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2016,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'One Punch Man Season 2',
@@ -209,7 +267,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 8.12,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2018,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Zom 100: Zombie ni Naru made ni Shitai 100 no Koto',
@@ -225,7 +288,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 8.21,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2019,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Jigokuraku',
@@ -241,7 +309,12 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 6.12,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2021,
+                'created_at'      => date('Y-m-d H:i:s')
             ],
             [
                 'Judul'  => 'Otonari no Tenshi-sama ni Itsunomanika Dame Ningen ni Sareteita Ken',
@@ -257,9 +330,15 @@ class UserSeeder extends Seeder
                 // 'genre_id' => 6,
                 'status' => 'Completed',
                 'statusTayang' => 'published',
-                'typeId' => getTypeIdByName($animeTypeModel, 'TV')
+                'typeId' => getTypeIdByName($animeTypeModel, 'TV'),
+                'mal_score'       => 8.42,
+                'source'          => 'Manga',
+                'season'          => 'spring',
+                'release_year'    => 2022,
+                'created_at'      => date('Y-m-d H:i:s')
             ]
         ];
         $this->db->table('animes')->insertBatch($data);
     }
 }
+

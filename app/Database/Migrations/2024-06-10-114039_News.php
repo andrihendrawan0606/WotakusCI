@@ -29,7 +29,8 @@ class News extends Migration
             ],
             'user_id' => [
                 'type' => 'INT',
-                'constraint' => 100
+                'constraint' => 100,
+                'unsigned' => true, // Sesuaikan dengan kolom `id` di tabel `animes`
             ],
             'profileImg' => [
                 'type' => 'VARCHAR',

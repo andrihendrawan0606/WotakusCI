@@ -19,19 +19,12 @@
   }
   body::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    min-height: 100vh;
-    /* background-image: url(https://wallpapers.com/images/hd/jujutsu-kaisen-4k-yuji-itadori-np6la138wysgt3vh.jpg); */
-    background-position: center;
-    background-repeat: no-repeat;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
     background-size: cover;
-    opacity: 0.4;
+    filter: blur(80px) brightness(0.2); 
     z-index: -1;
-  }
-  
+}
   body::after {
     content: '';
     position: absolute;
@@ -70,28 +63,28 @@
     text-decoration: underline;
   }
 
-  /* HEADER */
+  /* header-video-pre */
   
-  .header {
+  .header-video-pre {
     margin: 25px 130px 0 130px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
   
-  .header .logo {
+  .header-video-pre .logo {
     display: flex;
     justify-content: center;
     align-items: center;
   }
   
   
-  .header .logo h1 a {
+  .header-video-pre .logo h1 a {
     text-decoration: none;
     color: #fff;
   }
   
-  .header .logo h1 {
+  .header-video-pre .logo h1 {
     font-size: 40px;
     font-family: "Ubuntu", "Roboto", sans-serif;
     font-weight: 700;
@@ -100,14 +93,14 @@
     color: #fff;
   }
   
-  .header .nav {
+  .header-video-pre .nav {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
   }
   
-  .header .nav .nav-list li {
+  .header-video-pre .nav .nav-list li {
     list-style: none;
     display: inline-block;
     font-size: 15px;
@@ -115,11 +108,11 @@
     font-weight: 400;
   }
   
-  .header .nav .nav-list li:nth-child(1) {
+  .header-video-pre .nav .nav-list li:nth-child(1) {
     margin-left: 15px;
   }
   
-  .header .nav .nav-list li a {
+  .header-video-pre .nav .nav-list li a {
     margin-left: 10px;
     padding: 10px 15px;
     border-radius: 30px;
@@ -127,7 +120,7 @@
     transition: 0.1s;
   }
   
-  .header .nav .nav-list li a:hover {
+  .header-video-pre .nav .nav-list li a:hover {
     background-color: rgba(232, 232, 232, 0.1);
     color: #fff;
   }
@@ -236,10 +229,12 @@
   }
 
   /* VIDEO SECTION */
-/* VIDEO SECTION */
+
 .video {
   margin: 30px 130px 0 130px;
+  /* margin: 0; */
 }
+
 
 .video h1 {
   margin: 0 0 25px 0;
@@ -263,12 +258,24 @@
   margin: 20px 0;
 }
 
+.video .ab ul.single-button {
+  justify-content: flex-end; /* Posisi tombol di kanan */
+}
+
 .video .ab ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0;
   list-style: none;
+}
+
+.video .ab ul.only-prev {
+  justify-content: flex-start; /* Posisi tombol di kiri */
+}
+
+.video .ab ul.only-next {
+  justify-content: flex-end; /* Posisi tombol di kanan */
 }
 
 .video .ab ul li {
@@ -296,6 +303,7 @@
   align-items: center;
   text-decoration: none;
 }
+
 
 .video .ab ul li a img {
   width: 20px;
@@ -370,4 +378,211 @@
   font-size:13px;
   color:#aaa;
   margin-bottom:0;
+}
+:root {
+  --primary-neon: #ac11e9;
+  --dark-bg: #0f0f0f;
+  --card-bg: rgba(255, 255, 255, 0.05);
+}
+
+body {
+  background-color: var(--dark-bg);
+  background-attachment: fixed;
+}
+
+/* Theater Layout */
+.theater-section {
+  padding: 60px 0;
+  background: linear-gradient(to bottom, #000, var(--dark-bg));
+}
+
+.theater-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.text-primary-neon {
+  color: var(--primary-neon);
+  text-shadow: 0 0 15px rgba(172, 17, 233, 0.6);
+}
+
+.video-player-wrapper {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+}
+
+#video-player {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16/9;
+}
+
+.video-placeholder {
+  aspect-ratio: 16/9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+}
+
+/* Navigation Buttons */
+.video-nav-controls {
+  display: flex;
+  justify-content: center;
+}
+
+.nav-btn-group {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.nav-btn {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 12px 25px;
+  border-radius: 50px;
+  color: #fff !important;
+  font-weight: 600;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none !important;
+}
+
+.nav-btn:hover {
+  background: var(--primary-neon);
+  box-shadow: 0 0 20px rgba(172, 17, 233, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Episode Grid  */
+.episode-list-section { padding: 50px 0; }
+
+.episode-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.episode-card-modern {
+  background: var(--card-bg);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: 0.3s;
+  border: 1px solid transparent;
+}
+
+.episode-card-modern:hover {
+  background: rgba(255,255,255,0.1);
+  transform: scale(1.03);
+}
+
+.episode-card-modern.active {
+  border-color: var(--primary-neon);
+  box-shadow: 0 0 15px rgba(172, 17, 233, 0.2);
+}
+
+.ep-img-wrapper {
+  position: relative;
+  aspect-ratio: 16/9;
+}
+
+.ep-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.watching-badge {
+  position: absolute;
+  inset: 0;
+  background: rgba(172, 17, 233, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  backdrop-filter: blur(2px);
+}
+
+.ep-info {
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ep-num { font-weight: 700; color: #fff; font-size: 14px; }
+.ep-views { font-size: 11px; color: #888; }
+
+@media (max-width: 768px) {
+  .episode-title { font-size: 1.2rem; }
+  .nav-btn span { display: none; }
+  .episode-grid-modern { grid-template-columns: repeat(2, 1fr); }
+}
+
+.badge-new-episode {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(45deg, #ff00ea, #ac11e9); /* Warna neon purple/pink */
+  color: white;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  z-index: 5;
+  box-shadow: 0 0 15px rgba(172, 17, 233, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: pulseNew 2s infinite; /* Animasi berkedip pelan */
+}
+
+/* Animasi sederhana agar mata user langsung melirik ke episode baru */
+@keyframes pulseNew {
+  0% { transform: scale(1); box-shadow: 0 0 10px rgba(172, 17, 233, 0.5); }
+  50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(172, 17, 233, 0.8); }
+  100% { transform: scale(1); box-shadow: 0 0 10px rgba(172, 17, 233, 0.5); }
+}
+
+/* Style Link Breadcrumb Judul Anime */
+.breadcrumb-link {
+  color: #bbb; /* Warna abu-abu agar menyatu dengan text-muted */
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.breadcrumb-link:hover {
+  color: var(--primary-neon); /* Berubah menjadi ungu neon saat hover */
+  text-decoration: none;
+  text-shadow: 0 0 8px rgba(172, 17, 233, 0.5);
+}
+
+/* Opsional: Tambahkan garis bawah tipis yang muncul saat hover */
+.breadcrumb-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--primary-neon);
+  transition: width 0.3s ease;
+}
+
+.breadcrumb-link:hover::after {
+  width: 100%;
 }

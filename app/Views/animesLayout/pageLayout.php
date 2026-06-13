@@ -4,24 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title><?= $this->renderSection('Judul') ?>Wotakus</title>
-    <!-- Include Summernote CSS -->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-    <!-- Include Bootstrap CSS (Optional if not included already) -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
 
 
 
     <link rel="shortcut icon" href="https://cdn3.emoji.gg/emojis/6903-gojode.png" />
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-brands/css/uicons-brands.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="<?= base_url('css/animes.css') ?>" />
     <link rel="stylesheet" href="<?= base_url('css/videoPre.css')?>">
+    <link href="<?= base_url('css/sb-admin-2.min.css') ?>" rel="stylesheet">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <style>
+        .col:nth-of-type(1) .card-container-episode:nth-of-type(1) .card-episode:before{
+            background-image: url(https://thumbs.dreamstime.com/b/icon-completed-banner-teamwork-business-success-vector-illustration-stock-picture-eps-258589005.jpg);
+            background-size: cover;
+            
+        }
+
       .loading-overlay {
             position: fixed;
             top: 0;
@@ -80,21 +86,57 @@
             line-height: 1.6;
             margin-top: 2em;
         }
+        .scrollToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            background-color: #e63946; 
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 100px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease-in-out;
+            z-index: 1000;
+            font-size: 20px;
+        }
+
+        .scrollToTop:hover {
+            background-color: #d62828; 
+            transform: scale(1.2); 
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .scrollToTop:active {
+            transform: scale(1); 
+        }
+
+        @media screen and (max-width: 768px) {
+            .scrollToTop {
+                bottom: 10px;
+                right: 10px;
+                padding: 12px;
+                font-size: 18px;
+            }
+        }
 
 
     </style>
 </head>
-<body style="background-color: #000000;" >
+<body style="background-color: black;" >
     <div class="loading-overlay">
         <span class="loader"></span>
     </div>
     <?= $this->include('animesLayout/navbar') ?>
-    <main>
     <?= $this->renderSection('content') ?>
-    </main>
     <?= $this->include('animesLayout/footer') ?>
+    <button id="scrollToTopBtn" class="scrollToTop" title="Kembali ke atas">
+        <i class="fa fa-arrow-up"></i>
+    </button>
 
-    <!-- Jquery dan Bootsrap JS -->
+
     <script src="<?= base_url('js/jquery.min.js') ?>"></script>
     <script src="<?= base_url('js/bootstrap.min.js') ?>"></script>
     <!-- <script src="js/searchIcon.js"></script> -->
@@ -103,12 +145,15 @@
     <script type="text/javascript" src="//code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    
+
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <!-- Include Summernote JS -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -117,7 +162,6 @@
 
         links.forEach(link => {
             link.addEventListener('click', function(event) {
-            // Periksa apakah link tidak memiliki target _blank, tidak href "#", dan tidak memiliki javascript:
             if (link.getAttribute('target') !== '_blank' && link.getAttribute('href') !== '#' && !link.href.startsWith('javascript:')) {
                 loadingOverlay.style.display = 'flex';
             }
@@ -143,6 +187,30 @@
           ['view', ['fullscreen', 'codeview', 'help']]
         ]
       });
+
+      // Tombol Scroll
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+        window.onscroll = function () {
+            toggleScrollToTopBtn();
+        };
+
+        // Fungsi untuk menampilkan/menyembunyikan tombol
+        function toggleScrollToTopBtn() {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                scrollToTopBtn.style.display = "block";
+            } else {
+                scrollToTopBtn.style.display = "none";
+            }
+        }
+
+        // Fungsi untuk scroll ke atas
+        scrollToTopBtn.addEventListener('click', function () {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Efek smooth
+            });
+        });
     </script>
 
 </body>
