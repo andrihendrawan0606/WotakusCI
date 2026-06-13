@@ -25,7 +25,7 @@ $routes->group('dashboard', ['filter' => 'adminCheck'], function($routes) {
     $routes->get('admin/chartData', 'adminController::chartDataAjax');
     $routes->get('profile', 'DashboardController::profile');
     $routes->get('searchAnime', 'adminController::search', ['as' => 'dashboardSearchAnime']);
-    $routes->get('detail/(:segment)', 'AdminController::Lihat/$1', ['as' => 'viewDetail']);
+    $routes->get('detail/(:segment)', 'AdminController::lihat/$1', ['as' => 'viewDetail']);
     $routes->get('fetchEpisodes/(:num)', 'AdminController::fetchEpisodes/$1');
     $routes->post('delete/(:any)', 'adminController::delete/$1', ['as' => 'delete']);
     $routes->get('HapusEpisode/(:any)', 'adminController::deleteEpisode/$1', ['as' => 'deleteEpisode']);

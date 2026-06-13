@@ -745,7 +745,7 @@ class adminController extends BaseController
 
 //--------------------------------------------------------------------------
 
-    public function Lihat($slug)
+    public function lihat($slug)
     {
         $anime = $this->animeModel->getAnimeWithGenresAdmin($slug);
 
