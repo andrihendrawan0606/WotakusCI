@@ -26,7 +26,7 @@ use CodeIgniter\I18n\Time;
 
 ini_set('upload_max_filesize', '100M');
 ini_set('post_max_size', '100M');
-class adminController extends BaseController
+class AdminController extends BaseController
 {
     
     protected $animeModel;
