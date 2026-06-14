@@ -2487,7 +2487,7 @@ public function delete($slug)
                             $genreId = $existingGenre['id'];
                         }
                         
-                        $db->table('animeGenre')->insert([
+                        $db->table('animegenre')->insert([
                             'anime_id' => $animeInternalId,
                             'genre_id' => $genreId
                         ]);
@@ -2550,7 +2550,7 @@ public function delete($slug)
     
                 foreach ($epData['data'] as $ep) {
                     // 1. Simpan Episode
-                    $db->table('EpisodeAnime')->insert([
+                    $db->table('episodeanime')->insert([
                         'anime_id'       => $animeInternalId,
                         'judul'          => $ep['title'] ?? 'Episode ' . $ep['mal_id'],
                         'slug-episode'   => 'episode-' . $ep['mal_id'] . '-' . bin2hex(random_bytes(2)),
