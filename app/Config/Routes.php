@@ -43,7 +43,7 @@ $routes->group('dashboard', ['filter' => 'adminCheck'], function($routes) {
     $routes->post('saveJadwalRilis', 'adminController::saveJadwalRilis', ['as' => 'saveJadwalRilis']);
     $routes->post('HapusAnimeJadwal/(:num)', 'adminController::deleteAnimeJadwal/$1',['as' => 'deleteAnimeJadwal']);
     $routes->get('profileAdmin', 'adminController::profileAdmin', ['as' => 'profileAdmin']);
-    $routes->get('fetchAnimeData/(:any)/(:num)', 'AdminController::fetchAnimeData/$1/$2');
+    $routes->get('fetchAnimeData/(:any)/(:num)', 'adminController::fetchAnimeData/$1/$2');
 
     $routes->post('studios/update/(:num)', 'StudioController::update/$1', ['as' => 'updateStudio']);
     $routes->post('studios/delete/(:num)', 'StudioController::delete/$1', ['as' => 'deleteStudio']);
