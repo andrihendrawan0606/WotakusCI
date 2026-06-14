@@ -577,16 +577,12 @@ $heroList = array_slice($heroList, 0, 5);
                             <?php $imgSrc = (filter_var($anime['Poster'], FILTER_VALIDATE_URL)) ? $anime['Poster'] : base_url('assets/images/' . $anime['Poster']); ?>
                             <img src="<?= $imgSrc ?>" class="ai-img" alt="<?= esc($anime['Judul']) ?>">
                             
-                            <!-- Badges di atas gambar -->
-                            <div class="ai-tags">
-                                <span class="ai-type-tag"><?= $anime['tipeAnime'] ?></span>
-                                <?php if(isset($anime['similarity_score'])): ?>
-                                    <span class="ai-match-tag">
-                                        <i class="fas fa-percentage" style="font-size: 9px;"></i> 
-                                        <?= round($anime['similarity_score'] * 100) ?>% Match
+                                <!-- 1. INI UNTUK MENAMPILKAN PERSENTASE MATCH -->
+                                <div class="badge-match" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
+                                    <span class="badge" style="background-color: #00e676; color: #000; font-weight: bold;">
+                                        <?= isset($anime['match_percentage']) ? $anime['match_percentage'] : '85' ?>% Match
                                     </span>
-                                <?php endif; ?>
-                            </div>
+                                </div>
                             
                             <!-- Play Icon Hover -->
                             <div class="ai-play-overlay">
@@ -600,15 +596,11 @@ $heroList = array_slice($heroList, 0, 5);
                                 <?= esc($anime['Judul']) ?>
                             </h3>
                             
-                            <!-- EXPLAINABLE AI FEATURE (Alasan Rekomendasi) -->
-                            <div class="ai-reason-box">
-                                <?php if (!empty($anime['base_anime'])) : ?>
-                                    <span class="reason-text">
-                                        Karena Anda menyukai <strong style="color: #00d2ff;"><?= esc($anime['base_anime']) ?></strong>
-                                    </span>
-                                <?php else : ?>
-                                    <span class="reason-text">Anime populer rekomendasi sistem.</span>
-                                <?php endif; ?>
+                            <!-- 2. INI UNTUK MENAMPILKAN ALASAN / REASON (Contoh: Karena Anda menyukai One Punch Man) -->
+                            <div class="anime-reason px-2 pb-2">
+                                <small class="text-muted" style="font-size: 10px;">
+                                    <?= isset($anime['reason']) ? $anime['reason'] : 'Disarankan oleh sistem cerdas.' ?>
+                                </small>
                             </div>
                         </div>
                     </a>

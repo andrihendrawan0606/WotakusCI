@@ -15,11 +15,12 @@ class JjkModel extends Model
                                 ,'mal_score','source', 'season', 'release_year'];
 
 
-    public function getPythonRecommendations($userId)
+public function getPythonRecommendations($userId)
     {
         $client = \Config\Services::curlrequest();
         
         try {
+            // Kita panggil API Python Hybrid
             $response = $client->request('GET', "http://127.0.0.1:8000/api/recommend/{$userId}", [
                 'timeout' => 5, 
                 'http_errors' => false
@@ -38,7 +39,7 @@ class JjkModel extends Model
                 // Kumpulkan ID anime hasil rekomendasi
                 $animeIds = array_column($recommendationData, 'anime_id');
 
-                // Ambil data lengkap (Poster, Judul, dll) dari database CI4
+                // Ambil data lengkap (Poster, Judul, status, tipe) dari database CI4
                 $builder = $this->select('animes.*, animetipe.tipeAnime')
                                 ->join('animetipe', 'animetipe.id = animes.typeId', 'left')
                                 ->whereIn('animes.id', $animeIds);
@@ -46,12 +47,16 @@ class JjkModel extends Model
                 $animesFromDb = $builder->findAll();
 
                 $finalRecommendations = [];
+                // Kita urutkan sesuai urutan ranking dari Python
                 foreach ($recommendationData as $rec) {
                     foreach ($animesFromDb as $dbAnime) {
                         if ($rec['anime_id'] == $dbAnime['id']) {
-                            // Tambahkan atribut XAI (Explainable AI) ke array anime
-                            $dbAnime['similarity_score'] = $rec['similarity_score'] ?? 0;
-                            $dbAnime['base_anime'] = $rec['base_anime'] ?? null;
+                            
+                            // --- LOKASI PERBAIKAN ---
+                            // Tangkap key JSON yang baru dari True Hybrid Python
+                            $dbAnime['match_percentage'] = $rec['match_percentage'] ?? 85.0; // Ambil %
+                            $dbAnime['reason']           = $rec['reason'] ?? 'Disarankan berdasarkan minat Anda'; // Ambil alasan
+                            $dbAnime['method']           = $result['method'] ?? 'Hybrid System'; // Ambil info mesin
                             
                             $finalRecommendations[] = $dbAnime;
                             break;
@@ -63,12 +68,11 @@ class JjkModel extends Model
             }
 
         } catch (\Exception $e) {
-            // Jika Python server mati, catat di log dan kembalikan array kosong
             log_message('error', 'Gagal memanggil Python AI: ' . $e->getMessage());
         }
 
-        // Fallback: Jika Python mati/error, kembalikan anime populer sebagai cadangan
-        return $this->getPopularAnimes(10);
+        // Fallback: Jika Python mati, return array kosong, biarkan View yang handle
+        return [];
     }
 
     public function getPythonSimilarAnimes($animeId)
