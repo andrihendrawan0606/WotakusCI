@@ -363,7 +363,10 @@
 <section class="recommendation-section">
 <div class="container-fluid mb-5 pb-5">
     <div class="section-title-container mb-4">
-        <h2 class="section-heading m-0"><i class="fas fa-project-diagram text-primary-neon mr-2"></i> MUNGKIN ANDA SUKA</h2>
+        <h2 class="section-heading m-0">
+            <i class="fas fa-project-diagram text-primary-neon mr-2" style="color: #00d2ff; filter: drop-shadow(0 0 5px rgba(0,210,255,0.5));"></i> 
+            MUNGKIN ANDA SUKA
+        </h2>
         <p class="text-muted small mt-1">Rekomendasi cerdas berdasarkan kemiripan judul, genre, dan studio.</p>
     </div>
 
@@ -371,6 +374,50 @@
     <div class="img-box-recommendation"> 
         <?php if (!empty($recommendedAnime)) : ?>
             <?php foreach ($recommendedAnime as $recommend) : ?>
+                <?php 
+                    // -------------------------------------------------------------
+                    // 1. LOGIKA WARNA BADGE CERDAS
+                    // -------------------------------------------------------------
+                    $badgeText = strtoupper($recommend['ai_badge'] ?? 'SIMILAR');
+                    $badgeBg = '#2dce89'; // Default Hijau (Untuk Match biasa)
+                    $badgeColor = '#000';
+                    $badgeIcon = 'fa-percentage';
+
+                    if (strpos($badgeText, 'SEQUEL') !== false || strpos($badgeText, 'NEXT') !== false) {
+                        $badgeBg = '#f5365c'; // Merah/Pink Neon (Wajib Nonton Berikutnya)
+                        $badgeColor = '#fff';
+                        $badgeIcon = 'fa-forward';
+                    } elseif (strpos($badgeText, 'PREQUEL') !== false || strpos($badgeText, 'PREVIOUS') !== false) {
+                        $badgeBg = '#fb6340'; // Orange (Cerita masa lalu)
+                        $badgeColor = '#fff';
+                        $badgeIcon = 'fa-backward';
+                    } elseif (strpos($badgeText, 'MOVIE') !== false || strpos($badgeText, 'OVA') !== false || strpos($badgeText, 'FRANCHISE') !== false) {
+                        $badgeBg = '#8965e0'; // Ungu (Format Khusus / Side Story)
+                        $badgeColor = '#fff';
+                        $badgeIcon = 'fa-film';
+                    }
+                    
+                    // -------------------------------------------------------------
+                    // 2. LOGIKA HIGHLIGHT KATA KUNCI (TEXT REASON)
+                    // -------------------------------------------------------------
+                    $reasonHtml = $recommend['ai_reason'] ?? '';
+                    // Daftar kata yang ingin di-highlight warna Biru Neon
+                    $keywordsToHighlight = [
+                        'kelanjutan', 'Sekuel', 'Musim Lanjutan', 
+                        'Musim Sebelumnya', 'Film layar lebar', 
+                        'Episode Spesial', 'Franchise', 'Genre, Studio, dan Tema'
+                    ];
+                    
+                    foreach ($keywordsToHighlight as $word) {
+                        // Replace kata dengan span berwarna cyan
+                        $reasonHtml = str_ireplace(
+                            $word, 
+                            '<span style="color: #00d2ff; font-weight: 600; letter-spacing: 0.2px;">' . $word . '</span>', 
+                            $reasonHtml
+                        );
+                    }
+                ?>
+
                 <a href="<?= url_to('animeDetail', $recommend['slug']); ?>" class="animeCard group">
                     <div class="poster-wrapper shadow-sm relative">
                         <?php 
@@ -378,17 +425,11 @@
                         ?>
                         <img src="<?= $imgSrc ?>" alt="<?= esc($recommend['Judul']) ?>" class="poster transition-transform duration-500 group-hover:scale-110">
                         
-                        <!-- BADGE DARI PYTHON (Sequel / Match %) -->
+                        <!-- BADGE DARI PYTHON (Dengan Warna Dinamis) -->
                         <div class="absolute top-2 right-2 z-20">
-                            <?php if (strpos($recommend['ai_badge'] ?? '', 'SEQUEL') !== false) : ?>
-                                <span class="badge badge-danger shadow px-2 py-1 text-[9px] font-bold">
-                                    <i class="fas fa-link"></i> <?= $recommend['ai_badge'] ?>
-                                </span>
-                            <?php else : ?>
-                                <span class="badge badge-success shadow px-2 py-1 text-[9px] font-bold" style="background:#2dce89; color: #000;">
-                                    <i class="fas fa-percentage"></i> <?= $recommend['ai_badge'] ?? 'SIMILAR' ?>
-                                </span>
-                            <?php endif; ?>
+                            <span class="badge shadow px-2 py-1 text-[9px] font-bold" style="background-color: <?= $badgeBg ?>; color: <?= $badgeColor ?>; border-radius: 4px; letter-spacing: 0.5px;">
+                                <i class="fas <?= $badgeIcon ?> mr-1"></i> <?= $badgeText ?>
+                            </span>
                         </div>
 
                         <div class="card-overlay">
@@ -398,12 +439,14 @@
                     </div>
                     
                     <div class="anime-info mt-2">
-                        <p class="anime-title font-bold text-[13px] leading-tight line-clamp-2"><?= esc($recommend['Judul']) ?></p>
+                        <p class="anime-title font-bold text-[13px] leading-tight line-clamp-2" style="color: #fff;">
+                            <?= esc($recommend['Judul']) ?>
+                        </p>
                         
-                        <!-- ALASAN REKOMENDASI -->
-                        <?php if(!empty($recommend['ai_reason'])): ?>
-                            <p class="text-muted mt-1" style="font-size: 9px; line-height: 1.3;">
-                                <?= $recommend['ai_reason'] ?>
+                        <!-- ALASAN REKOMENDASI (Dengan Highlight Kata Kunci) -->
+                        <?php if(!empty($reasonHtml)): ?>
+                            <p class="text-muted mt-1" style="font-size: 10px; line-height: 1.4; color: #8a93a0;">
+                                <?= $reasonHtml ?>
                             </p>
                         <?php endif; ?>
                     </div>
@@ -411,11 +454,13 @@
             <?php endforeach ?>
         <?php else : ?>
             <div class="col-12 text-center py-5 w-100">
-                <i class="fas fa-ghost fa-3x text-muted mb-3"></i>
+                <i class="fas fa-magic fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
                 <p class="text-muted">Tidak ada rekomendasi yang mirip untuk saat ini.</p>
             </div>
         <?php endif ?>
     </div>
+</div>
+</section>
 </div>
 </section>
 
