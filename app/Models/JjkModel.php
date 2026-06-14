@@ -90,7 +90,14 @@ public function getPythonRecommendations($userId)
             if (isset($result['status']) && $result['status'] === 'success') {
                 $recommendationData = $result['data'];
                 
-                if (empty($recommendationData)) return [];
+                // --- PERUBAHAN 1: Buat 2 keranjang kosong (Bukan 1 lagi) ---
+                $franchiseAnimes = [];
+                $similarAnimes   = [];
+
+                if (empty($recommendationData)) {
+                    // Jika data kosong, kembalikan format array terstruktur yang kosong
+                    return ['franchise' => [], 'similar' => []];
+                }
 
                 // Ambil ID
                 $animeIds = array_column($recommendationData, 'anime_id');
@@ -103,26 +110,47 @@ public function getPythonRecommendations($userId)
                 
                 $animesFromDb = $builder->findAll();
 
-
-                $finalRecommendations = [];
+                // Lakukan pemisahan berdasarkan "relation_type" yang dikirim Python
                 foreach ($recommendationData as $rec) {
                     foreach ($animesFromDb as $dbAnime) {
                         if ($rec['anime_id'] == $dbAnime['id']) {
+                            
+                            // Tambahkan data dari Python ke array DB CodeIgniter
                             $dbAnime['ai_badge']  = $rec['badge'];
                             $dbAnime['ai_reason'] = $rec['reason'];
-                            $finalRecommendations[] = $dbAnime;
-                            break;
+                            
+                            // --- PERUBAHAN 2: Pisahkan keranjang berdasarkan relasi ---
+                            // Gunakan isset() untuk berjaga-jaga jika Python versi lama masih jalan
+                            $relType = isset($rec['relation_type']) ? $rec['relation_type'] : 'similar';
+                            
+                            if ($relType === 'franchise') {
+                                $franchiseAnimes[] = $dbAnime;
+                            } else {
+                                $similarAnimes[] = $dbAnime;
+                            }
+                            
+                            break; // Stop loop foreach bagian dalam
                         }
                     }
                 }
-                return $finalRecommendations;
+                
+                // --- PERUBAHAN 3: Kembalikan 2 Array Sekaligus ---
+                return [
+                    'franchise' => $franchiseAnimes,
+                    'similar'   => $similarAnimes
+                ];
             }
         } catch (\Exception $e) {
             log_message('error', 'Python API Down: ' . $e->getMessage());
         }
 
-        // Fallback jika Python error (kembalikan rekomendasi random berdasarkan genre yang sama)
-        return $this->getRandomAnime($animeId, 12); 
+        // --- PERUBAHAN 4: Penanganan Fallback (Jika Python Mati) ---
+        // Jika API error, kita taruh rekomendasi random di keranjang 'similar' saja
+        $fallbackData = $this->getRandomAnime($animeId, 12); 
+        return [
+            'franchise' => [], // Franchise kosong karena Python mati
+            'similar'   => $fallbackData
+        ];
     }
 
     public function getAnimes($Judul = false)

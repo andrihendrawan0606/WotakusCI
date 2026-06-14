@@ -370,10 +370,23 @@
         <p class="text-muted small mt-1">Rekomendasi cerdas berdasarkan kemiripan judul, genre, dan studio.</p>
     </div>
 
+    <!-- ========================================== -->
+    <!-- SECTION 1: FRANCHISE / BERKAITAN (DI ATAS) -->
+    <!-- ========================================== -->
+    <?php if (!empty($franchiseAnimes)) : ?>
+    <section class="franchise-section mt-5">
+    <div class="container-fluid mb-4">
+        <div class="section-title-container mb-3">
+            <h2 class="section-heading m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
+                <i class="fas fa-link mr-2" style="color: #ff0055;"></i> SERI TERKAIT
+            </h2>
+            <p class="text-muted small mt-1">Musim lanjutan, prekuel, atau film dari seri ini.</p>
+        </div>
+
     <!-- PENTING: Gunakan class img-box-recommendation -->
     <div class="img-box-recommendation"> 
         <?php if (!empty($recommendedAnime)) : ?>
-            <?php foreach ($recommendedAnime as $recommend) : ?>
+            <?php foreach ($franchiseAnimes  as $recommend) : ?>
                 <?php 
                     // -------------------------------------------------------------
                     // 1. LOGIKA WARNA BADGE CERDAS
@@ -452,6 +465,66 @@
                     </div>
                 </a>
             <?php endforeach ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+    <!-- ========================================== -->
+    <!-- SECTION 2: MUNGKIN ANDA SUKA (DI BAWAH)    -->
+    <!-- ========================================== -->
+    <?php if (!empty($similarAnimes)) : ?>
+    <section class="recommendation-section mt-5">
+        <div class="container-fluid mb-5 pb-5">
+            <div class="section-title-container mb-3">
+                <h2 class="section-heading m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
+                    <i class="fas fa-project-diagram mr-2" style="color: #00d2ff;"></i> MUNGKIN ANDA SUKA
+                </h2>
+                <p class="text-muted small mt-1">Rekomendasi berdasarkan kemiripan tema dan studio.</p>
+            </div>
+
+            <div class="img-box-recommendation"> 
+                <!-- Lakukan foreach untuk array SIMILAR ANIMES di sini seperti biasa -->
+                <?php foreach ($similarAnimes as $recommend) : ?>
+                    <a href="<?= url_to('animeDetail', $recommend['slug']); ?>" class="animeCard group">
+                    <div class="poster-wrapper shadow-sm relative">
+                        <?php 
+                            $imgSrc = (filter_var($recommend['Poster'], FILTER_VALIDATE_URL)) ? $recommend['Poster'] : base_url('assets/images/' . $recommend['Poster']);
+                        ?>
+                        <img src="<?= $imgSrc ?>" alt="<?= esc($recommend['Judul']) ?>" class="poster transition-transform duration-500 group-hover:scale-110">
+                        
+                        <!-- BADGE DARI PYTHON (Dengan Warna Dinamis) -->
+                        <div class="absolute top-2 right-2 z-20">
+                            <span class="badge shadow px-2 py-1 text-[9px] font-bold" style="background-color: <?= $badgeBg ?>; color: <?= $badgeColor ?>; border-radius: 4px; letter-spacing: 0.5px;">
+                                <i class="fas <?= $badgeIcon ?> mr-1"></i> <?= $badgeText ?>
+                            </span>
+                        </div>
+
+                        <div class="card-overlay">
+                            <div class="animeType"><?= $recommend['tipeAnime'] ?? 'TV' ?></div>
+                            <div class="play-icon"><i class="fas fa-play"></i></div>
+                        </div>
+                    </div>
+                    
+                    <div class="anime-info mt-2">
+                        <p class="anime-title font-bold text-[13px] leading-tight line-clamp-2" style="color: #fff;">
+                            <?= esc($recommend['Judul']) ?>
+                        </p>
+                        
+                        <!-- ALASAN REKOMENDASI (Dengan Highlight Kata Kunci) -->
+                        <?php if(!empty($reasonHtml)): ?>
+                            <p class="text-muted mt-1" style="font-size: 10px; line-height: 1.4; color: #8a93a0;">
+                                <?= $reasonHtml ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
         <?php else : ?>
             <div class="col-12 text-center py-5 w-100">
                 <i class="fas fa-magic fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
