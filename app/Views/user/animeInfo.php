@@ -359,86 +359,47 @@
     </div>
 </div>
 
-<!-- SECTION: REKOMENDASI ANIME (AI POWERED) -->
-<section class="recommendation-section">
-<div class="container-fluid mb-5 pb-5">
-    <div class="section-title-container mb-4">
-        <h2 class="section-heading m-0">
-            <i class="fas fa-project-diagram text-primary-neon mr-2" style="color: #00d2ff; filter: drop-shadow(0 0 5px rgba(0,210,255,0.5));"></i> 
-            MUNGKIN ANDA SUKA
-        </h2>
-        <p class="text-muted small mt-1">Rekomendasi cerdas berdasarkan kemiripan judul, genre, dan studio.</p>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- SECTION 1: FRANCHISE / BERKAITAN (DI ATAS) -->
-    <!-- ========================================== -->
-    <?php if (!empty($franchiseAnimes)) : ?>
-    <section class="franchise-section mt-5">
+<!-- ========================================== -->
+<!-- SECTION 1: FRANCHISE / BERKAITAN (DI ATAS) -->
+<!-- ========================================== -->
+<?php if (!empty($franchiseAnimes)) : ?>
+<section class="franchise-section mt-5">
     <div class="container-fluid mb-4">
         <div class="section-title-container mb-3">
             <h2 class="section-heading m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
-                <i class="fas fa-link mr-2" style="color: #ff0055;"></i> SERI TERKAIT
+                <i class="fas fa-link mr-2" style="color: #ff0055; filter: drop-shadow(0 0 5px rgba(255,0,85,0.5));"></i> 
+                SERI TERKAIT
             </h2>
             <p class="text-muted small mt-1">Musim lanjutan, prekuel, atau film dari seri ini.</p>
         </div>
 
-    <!-- PENTING: Gunakan class img-box-recommendation -->
-    <div class="img-box-recommendation"> 
-        <?php if (!empty($recommendedAnime)) : ?>
-            <?php foreach ($franchiseAnimes  as $recommend) : ?>
+        <div class="img-box-recommendation"> 
+            <?php foreach ($franchiseAnimes as $recommend) : ?>
                 <?php 
-                    // -------------------------------------------------------------
-                    // 1. LOGIKA WARNA BADGE CERDAS
-                    // -------------------------------------------------------------
-                    $badgeText = strtoupper($recommend['ai_badge'] ?? 'SIMILAR');
-                    $badgeBg = '#2dce89'; // Default Hijau (Untuk Match biasa)
-                    $badgeColor = '#000';
-                    $badgeIcon = 'fa-percentage';
+                    // LOGIKA WARNA & HIGHLIGHT (Wajib ada di setiap loop)
+                    $badgeText = strtoupper($recommend['ai_badge'] ?? 'FRANCHISE');
+                    $badgeBg = '#8965e0'; // Default ungu untuk franchise
+                    $badgeColor = '#fff';
+                    $badgeIcon = 'fa-film';
 
                     if (strpos($badgeText, 'SEQUEL') !== false || strpos($badgeText, 'NEXT') !== false) {
-                        $badgeBg = '#f5365c'; // Merah/Pink Neon (Wajib Nonton Berikutnya)
-                        $badgeColor = '#fff';
-                        $badgeIcon = 'fa-forward';
+                        $badgeBg = '#f5365c'; $badgeIcon = 'fa-forward';
                     } elseif (strpos($badgeText, 'PREQUEL') !== false || strpos($badgeText, 'PREVIOUS') !== false) {
-                        $badgeBg = '#fb6340'; // Orange (Cerita masa lalu)
-                        $badgeColor = '#fff';
-                        $badgeIcon = 'fa-backward';
-                    } elseif (strpos($badgeText, 'MOVIE') !== false || strpos($badgeText, 'OVA') !== false || strpos($badgeText, 'FRANCHISE') !== false) {
-                        $badgeBg = '#8965e0'; // Ungu (Format Khusus / Side Story)
-                        $badgeColor = '#fff';
-                        $badgeIcon = 'fa-film';
+                        $badgeBg = '#fb6340'; $badgeIcon = 'fa-backward';
                     }
-                    
-                    // -------------------------------------------------------------
-                    // 2. LOGIKA HIGHLIGHT KATA KUNCI (TEXT REASON)
-                    // -------------------------------------------------------------
+
                     $reasonHtml = $recommend['ai_reason'] ?? '';
-                    // Daftar kata yang ingin di-highlight warna Biru Neon
-                    $keywordsToHighlight = [
-                        'kelanjutan', 'Sekuel', 'Musim Lanjutan', 
-                        'Musim Sebelumnya', 'Film layar lebar', 
-                        'Episode Spesial', 'Franchise', 'Genre, Studio, dan Tema'
-                    ];
-                    
+                    $keywordsToHighlight = ['kelanjutan', 'Sekuel', 'Musim Lanjutan', 'Musim Sebelumnya', 'Film layar lebar', 'Episode Spesial', 'Franchise'];
                     foreach ($keywordsToHighlight as $word) {
-                        // Replace kata dengan span berwarna cyan
-                        $reasonHtml = str_ireplace(
-                            $word, 
-                            '<span style="color: #00d2ff; font-weight: 600; letter-spacing: 0.2px;">' . $word . '</span>', 
-                            $reasonHtml
-                        );
+                        $reasonHtml = str_ireplace($word, '<span style="color: #00d2ff; font-weight: 600; letter-spacing: 0.2px;">' . $word . '</span>', $reasonHtml);
                     }
                 ?>
 
                 <a href="<?= url_to('animeDetail', $recommend['slug']); ?>" class="animeCard group">
                     <div class="poster-wrapper shadow-sm relative">
-                        <?php 
-                            $imgSrc = (filter_var($recommend['Poster'], FILTER_VALIDATE_URL)) ? $recommend['Poster'] : base_url('assets/images/' . $recommend['Poster']);
-                        ?>
+                        <?php $imgSrc = (filter_var($recommend['Poster'], FILTER_VALIDATE_URL)) ? $recommend['Poster'] : base_url('assets/images/' . $recommend['Poster']); ?>
                         <img src="<?= $imgSrc ?>" alt="<?= esc($recommend['Judul']) ?>" class="poster transition-transform duration-500 group-hover:scale-110">
                         
-                        <!-- BADGE DARI PYTHON (Dengan Warna Dinamis) -->
                         <div class="absolute top-2 right-2 z-20">
                             <span class="badge shadow px-2 py-1 text-[9px] font-bold" style="background-color: <?= $badgeBg ?>; color: <?= $badgeColor ?>; border-radius: 4px; letter-spacing: 0.5px;">
                                 <i class="fas <?= $badgeIcon ?> mr-1"></i> <?= $badgeText ?>
@@ -452,48 +413,50 @@
                     </div>
                     
                     <div class="anime-info mt-2">
-                        <p class="anime-title font-bold text-[13px] leading-tight line-clamp-2" style="color: #fff;">
-                            <?= esc($recommend['Judul']) ?>
-                        </p>
-                        
-                        <!-- ALASAN REKOMENDASI (Dengan Highlight Kata Kunci) -->
+                        <p class="anime-title font-bold text-[13px] leading-tight line-clamp-2" style="color: #fff;"><?= esc($recommend['Judul']) ?></p>
                         <?php if(!empty($reasonHtml)): ?>
-                            <p class="text-muted mt-1" style="font-size: 10px; line-height: 1.4; color: #8a93a0;">
-                                <?= $reasonHtml ?>
-                            </p>
+                            <p class="text-muted mt-1" style="font-size: 10px; line-height: 1.4; color: #8a93a0;"><?= $reasonHtml ?></p>
                         <?php endif; ?>
                     </div>
                 </a>
-            <?php endforeach ?>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
 <?php endif; ?>
 
-    <!-- ========================================== -->
-    <!-- SECTION 2: MUNGKIN ANDA SUKA (DI BAWAH)    -->
-    <!-- ========================================== -->
-    <?php if (!empty($similarAnimes)) : ?>
-    <section class="recommendation-section mt-5">
-        <div class="container-fluid mb-5 pb-5">
-            <div class="section-title-container mb-3">
-                <h2 class="section-heading m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
-                    <i class="fas fa-project-diagram mr-2" style="color: #00d2ff;"></i> MUNGKIN ANDA SUKA
-                </h2>
-                <p class="text-muted small mt-1">Rekomendasi berdasarkan kemiripan tema dan studio.</p>
-            </div>
+<!-- ========================================== -->
+<!-- SECTION 2: MUNGKIN ANDA SUKA (DI BAWAH)    -->
+<!-- ========================================== -->
+<?php if (!empty($similarAnimes)) : ?>
+<section class="recommendation-section mt-5">
+    <div class="container-fluid mb-5 pb-5">
+        <div class="section-title-container mb-3">
+            <h2 class="section-heading m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
+                <i class="fas fa-project-diagram mr-2" style="color: #00d2ff; filter: drop-shadow(0 0 5px rgba(0,210,255,0.5));"></i> 
+                MUNGKIN ANDA SUKA
+            </h2>
+            <p class="text-muted small mt-1">Rekomendasi berdasarkan kemiripan tema dan studio.</p>
+        </div>
 
-            <div class="img-box-recommendation"> 
-                <!-- Lakukan foreach untuk array SIMILAR ANIMES di sini seperti biasa -->
-                <?php foreach ($similarAnimes as $recommend) : ?>
-                    <a href="<?= url_to('animeDetail', $recommend['slug']); ?>" class="animeCard group">
+        <div class="img-box-recommendation"> 
+            <?php foreach ($similarAnimes as $recommend) : ?>
+                <?php 
+                    // LOGIKA WARNA & HIGHLIGHT UNTUK SECTION SIMILAR
+                    $badgeText = strtoupper($recommend['ai_badge'] ?? 'SIMILAR');
+                    $badgeBg = '#2dce89'; // Hijau untuk Similar
+                    $badgeColor = '#000';
+                    $badgeIcon = 'fa-percentage';
+
+                    $reasonHtml = $recommend['ai_reason'] ?? '';
+                    $reasonHtml = str_ireplace('Genre, Studio, dan Tema', '<span style="color: #00d2ff; font-weight: 600; letter-spacing: 0.2px;">Genre, Studio, dan Tema</span>', $reasonHtml);
+                ?>
+
+                <a href="<?= url_to('animeDetail', $recommend['slug']); ?>" class="animeCard group">
                     <div class="poster-wrapper shadow-sm relative">
-                        <?php 
-                            $imgSrc = (filter_var($recommend['Poster'], FILTER_VALIDATE_URL)) ? $recommend['Poster'] : base_url('assets/images/' . $recommend['Poster']);
-                        ?>
+                        <?php $imgSrc = (filter_var($recommend['Poster'], FILTER_VALIDATE_URL)) ? $recommend['Poster'] : base_url('assets/images/' . $recommend['Poster']); ?>
                         <img src="<?= $imgSrc ?>" alt="<?= esc($recommend['Judul']) ?>" class="poster transition-transform duration-500 group-hover:scale-110">
                         
-                        <!-- BADGE DARI PYTHON (Dengan Warna Dinamis) -->
                         <div class="absolute top-2 right-2 z-20">
                             <span class="badge shadow px-2 py-1 text-[9px] font-bold" style="background-color: <?= $badgeBg ?>; color: <?= $badgeColor ?>; border-radius: 4px; letter-spacing: 0.5px;">
                                 <i class="fas <?= $badgeIcon ?> mr-1"></i> <?= $badgeText ?>
@@ -507,35 +470,29 @@
                     </div>
                     
                     <div class="anime-info mt-2">
-                        <p class="anime-title font-bold text-[13px] leading-tight line-clamp-2" style="color: #fff;">
-                            <?= esc($recommend['Judul']) ?>
-                        </p>
-                        
-                        <!-- ALASAN REKOMENDASI (Dengan Highlight Kata Kunci) -->
+                        <p class="anime-title font-bold text-[13px] leading-tight line-clamp-2" style="color: #fff;"><?= esc($recommend['Judul']) ?></p>
                         <?php if(!empty($reasonHtml)): ?>
-                            <p class="text-muted mt-1" style="font-size: 10px; line-height: 1.4; color: #8a93a0;">
-                                <?= $reasonHtml ?>
-                            </p>
+                            <p class="text-muted mt-1" style="font-size: 10px; line-height: 1.4; color: #8a93a0;"><?= $reasonHtml ?></p>
                         <?php endif; ?>
                     </div>
                 </a>
-                <?php endforeach; ?>
-            </div>
+            <?php endforeach; ?>
         </div>
-    </section>
-    <?php endif; ?>
-
-        <?php else : ?>
-            <div class="col-12 text-center py-5 w-100">
-                <i class="fas fa-magic fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
-                <p class="text-muted">Tidak ada rekomendasi yang mirip untuk saat ini.</p>
-            </div>
-        <?php endif ?>
     </div>
-</div>
 </section>
-</div>
+<?php endif; ?>
+
+<!-- ========================================== -->
+<!-- SECTION 3: FALLBACK JIKA KEDUANYA KOSONG   -->
+<!-- ========================================== -->
+<?php if (empty($franchiseAnimes) && empty($similarAnimes)) : ?>
+<section class="mt-5 mb-5 pb-5">
+    <div class="container-fluid text-center py-5 w-100">
+        <i class="fas fa-magic fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+        <p class="text-muted">Sistem cerdas AI sedang mengumpulkan data untuk rekomendasi.</p>
+    </div>
 </section>
+<?php endif; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
