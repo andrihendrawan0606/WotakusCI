@@ -504,7 +504,7 @@
     <div class="stat-body">
         <div class="stat-info">
             <h6>USER ONLINE</h6>
-            <h2>14</h2> <!-- Hasil Count User yang last_activity < 5 menit -->
+            <h2>11</h2> <!-- Hasil Count User yang last_activity < 5 menit -->
             <span class="stat-subtext">Sedang aktif saat ini</span>
         </div>
         <div class="stat-icon-bg">
