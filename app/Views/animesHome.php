@@ -596,10 +596,28 @@ $heroList = array_slice($heroList, 0, 5);
                                 <?= esc($anime['Judul']) ?>
                             </h3>
                             
-                            <!-- 2. INI UNTUK MENAMPILKAN ALASAN / REASON (Contoh: Karena Anda menyukai One Punch Man) -->
                             <div class="anime-reason px-2 pb-2">
-                                <small class="text-muted" style="font-size: 10px;">
-                                    <?= isset($anime['reason']) ? $anime['reason'] : 'Disarankan oleh sistem cerdas.' ?>
+                                <?php 
+                                    // 1. Ambil teks alasannya
+                                    $reasonText = isset($anime['reason']) ? $anime['reason'] : 'Disarankan oleh sistem cerdas.';
+                                    
+                                    // 2. Beri highlight KHUSUS pada judul animenya
+                                    // Kita menyisipkan tag <span> dengan warna Cyan dan efek semi-bold
+                                    $reasonText = str_replace(
+                                        'Karena Anda menyukai ', 
+                                        'Karena Anda menyukai <span style="color: #00d2ff; font-weight: 600; letter-spacing: 0.3px;">', 
+                                        $reasonText
+                                    );
+                                    
+                                    // 3. Tutup tag span-nya di akhir kalimat (jika itu hasil rekomendasi python)
+                                    if (strpos($reasonText, '<span') !== false) {
+                                        $reasonText .= '</span>';
+                                    }
+                                ?>
+                                
+                                <!-- 4. Tampilkan ke HTML -->
+                                <small style="color: #8a93a0; font-size: 10.5px; line-height: 1.4; display: block; margin-top: 5px;">
+                                    <?= $reasonText ?>
                                 </small>
                             </div>
                         </div>
