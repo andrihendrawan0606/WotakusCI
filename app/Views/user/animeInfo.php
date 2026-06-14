@@ -359,6 +359,17 @@
     </div>
 </div>
 
+<!-- SECTION: REKOMENDASI ANIME (AI POWERED) -->
+<section class="recommendation-section">
+<div class="container-fluid mb-5 pb-5">
+    <div class="section-title-container mb-4">
+        <h2 class="section-heading m-0">
+            <i class="fas fa-project-diagram text-primary-neon mr-2" style="color: #00d2ff; filter: drop-shadow(0 0 5px rgba(0,210,255,0.5));"></i> 
+            MUNGKIN ANDA SUKA
+        </h2>
+        <p class="text-muted small mt-1">Rekomendasi cerdas berdasarkan kemiripan judul, genre, dan studio.</p>
+    </div>
+
 <!-- ========================================== -->
 <!-- SECTION 1: FRANCHISE / BERKAITAN (DI ATAS) -->
 <!-- ========================================== -->
