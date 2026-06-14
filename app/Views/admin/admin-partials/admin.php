@@ -533,8 +533,9 @@
         </div>
     </div>
 
-    <iframe src="https://cloud.umami.is/q/wAT3YExPe" width="100%" height="600px" frameborder="0"></iframe>
-
+    <div style="width: 100%; margin-top: 20px;">
+        <iframe src="https://cloud.umami.is/share/JkjhiT5TMsk0HCZq" width="100%" height="800px" frameborder="0" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></iframe>
+    </div>
     <!-- ========================================= -->
         <!-- CHART STATISTIK SECTION -->
         <!-- ========================================= -->
