@@ -467,7 +467,7 @@ class Page extends BaseController
 
         // Get related anime
         $seriLainnya = $this->animeModel->getRelatedAnime($anime['anime_id']);
-        $recommendedAnime = $this->animeModel->getPythonSimilarAnimes($anime['id']);
+        $aiRecommendations = $this->animeModel->getPythonSimilarAnimes($anime['id']);
 
         // $anime['episodeanime'] = explode(',', $anime['judul']);
 
