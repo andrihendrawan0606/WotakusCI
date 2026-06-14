@@ -478,8 +478,8 @@ class Page extends BaseController
             'anime' => $anime,
             'episode' =>  $episode,
             'relatedAnime' => $seriLainnya,
-            'franchiseAnimes' => $aiRecommendations['franchise'], 
-            'similarAnimes'   => $aiRecommendations['similar'],
+            'franchiseAnimes' => $aiRecommendations['franchise'] ?? [], 
+            'similarAnimes'   => $aiRecommendations['similar'] ?? [],
             'rating_user'      => $averageRating,
             'total_voters' => $totalVoters, // Kirim ke View
             'my_rating'   => $myRating,
