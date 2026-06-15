@@ -478,9 +478,119 @@
     .section-personalized { padding: 0 15px; }
 }
 
+@keyframes fadeInUpAI {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
+    .ai-card-animated {
+        animation: fadeInUpAI 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        opacity: 0; /* Mulai dari tidak terlihat */
+    }
 
+    /* Efek Lift & Glow saat Hover */
+    .ai-card {
+        display: block;
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        background: transparent;
+        height: 100%;
+        text-decoration: none !important;
+    }
+    
+    .ai-card:hover {
+        transform: translateY(-8px);
+    }
+    
+    .ai-poster-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        aspect-ratio: 2 / 3; /* Memastikan proporsi poster anime konsisten */
+    }
 
+    .ai-card:hover .ai-poster-wrapper {
+        box-shadow: 0 10px 25px rgba(0, 210, 255, 0.3); /* Glow Cyan */
+    }
+
+    .ai-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .ai-card:hover .ai-img {
+        transform: scale(1.08); /* Efek zoom in pelan pada gambar */
+    }
+
+    /* Play Button Overlay Modern */
+    .ai-play-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6); /* Backdrop blur semi-transparan */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(2px);
+    }
+
+    .ai-card:hover .ai-play-overlay {
+        opacity: 1;
+    }
+
+    .ai-play-overlay i {
+        font-size: 3rem;
+        color: #fff;
+        text-shadow: 0 0 15px rgba(0, 210, 255, 0.8);
+        transform: scale(0.8);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .ai-card:hover .ai-play-overlay i {
+        transform: scale(1); /* Efek memantul (bounce) pada play button */
+    }
+
+    /* Badge Match Modern */
+    .badge-match-modern {
+        background: linear-gradient(135deg, #00e676, #00b0ff); /* Gradasi Hijau ke Biru */
+        color: #000;
+        font-weight: 800;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        box-shadow: 0 2px 8px rgba(0, 230, 118, 0.4);
+        letter-spacing: 0.5px;
+    }
+
+    /* Styling Teks Reason */
+    .ai-reason-text {
+        color: #94a3b8;
+        font-size: 11px;
+        line-height: 1.5;
+        margin-top: 6px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Maksimal 3 baris agar tidak merusak layout */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .ai-anime-title {
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 10px;
+        margin-bottom: 2px;
+        transition: color 0.3s;
+    }
+    
+    .ai-card:hover .ai-anime-title {
+        color: #00d2ff;
+    }
 
 </style>
 
@@ -556,33 +666,37 @@ $heroList = array_slice($heroList, 0, 5);
     <!-- Gunakan Swiper agar tampilannya mewah (Anda bisa copy class popular-swiper) -->
 <!-- SECTION: PERSONALIZED DISCOVERY (EXPLAINABLE AI) -->
 <?php if (session()->get('isLoggedIn') && !empty($personalizedAnimes)) : ?>
-<div class="section-personalized mb-5 mt-5">
-    <div class="section-title-container mb-4">
-        <h1 class="m-0 text-white font-weight-bold" style="font-size: 1.8rem;">
-            <i class="fas fa-magic mr-2" style="color: #00d2ff; filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.5));"></i> 
+    <div class="section-personalized mb-5 mt-5">
+    <div class="section-title-container mb-4 px-2">
+        <h1 class="m-0 text-white font-weight-bold" style="font-size: 1.8rem; display: flex; align-items: center;">
+            <i class="fas fa-magic mr-3" style="color: #00d2ff; filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.6)); font-size: 1.5rem;"></i> 
             Pilihan Untukmu, <?= strtoupper(session()->get('nama')) ?>
         </h1>
-        <p class="text-muted small mt-1" style="font-size: 12px; letter-spacing: 0.5px;">
-            Rekomendasi cerdas berdasarkan riwayat penilaian Anda.
+        <p class="text-muted small mt-2" style="font-size: 13px; letter-spacing: 0.3px; padding-left: 42px;">
+            Rekomendasi cerdas AI berdasarkan riwayat aktivitas dan penilaian Anda.
         </p>
     </div>
 
-    <div class="swiper personalized-swiper" style="padding-bottom: 30px;">
+    <div class="swiper personalized-swiper" style="padding-bottom: 40px; padding-top: 10px;">
         <div class="swiper-wrapper">
-            <?php foreach ($personalizedAnimes as $anime) : ?>
-                <div class="swiper-slide">
+            <?php 
+                $delay = 0; // Untuk efek animasi muncul bergiliran (staggered)
+                foreach ($personalizedAnimes as $anime) : 
+            ?>
+                <!-- Style in-line untuk delay animasi masing-masing card -->
+                <div class="swiper-slide ai-card-animated" style="animation-delay: <?= $delay ?>s;">
                     <a href="<?= url_to('animeDetail', $anime['slug']) ?>" class="ai-card">
                         
                         <div class="ai-poster-wrapper">
                             <?php $imgSrc = (filter_var($anime['Poster'], FILTER_VALIDATE_URL)) ? $anime['Poster'] : base_url('assets/images/' . $anime['Poster']); ?>
-                            <img src="<?= $imgSrc ?>" class="ai-img" alt="<?= esc($anime['Judul']) ?>">
+                            <img src="<?= $imgSrc ?>" class="ai-img" alt="<?= esc($anime['Judul']) ?>" loading="lazy">
                             
-                                <!-- 1. INI UNTUK MENAMPILKAN PERSENTASE MATCH -->
-                                <div class="badge-match" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
-                                    <span class="badge" style="background-color: #00e676; color: #000; font-weight: bold;">
-                                        <?= isset($anime['match_percentage']) ? $anime['match_percentage'] : '85' ?>% Match
-                                    </span>
-                                </div>
+                            <!-- PERSENTASE MATCH -->
+                            <div style="position: absolute; top: 10px; right: 10px; z-index: 2;">
+                                <span class="badge-match-modern">
+                                    <i class="fas fa-percentage mr-1"></i><?= isset($anime['match_percentage']) ? $anime['match_percentage'] : '85' ?> MATCH
+                                </span>
+                            </div>
                             
                             <!-- Play Icon Hover -->
                             <div class="ai-play-overlay">
@@ -590,45 +704,63 @@ $heroList = array_slice($heroList, 0, 5);
                             </div>
                         </div>
                         
-                        <!-- Informasi di bawah gambar -->
-                        <div class="ai-info-container mt-3">
-                            <h3 class="ai-anime-title text-truncate mb-1" title="<?= esc($anime['Judul']) ?>">
+                        <!-- Informasi Teks -->
+                        <div class="px-1">
+                            <h3 class="ai-anime-title text-truncate" title="<?= esc($anime['Judul']) ?>">
                                 <?= esc($anime['Judul']) ?>
                             </h3>
                             
-                            <div class="anime-reason px-2 pb-2">
-                                <?php 
-                                    // 1. Ambil teks alasannya
-                                    $reasonText = isset($anime['reason']) ? $anime['reason'] : 'Disarankan oleh sistem cerdas.';
-                                    
-                                    // 2. Beri highlight KHUSUS pada judul animenya
-                                    // Kita menyisipkan tag <span> dengan warna Cyan dan efek semi-bold
-                                    $reasonText = str_replace(
-                                        'Karena Anda menyukai ', 
-                                        'Karena Anda menyukai <span style="color: #00d2ff; font-weight: 600; letter-spacing: 0.3px;">', 
+                            <?php 
+                                $reasonText = isset($anime['reason']) ? $anime['reason'] : 'Disarankan oleh sistem cerdas.';
+                                
+                                // LOGIKA HIGHLIGHT TEKS CERDAS (Mencakup pola baru dari Python)
+                                // Kita akan menghighlight kata-kata penting: judul base anime, genre, dsb.
+                                
+                                // Ambil judul referensi (base_anime) dari array jika ada (dari Python)
+                                // Jika tidak ada key 'base_anime', kita coba deteksi dari string
+                                $baseTitleToHighlight = isset($anime['base_anime']) ? $anime['base_anime'] : '';
+                                
+                                // Daftar frasa yang ingin diberi warna mencolok (Cyan muda & Bold)
+                                $highlightSpan = '<span style="color: #38bdf8; font-weight: 600;">'; // Tailwind light blue
+                                
+                                // 1. Jika ada judul spesifik dari Python
+                                if (!empty($baseTitleToHighlight)) {
+                                    $reasonText = str_ireplace(
+                                        $baseTitleToHighlight, 
+                                        $highlightSpan . $baseTitleToHighlight . '</span>', 
                                         $reasonText
                                     );
-                                    
-                                    // 3. Tutup tag span-nya di akhir kalimat (jika itu hasil rekomendasi python)
-                                    if (strpos($reasonText, '<span') !== false) {
-                                        $reasonText .= '</span>';
+                                } 
+                                // 2. Jika tidak, gunakan pola kalimat
+                                else {
+                                    $phrases = ['Karena Anda menyukai', 'Penonton yang menyukai', 'Mirip dengan', 'Masih dalam satu seri/waralaba dengan'];
+                                    foreach ($phrases as $phrase) {
+                                        $reasonText = str_replace($phrase, '<span style="color: #94a3b8;">' . $phrase . '</span>', $reasonText);
                                     }
-                                ?>
+                                }
                                 
-                                <!-- 4. Tampilkan ke HTML -->
-                                <small style="color: #8a93a0; font-size: 10.5px; line-height: 1.4; display: block; margin-top: 5px;">
-                                    <?= $reasonText ?>
-                                </small>
+                                // 3. Highlight kata-kata khusus (Genre)
+                                $keywords = ['Action', 'Romance', 'School', 'Drama', 'Comedy', 'Fantasy', 'Isekai', 'Suspense'];
+                                foreach ($keywords as $kw) {
+                                    $reasonText = str_ireplace($kw, '<span style="color: #cbd5e1; font-weight: 500;">' . $kw . '</span>', $reasonText);
+                                }
+                            ?>
+                            
+                            <div class="ai-reason-text">
+                                <?= $reasonText ?>
                             </div>
                         </div>
                     </a>
                 </div>
-            <?php endforeach; ?>
+            <?php 
+                $delay += 0.1; // Tambah delay 0.1 detik untuk card berikutnya
+                endforeach; 
+            ?>
         </div>
         
-        <!-- Tambahkan navigasi jika ingin bisa digeser manual (opsional) -->
-        <div class="swiper-button-next ai-nav-next"></div>
-        <div class="swiper-button-prev ai-nav-prev"></div>
+        <!-- Navigasi Swiper (Opsional, pastikan class-nya sesuai dengan inisialisasi JS Anda) -->
+        <div class="swiper-button-next ai-nav-next" style="color: #00d2ff; transform: scale(0.7);"></div>
+        <div class="swiper-button-prev ai-nav-prev" style="color: #00d2ff; transform: scale(0.7);"></div>
     </div>
 </div>
 
