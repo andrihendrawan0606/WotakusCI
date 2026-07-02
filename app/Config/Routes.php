@@ -7,9 +7,9 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->setAutoRoute(true);
 $routes->get('/', 'Home::index');
-// $routes->set404Override(function () {
-//     echo view('errors/html/404_custom');
-// });
+$routes->set404Override(function () {
+    echo view('errors/html/404_custom');
+});
 $routes->get('/auth/checkSession', 'AuthController::checkSession');
 
 $routes->group('auth', function ($routes) {
