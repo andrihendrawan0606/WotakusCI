@@ -511,33 +511,26 @@ class Page extends BaseController
             ]);
             }
         } else {
-             // Simpan detail anime ke dalam cookie jika user belum login
-            $recentAnime = get_cookie('recent_anime');
-            $recentAnime = $recentAnime ? json_decode($recentAnime, true) : [];
+            // Simpan HANYA ID anime ke dalam cookie jika user belum login
+           $recentAnime = get_cookie('recent_anime');
+           $recentAnime = $recentAnime ? json_decode($recentAnime, true) : [];
 
-            // Hapus jika sudah ada duplikat
-            foreach ($recentAnime as $key => $item) {
-                if ($item['id'] == $id) {
-                    unset($recentAnime[$key]);
-                }
-            }
+           // Hapus jika sudah ada duplikat
+           if (($key = array_search((int)$id, $recentAnime)) !== false) {
+               unset($recentAnime[$key]);
+           }
 
-            // Tambahkan anime ke posisi paling depan
-            array_unshift($recentAnime, [
-                'id' => $id,
-                'Judul' => $anime['Judul'],
-                'Poster' => $anime['Poster'],
-                'slug' => $anime['slug']
-            ]);
+           // Tambahkan ID ke posisi paling depan
+           array_unshift($recentAnime, (int)$id);
 
-            // Batasi array recent anime menjadi maksimal 50 item
-            if (count($recentAnime) > 50) {
-                array_pop($recentAnime); // Hapus item terakhir jika lebih dari 50
-            }
+           // Batasi array menjadi maksimal 50 item
+           if (count($recentAnime) > 50) {
+               array_pop($recentAnime);
+           }
 
-            // Simpan kembali ke cookie dengan durasi 30 hari
-            set_cookie('recent_anime', json_encode($recentAnime), 86400 * 30);
-        }
+           // Simpan kembali ke cookie
+           set_cookie('recent_anime', json_encode(array_values($recentAnime)), 86400 * 30);
+       }
 
 
 
@@ -862,80 +855,71 @@ class Page extends BaseController
         }
     }
 
-    public function storeRecentAnimeToCookie($animeId, $animeData)
+    public function storeRecentAnimeToCookie($animeId)
     {
         // Ambil data recent anime dari cookie
         $recentAnime = get_cookie('recent_anime');
         $recentAnime = $recentAnime ? json_decode($recentAnime, true) : [];
-
-        // Hapus anime yang sudah ada jika terdapat duplikat
-        foreach ($recentAnime as $key => $item) {
-            if ($item['id'] == $animeId) {
-                unset($recentAnime[$key]);
-            }
+    
+        // Hapus ID jika sudah ada duplikat
+        if (($key = array_search($animeId, $recentAnime)) !== false) {
+            unset($recentAnime[$key]);
         }
-
-        // Tambahkan anime terbaru ke posisi paling depan
-        array_unshift($recentAnime, [
-            'id' => $animeId,
-            'title' => $animeData['title'],
-            'poster' => $animeData['poster'],
-            'slug' => $animeData['slug']
-        ]);
-
-        // Batasi array recent anime menjadi maksimal 50 item
+    
+        // Tambahkan ID terbaru ke posisi paling depan
+        array_unshift($recentAnime, (int)$animeId);
+    
+        // Batasi maksimal 50 item
         if (count($recentAnime) > 50) {
-            array_pop($recentAnime); // Hapus item terakhir
+            array_pop($recentAnime);
         }
-
-        // Simpan kembali ke cookie dengan durasi 30 hari
-        set_cookie('recent_anime', json_encode($recentAnime), 86400 * 30); // 30 hari
+    
+        // Simpan kembali ke cookie (hanya berisi array angka, sangat ringan!)
+        set_cookie('recent_anime', json_encode(array_values($recentAnime)), 86400 * 30);
     }
 
     public function recent()
-    {
-        // $session = session();
-        // $recentAnimeIds = $session->get('recent_anime') ?? [];
+{
+    $recentAnime = [];
 
-        // $recentAnime = [];
-        // if (!empty($recentAnimeIds)) {
-        //     // Ambil anime berdasarkan ID dari database
-        //     $recentAnime = $this->animeModel->whereIn('slug', $recentAnimeIds)->where('statusTayang','published')->findAll();
+    if (session()->has('id')) {
+        // Jika user login, ambil dari database
+        $userId = session()->get('id');
+        $recentAnime = $this->userRecentAnimeModel->getRecentAnimesByUser($userId);
+        $recentAnime = array_map('unserialize', array_unique(array_map('serialize', $recentAnime)));
+    } else {
+        // Jika user tidak login, ambil array ID dari cookie
+        $recentAnimeIds = get_cookie('recent_anime');
+        $recentAnimeIds = $recentAnimeIds ? json_decode($recentAnimeIds, true) : [];
 
-        //     // Urutkan anime berdasarkan urutan ID di sesi
-        //     usort($recentAnime, function($a, $b) use ($recentAnimeIds) {
-        //         return array_search($a['slug'], $recentAnimeIds) - array_search($b['slug'], $recentAnimeIds);
-        //     });
-        // }
-
-
-        $recentAnime = [];
-
-        if (session()->has('id')) {
-            // Jika user login, ambil recent anime dari database termasuk episode_id
-            $userId = session()->get('id');
-            $recentAnime = $this->userRecentAnimeModel->getRecentAnimesByUser($userId);
+        if (!empty($recentAnimeIds)) {
+            // Batasi hanya 50 item
+            $recentAnimeIds = array_slice($recentAnimeIds, 0, 50);
             
-            // Pastikan recent anime tidak memiliki duplikasi dan urutkan berdasarkan waktu terbaru
-            $recentAnime = array_map('unserialize', array_unique(array_map('serialize', $recentAnime)));
-        } else {
-            // Jika user tidak login, ambil recent anime dari cookie
-            $recentAnime = get_cookie('recent_anime');
-            $recentAnime = $recentAnime ? json_decode($recentAnime, true) : [];
-    
-            // Batasi hanya 50 item dan urutkan berdasarkan urutan dalam cookie (terbaru di atas)
-            if (count($recentAnime) > 50) {
-                $recentAnime = array_slice($recentAnime, 0, 50);
+            // Ambil data lengkap (Judul, Poster, dll) dari database berdasarkan ID-ID tersebut
+            $dbAnimes = $this->animeModel->whereIn('id', $recentAnimeIds)->findAll();
+
+            // Urutkan kembali datanya agar sesuai dengan urutan di Cookie (terbaru di atas)
+            $indexedAnimes = [];
+            foreach ($dbAnimes as $anime) {
+                $indexedAnimes[$anime['id']] = $anime;
+            }
+
+            foreach ($recentAnimeIds as $id) {
+                if (isset($indexedAnimes[$id])) {
+                    $recentAnime[] = $indexedAnimes[$id];
+                }
             }
         }
-    
-        $data = [
-            'title' => 'Recent Anime Viewed | ',
-            'recentAnime' => $recentAnime
-        ];
-    
-        return view('user/recentAnime', $data);
     }
+
+    $data = [
+        'title' => 'Recent Anime Viewed | ',
+        'recentAnime' => $recentAnime
+    ];
+
+    return view('user/recentAnime', $data);
+}
 
     public function showEpisodes($title)
     {
