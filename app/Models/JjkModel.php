@@ -213,6 +213,7 @@ public function getPythonRecommendations($userId)
         return $this->select('animes.*, animetipe.tipeAnime, AVG(anime_ratings.rating) as rating_user')
                     ->join('animetipe', 'animes.typeId = animetipe.id')
                     ->join('anime_ratings', 'anime_ratings.anime_id = animes.id', 'left')
+                    ->where('animes.statusTayang', 'published') // <--- TAMBAHKAN INI
                     ->groupBy('animes.id')
                     ->orderBy('animes.id', 'RANDOM')
                     ->limit($limit)
@@ -232,7 +233,7 @@ public function getPythonRecommendations($userId)
         
         // SEMUA JOIN HARUS 'LEFT' AGAR DATA YANG KOSONG (NULL) TETAP DITARIK
         $builder->join('animegenre', 'animes.id = animegenre.anime_id', 'left');
-        $builder->join('genre', 'animegenre.genre_id = genre.id', 'left'); // <- Tadi salah di sini
+        $builder->join('genre', 'animegenre.genre_id = genre.id', 'left'); 
         
         $builder->join('anime_studios', 'animes.id = anime_studios.anime_id', 'left');
         $builder->join('studios', 'anime_studios.studio_id = studios.id', 'left');
@@ -401,6 +402,7 @@ public function getPythonRecommendations($userId)
     public function getOnGoingAnimeNotInSchedule()
     {
         return $this->where('status', 'On-Going')
+                    ->where('statusTayang', 'published') 
                     ->whereNotIn('id', function($builder) {
                     $builder->select('anime_id')->from('anime_jadwal_rilis');
                     })
@@ -412,6 +414,7 @@ public function getPythonRecommendations($userId)
         return $this->select('animes.*, animetipe.tipeAnime')
                     ->join('animetipe', 'animetipe.id = animes.typeId')
                     ->where('animes.status', $status)
+                    ->where('animes.statusTayang', 'published') 
                     ->orderBy('animes.created_at', 'DESC') 
                     ->limit($limit)
                     ->findAll();
@@ -430,6 +433,7 @@ public function getPythonRecommendations($userId)
         return $this->select('animes.*, animetipe.tipeAnime, IFNULL(view_data.total_sum, 0) as total_views')
                     ->join('animetipe', 'animetipe.id = animes.typeId', 'left')
                     ->join("($viewSubquery) as view_data", 'view_data.anime_id = animes.id', 'left')
+                    ->where('animes.statusTayang', 'published') 
                     ->orderBy('total_views', 'DESC')
                     ->limit($limit)
                     ->findAll();
