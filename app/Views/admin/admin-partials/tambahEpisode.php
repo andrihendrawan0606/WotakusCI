@@ -826,8 +826,8 @@
             if (!videoInput[0].files || videoInput[0].files.length === 0) return;
             const file = videoInput[0].files[0];
             
-            if (file.size > 100 * 1024 * 1024) {
-                Swal.fire('Terlalu Besar', 'Maksimal ukuran video adalah 100MB', 'error');
+            if (file.size > 3 * 1024 * 1024 * 1024) { 
+                Swal.fire('Terlalu Besar', 'Maksimal ukuran video adalah 3GB', 'error');
                 videoInput.val('');
                 return;
             }
