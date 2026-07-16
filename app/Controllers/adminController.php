@@ -1049,10 +1049,10 @@ public function createEpisode($slug)
     {
         if (!$this->validate([
             'video_path' => [
-                'rules' => 'uploaded[video_path]|max_size[video_path,102400]|ext_in[video_path,mp4,avi,mkv]',
+                'rules' => 'uploaded[video_path]|max_size[video_path,3145728]|ext_in[video_path,mp4,mkv]',
                 'errors' => [
                     'uploaded' => 'Video kosong.',
-                    'max_size' => 'Ukuran maksimal 100MB.',
+                    'max_size' => 'Ukuran maksimal 3GB.',
                     'ext_in'   => 'Format harus mp4, avi, atau mkv.'
                 ]
             ]
