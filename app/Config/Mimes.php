@@ -401,6 +401,7 @@ class Mimes
             'video/mp4',
             'video/x-f4v',
         ],
+        'mkv' => ['video/x-matroska', 'video/mkv', 'application/octet-stream'],
         'flv'  => 'video/x-flv',
         'webm' => 'video/webm',
         'aac'  => 'audio/x-acc',
