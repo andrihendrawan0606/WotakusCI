@@ -411,7 +411,7 @@
     </a>
 
     <!-- Grup Sinkronisasi (Select + Button) -->
-    <div class="sync-group-modern">
+        <div class="sync-group-modern">
         <div class="select-wrapper">
             <select id="fetchSource" class="custom-select-modern">
                 <option value="seasons/now">Anime Musim Ini (On-Going)</option>
@@ -421,10 +421,10 @@
             <i class="fas fa-chevron-down select-icon"></i>
         </div>
         
-        <!-- Perhatikan ID btnSync dan data-url -->
+        <!-- PERHATIKAN PERUBAHAN DI DALAM base_url INI -->
         <button id="btnSync" 
-                data-scan="<?= base_url('scanPage') ?>" 
-                data-process="<?= base_url('processSingle') ?>" 
+                data-scan="<?= base_url('dashboard/scanPage') ?>" 
+                data-process="<?= base_url('dashboard/processSingle') ?>" 
                 class="btn-modern-sync">
             <i class="fas fa-sync-alt"></i>
             <span>Sync</span>

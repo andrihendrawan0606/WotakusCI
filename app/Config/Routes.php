@@ -45,8 +45,6 @@ $routes->group('dashboard', ['filter' => 'adminCheck'], function($routes) {
     $routes->get('profileAdmin', 'adminController::profileAdmin', ['as' => 'profileAdmin']);
     // $routes->get('fetchAnimeData/(:any)/(:num)', 'adminController::fetchAnimeData/$1/$2');
     $routes->get('scanPage/(:any)/(:num)', 'adminController::scanPage/$1/$2');
-
-    // 2. Route untuk memproses 1 anime ke dalam database - Menggunakan metode POST
     $routes->post('processSingle', 'adminController::processSingle');
 
     $routes->post('studios/update/(:num)', 'StudioController::update/$1', ['as' => 'updateStudio']);
