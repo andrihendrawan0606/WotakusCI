@@ -1083,7 +1083,6 @@ async function startMasterSync(urls, source, rawSource, autoScanCount = 0) {
                 const req = await fetch(targetUrl, { method: 'POST', body: formData });
                 const res = await req.json();
 
-                // 📸 KAMERA PENGINTAI: Mencetak laporan asli PHP ke Console Browser
                 console.log(`[LAPORAN DARI PHP UNTUK: ${item.title}]`, res);
 
                 if (res.status === 'success') {
@@ -1094,11 +1093,9 @@ async function startMasterSync(urls, source, rawSource, autoScanCount = 0) {
                     }
                     
                     if (isUpdateMode) {
-                        // 🛠️ FIX: Kita ambil variabel apapun yang dilempar PHP (new_eps atau eps_count)
                         let newEps = parseInt(res.new_eps) || parseInt(res.eps_count) || parseInt(res.newEpsCount) || 0;
                         totalNewEps += newEps;
                     }
-                }
                 }
             } catch (e) { console.log('Skipped/Error on', item.title); }
 
