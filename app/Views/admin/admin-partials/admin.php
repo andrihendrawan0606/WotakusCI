@@ -202,63 +202,92 @@
 }
 
 
-.stat-card {
-    border-radius: 20px;
+.stat-card-modern {
+    border-radius: 12px;
     border: none;
-    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04); /* Bayangan super tipis, BUKAN neon */
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    position: relative;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
+    color: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
 }
 
-.stat-card:hover { transform: translateY(-5px); }
+.stat-card-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
 
-.bg-gradient-primary { background: linear-gradient(45deg, #4e73df, #224abe); }
-.bg-gradient-success { background: linear-gradient(45deg, #1cc88a, #13855c); }
-.bg-gradient-warning { background: linear-gradient(45deg, #f6c23e, #dda20a); }
-.bg-gradient-info { background: linear-gradient(45deg, #36b9cc, #258391); }
-
-.stat-body {
-    padding: 25px;
+.stat-card-modern .stat-body {
+    padding: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    flex: 1;
+}
+
+/* Typography Super Rapi */
+.stat-info {
     z-index: 2;
 }
 
 .stat-info h6 {
-    font-size: 0.7rem;
-    font-weight: 800;
-    margin-bottom: 5px;
-    opacity: 0.8;
-    letter-spacing: 1px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.8); /* Teks sedikit transparan agar elegan */
 }
 
-.stat-info h2 { font-weight: 800; margin: 0; font-size: 1.8rem; }
-.stat-subtext { font-size: 0.75rem; opacity: 0.7; }
+.stat-info h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+.stat-info .stat-subtext {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+}
 
 .stat-icon-bg {
-    font-size: 3rem;
-    opacity: 0.2;
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
+    font-size: 3.5rem;
+    color: rgba(255, 255, 255, 0.15); /* Icon transparan di background */
+    z-index: 1;
 }
 
 .stat-footer {
-    background: rgba(0,0,0,0.1);
-    padding: 10px 25px;
+    background: rgba(0, 0, 0, 0.12); /* Footer gelap transparan alami */
+    padding: 12px 24px;
 }
 
 .stat-footer a {
-    color: white;
-    font-size: 0.75rem;
+    color: #ffffff;
     text-decoration: none;
+    font-size: 0.85rem;
     font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
 }
+
+.stat-footer a:hover {
+    opacity: 1;
+}
+
+/* Warna Flat Matte (Bukan Gradient Neon) */
+.matte-primary { background: #334155; } /* Slate Navy */
+.matte-success { background: #0f766e; } /* Emerald Dark */
+.matte-warning { background: #b45309; } /* Amber Dark/Rust */
+.matte-info    { background: #0369a1; } /* Ocean Blue */
+.matte-purple  { background: #6d28d9; } /* Deep Purple */
 
 
 /* button tambah dan fetch */
@@ -463,95 +492,102 @@
 
         
         <div class="row mb-4">
-        <!-- Total Anime -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="stat-card bg-gradient-primary">
-                <div class="stat-body">
-                    <div class="stat-info">
-                        <h6>TOTAL ANIME</h6>
-                        <h2><?= esc($totalAnime) ?></h2>
-                        <span class="stat-subtext">Judul Terdaftar</span>
-                    </div>
-                    <div class="stat-icon-bg">
-                        <i class="fas fa-tv"></i>
-                    </div>
+    <!-- 1. Total Anime -->
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+        <div class="stat-card-modern matte-primary">
+            <div class="stat-body">
+                <div class="stat-info">
+                    <h6>TOTAL ANIME</h6>
+                    <h2><?= esc($totalAnime ?? 0) ?></h2>
+                    <span class="stat-subtext">Judul Terdaftar</span>
                 </div>
-                <div class="stat-footer">
-                    <a href="#">Lihat Semua <i class="fas fa-arrow-right"></i></a>
+                <div class="stat-icon-bg">
+                    <i class="fas fa-tv"></i>
                 </div>
             </div>
-        </div>
-
-        <!-- Total Episode -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="stat-card bg-gradient-success">
-                <div class="stat-body">
-                    <div class="stat-info">
-                        <h6>TOTAL EPISODE</h6>
-                        <h2><?= esc($totalEpisode) ?></h2>
-                        <span class="stat-subtext">File Terunggah</span>
-                    </div>
-                    <div class="stat-icon-bg">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                </div>
-                <div class="stat-footer">
-                    <a href="#">Kelola Episode <i class="fas fa-arrow-right"></i></a>
-                </div>
+            <div class="stat-footer">
+                <a href="#">Lihat Semua <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
+    </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="stat-card bg-gradient-warning">
-                <div class="stat-body">
-                    <div class="stat-info">
-                        <h6>ONGOING</h6>
-                        <h2>12</h2>
-                        <span class="stat-subtext">Anime Sedang Tayang</span>
-                    </div>
-                    <div class="stat-icon-bg">
-                        <i class="fas fa-sync-alt"></i>
-                    </div>
+    <!-- 2. Total Episode -->
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+        <div class="stat-card-modern matte-success">
+            <div class="stat-body">
+                <div class="stat-info">
+                    <h6>TOTAL EPISODE</h6>
+                    <h2><?= esc($totalEpisode ?? 0) ?></h2>
+                    <span class="stat-subtext">File Terunggah</span>
                 </div>
-                <div class="stat-footer">
-                    <a href="#">Cek Jadwal <i class="fas fa-arrow-right"></i></a>
+                <div class="stat-icon-bg">
+                    <i class="fas fa-play-circle"></i>
                 </div>
             </div>
+            <div class="stat-footer">
+                <a href="#">Kelola Episode <i class="fas fa-arrow-right"></i></a>
+            </div>
         </div>
+    </div>
 
-        <!-- Widget di Dashboard Admin -->
-<div class="stat-card bg-gradient-info">
-    <div class="stat-body">
-        <div class="stat-info">
-            <h6>USER ONLINE</h6>
-            <h2>11</h2> <!-- Hasil Count User yang last_activity < 5 menit -->
-            <span class="stat-subtext">Sedang aktif saat ini</span>
+    <!-- 3. Ongoing -->
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+        <div class="stat-card-modern matte-warning">
+            <div class="stat-body">
+                <div class="stat-info">
+                    <h6>ON-GOING</h6>
+                    <h2>12</h2>
+                    <span class="stat-subtext">Anime Sedang Tayang</span>
+                </div>
+                <div class="stat-icon-bg">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <a href="#">Cek Jadwal <i class="fas fa-arrow-right"></i></a>
+            </div>
         </div>
-        <div class="stat-icon-bg">
-            <i class="fas fa-users"></i>
+    </div>
+
+    <!-- 4. User Online (Sudah diperbaiki wrapper col-nya) -->
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+        <div class="stat-card-modern matte-info">
+            <div class="stat-body">
+                <div class="stat-info">
+                    <h6>USER ONLINE</h6>
+                    <h2>11</h2> 
+                    <span class="stat-subtext">Sedang aktif saat ini</span>
+                </div>
+                <div class="stat-icon-bg">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <a href="#">Cek Aktivitas <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Total Genre -->
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+        <!-- Menggunakan warna ungu agar tidak kembar dengan User Online -->
+        <div class="stat-card-modern matte-purple">
+            <div class="stat-body">
+                <div class="stat-info">
+                    <h6>TOTAL GENRE</h6>
+                    <h2>24</h2> 
+                    <span class="stat-subtext">Kategori Anime</span>
+                </div>
+                <div class="stat-icon-bg">
+                    <i class="fas fa-tags"></i>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <a href="#">Kelola Genre <i class="fas fa-arrow-right"></i></a>
+            </div>
         </div>
     </div>
 </div>
-
-        <!-- Tambahan: Total Genre -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="stat-card bg-gradient-info">
-                <div class="stat-body">
-                    <div class="stat-info">
-                        <h6>GENRE</h6>
-                        <h2>24</h2> 
-                        <span class="stat-subtext">Kategori Anime</span>
-                    </div>
-                    <div class="stat-icon-bg">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                </div>
-                <div class="stat-footer">
-                    <a href="#">Kelola Genre <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div style="width: 100%; margin-top: 20px;">
         <iframe src="https://cloud.umami.is/share/JkjhiT5TMsk0HCZq" width="100%" height="800px" frameborder="0" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></iframe>
