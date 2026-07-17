@@ -1049,7 +1049,7 @@ public function createEpisode($slug)
     {
         if (!$this->validate([
             'video_path' => [
-                'rules' => 'uploaded[video_path]|max_size[video_path,3145728]|ext_in[video_path,mp4,mkv]',
+                'rules' => 'uploaded[video_path]|max_size[video_path,3072000]|ext_in[video_path,mp4,mkv]',
                 'errors' => [
                     'uploaded' => 'Video kosong.',
                     'max_size' => 'Ukuran maksimal 3GB.',
@@ -1060,13 +1060,16 @@ public function createEpisode($slug)
             return $this->response->setStatusCode(400)->setJSON(['error' => $this->validator->getErrors()['video_path']]);
         }
 
-        $file = $this->request->getFile('video_path');
-    
-        if (!$file || !$file->isValid()) {
-            // Ambil pesan error asli dari PHP agar kita tahu penyebab pastinya!
-            $errorString = $file ? $file->getErrorString() . ' (Error Code: ' . $file->getError() . ')' : 'File tidak terbaca sama sekali.';
+        $videoFile = $this->request->getFile('video_path');
+        if ($videoFile->isValid() && !$videoFile->hasMoved()) {
+            $newName = $videoFile->getRandomName();
+            // Pindahkan ke folder TEMP
+            $videoFile->move(FCPATH . 'assets/videos/temp', $newName);
             
-            return $this->response->setStatusCode(400)->setJSON(['error' => 'Gagal: ' . $errorString]);
+            return $this->response->setJSON([
+                'status' => 'success', 
+                'filename' => $newName
+            ]);
         }
 
         return $this->response->setStatusCode(400)->setJSON(['error' => 'Gagal memindahkan file.']);
