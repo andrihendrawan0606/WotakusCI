@@ -1044,37 +1044,49 @@ public function createEpisode($slug)
 
 
 
-    // 1. FUNGSI UNTUK MENGUNGGAH VIDEO KE FOLDER TEMP
     public function uploadTempVideo()
-    {
-        if (!$this->validate([
-            'video_path' => [
-                'rules' => 'uploaded[video_path]|max_size[video_path,3072000]|ext_in[video_path,mp4,mkv]',
-                'errors' => [
-                    'uploaded' => 'Video kosong.',
-                    'max_size' => 'Ukuran maksimal 3GB.',
-                    'ext_in'   => 'Format harus mp4, avi, atau mkv.'
-                ]
-            ]
-        ])) {
-            return $this->response->setStatusCode(400)->setJSON(['error' => $this->validator->getErrors()['video_path']]);
-        }
+{
 
-        $file = $this->request->getFile('video_path');
-    
-        // --- GANTI BAGIAN INI ---
-        if (!$file || !$file->isValid()) {
-            // Ini akan menangkap alasan ASLI dari server
-            $alasanError = $file ? $file->getErrorString() : 'File sama sekali tidak terkirim dari browser.';
-            $kodeError = $file ? $file->getError() : 'Unknown';
-            
-            return $this->response->setStatusCode(400)->setJSON([
-                'error' => "Gagal (Kode $kodeError): " . $alasanError
-            ]);
-        }
-
-        return $this->response->setStatusCode(400)->setJSON(['error' => 'Gagal memindahkan file.']);
+    if (empty($_FILES) && isset($_SERVER['CONTENT_LENGTH']) && $_SERVER['CONTENT_LENGTH'] > 0) {
+        $ukuranDikirim = round($_SERVER['CONTENT_LENGTH'] / 1024 / 1024, 2);
+        $batasPHP = ini_get('post_max_size');
+        
+        return $this->response->setStatusCode(400)->setJSON([
+            'error' => "Sistem menolak! Kamu mengirim file $ukuranDikirim MB. <br>Batas server PHP (post_max_size) saat ini terbaca: <b>$batasPHP</b>. <br>Jika $batasPHP sudah besar, berarti file ini diputus oleh <b>Cloudflare</b> atau <b>Nginx client_max_body_size</b>."
+        ]);
     }
+
+    if (!$this->validate([
+        'video_path' => [
+            'rules' => 'ext_in[video_path,mp4,mkv,avi]',
+            'errors' => [
+                'ext_in'   => 'Format harus mp4, avi, atau mkv.'
+            ]
+        ]
+    ])) {
+        return $this->response->setStatusCode(400)->setJSON(['error' => $this->validator->getErrors()['video_path']]);
+    }
+
+    $file = $this->request->getFile('video_path');
+
+    // 3. RADAR DETEKTIF
+    if (!$file || !$file->isValid()) {
+        $alasanError = $file ? $file->getErrorString() : 'File sama sekali tidak terkirim dari browser.';
+        $kodeError = $file ? $file->getError() : 'Unknown';
+        
+        return $this->response->setStatusCode(400)->setJSON([
+            'error' => "Gagal (Kode $kodeError): " . $alasanError
+        ]);
+    }
+
+    $newName = $file->getRandomName();
+    $file->move(FCPATH . 'assets/videos/temp', $newName);
+
+    return $this->response->setJSON([
+        'status' => 'success',
+        'filename' => $newName
+    ]);
+}
 
     // 2. FUNGSI UNTUK MENGHAPUS VIDEO DARI FOLDER TEMP (Jika Admin klik tombol X)
     public function deleteTempVideo()
