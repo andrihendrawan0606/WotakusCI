@@ -288,7 +288,7 @@
                                     <i class="fas fa-cloud-upload-alt"></i>
                                     <span>Tarik Video Ke Sini atau Klik untuk Memilih</span>
                                 </div>
-                                <input type="file" name="video_path_dummy" id="video_path_input" accept="video/*" style="display: none;">
+                                <input type="file" name="video_path_dummy" id="video_path_input" accept="video/mp4, video/avi, video/mkv, video/*, .mkv, .mp4, .avi" style="display: none;">
                                 <input type="hidden" name="uploaded_temp_video" id="uploaded_temp_video" value="">
                                 
                                 <!-- PROGRESS BAR LOKAL (Gaya Modern Clean & Soft Purple) -->
