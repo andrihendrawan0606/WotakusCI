@@ -1266,11 +1266,11 @@ document.getElementById('btnExecuteSync').addEventListener('click', async functi
 });
 
 // 4. MESIN UTAMA (Modifikasi dari kode lamamu)
-async function runEngine(urls, mode, source) {
+async function runEngine(urls, mode, source, forceStartPage = null) {
     let queue = [];
-    let startPage = 1;
+    let startPage = forceStartPage || (document.getElementById('inputStartPage') ? parseInt(document.getElementById('inputStartPage').value) : 1);
 
-    // --- TAHAP 1: MEMBANGUN ANTREAN ---
+    // --- TAHAP 1: MEMBANGUN ANTREAN (DENGAN SMART CRAWLER) ---
     if (mode === 'manual') {
         const malId = document.getElementById('inputMalId').value;
         if (!malId) {
@@ -1281,36 +1281,96 @@ async function runEngine(urls, mode, source) {
         logTerminal(`Mode Manual Aktif. Mencari MAL ID: ${malId}...`, 'system');
     } 
     else {
-        startPage = document.getElementById('inputStartPage') ? parseInt(document.getElementById('inputStartPage').value) : 1;
-        
         logTerminal(`Menginisialisasi koneksi ke Jikan API...`, 'system');
-        logTerminal(`Tugas: Mode ${mode.toUpperCase()} - Sumber: ${source} - Mulai Halaman: ${startPage}`, 'info');
+        logTerminal(`Tugas: Mode ${mode.toUpperCase()} - Sumber: ${source}`, 'info');
 
-        try {
-            const fetchUrl = (mode === 'maintenance') ? urls.scanOngoing : `${urls.scan}/${source}/${startPage}`;
-            const res = await fetch(fetchUrl);
-            const data = await res.json();
-            
-            if (data.status === 'success') {
-                queue = data.queue;
-                
-                if (queue.length === 0) {
-                    if (mode === 'maintenance') {
+        if (mode === 'maintenance') {
+            // Logika Maintenance (Tetap Sekali Tarik)
+            try {
+                const res = await fetch(urls.scanOngoing);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    queue = data.queue;
+                    if (queue.length === 0) {
                         logTerminal('INFO: Tidak ada anime berstatus On-Going di database Anda.', 'warning');
-                    } else {
-                        logTerminal(`INFO: Halaman ${startPage} sudah penuh di Database Anda. Tidak ada anime baru untuk ditarik.`, 'warning');
+                        return;
                     }
-                    return;
+                    logTerminal(`Berhasil! Menemukan ${queue.length} anime On-Going untuk dicek episodenya.`, 'success');
                 }
-                
-                logTerminal(`Berhasil! Menemukan ${queue.length} target untuk diproses.`, 'success');
-            } else {
-                logTerminal(`GAGAL: ${data.message || 'API merespon dengan format yang salah.'}`, 'error');
+            } catch (err) {
+                logTerminal('KONEKSI TERPUTUS: Gagal menyambung ke server.', 'error');
                 return;
             }
-        } catch (err) {
-            logTerminal('KONEKSI TERPUTUS: Gagal menyambung ke server lokal/Jikan.', 'error');
-            return;
+        } 
+        else {
+            // ========================================================
+            // 🔥 LOGIKA SMART CRAWLER UNTUK PENCARIAN ANIME BARU
+            // ========================================================
+            let currentPage = startPage;
+            let maxCrawlDepth = 5; // Maksimal lompat 5 halaman otomatis agar tidak diblokir Jikan
+            let isFound = false;
+
+            while (!isFound && maxCrawlDepth > 0) {
+                logTerminal(`Memindai Jikan API Halaman ${currentPage}...`, 'process');
+                
+                try {
+                    const res = await fetch(`${urls.scan}/${source}/${currentPage}`);
+                    const data = await res.json();
+                    
+                    if (data.status === 'success') {
+                        if (data.queue.length > 0) {
+                            // Ketemu anime baru!
+                            queue = data.queue;
+                            isFound = true;
+                            logTerminal(`Berhasil! Menemukan ${queue.length} anime baru di Halaman ${currentPage}.`, 'success');
+                            
+                            // Update angka di input box agar admin tahu posisinya sekarang
+                            document.getElementById('inputStartPage').value = currentPage; 
+                        } else {
+                            // Halaman ini sudah penuh di DB
+                            if (data.has_next) {
+                                logTerminal(`Halaman ${currentPage} sudah lengkap di Database. Mencari ke halaman berikutnya...`, 'warning');
+                                currentPage++;
+                                maxCrawlDepth--;
+                                
+                                // Jeda 1 detik agar Jikan API tidak marah karena di-spam request
+                                await new Promise(r => setTimeout(r, 1000)); 
+                            } else {
+                                logTerminal(`INFO: Seluruh halaman dari kategori ini sudah ditarik semua!`, 'success');
+                                return;
+                            }
+                        }
+                    } else {
+                        logTerminal(`GAGAL: ${data.message}`, 'error');
+                        return;
+                    }
+                } catch (err) {
+                    logTerminal('KONEKSI TERPUTUS saat melakukan scanning.', 'error');
+                    return;
+                }
+            }
+
+            // Jika setelah 5x lompat tidak ketemu juga
+            if (!isFound) {
+                logTerminal(`Sistem telah memindai 5 halaman beruntun namun datanya sudah lengkap di DB Anda. Pencarian dihentikan sementara untuk menghemat resource.`, 'system');
+                
+                Swal.fire({
+                    title: 'Database Sangat Lengkap!',
+                    text: `Sistem sudah memindai sampai Halaman ${currentPage - 1} dan semuanya sudah ada di Web Anda. Ingin lanjut memindai lebih dalam?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Lanjut Cari',
+                    cancelButtonText: 'Berhenti'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Jalankan ulang fungsi runEngine dengan startPage yang baru
+                        runEngine(urls, mode, source, currentPage);
+                    } else {
+                        document.getElementById('inputStartPage').value = currentPage;
+                    }
+                });
+                return; // Hentikan eksekusi tahap 2 karena queue masih kosong
+            }
         }
     }
 
