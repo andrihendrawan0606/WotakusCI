@@ -422,7 +422,10 @@
         </div>
         
         <!-- Perhatikan ID btnSync dan data-url -->
-        <button id="btnSync" data-url="<?= base_url('dashboard/fetchAnimeData') ?>" class="btn-modern-sync">
+        <button id="btnSync" 
+                data-scan="<?= base_url('scanPage') ?>" 
+                data-process="<?= base_url('processSingle') ?>" 
+                class="btn-modern-sync">
             <i class="fas fa-sync-alt"></i>
             <span>Sync</span>
         </button>
