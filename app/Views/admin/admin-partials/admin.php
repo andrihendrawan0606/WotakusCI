@@ -950,107 +950,102 @@ const pageTrackers = {
 
 document.addEventListener('DOMContentLoaded', () => {
     const btnSync = document.getElementById('btnSync');
-    
     if (btnSync) {
         btnSync.addEventListener('click', async function() {
             const rawSource = document.getElementById('fetchSource').value;
             const source = rawSource.replace('/', '-');
-            const baseUrl = this.getAttribute('data-url');
+            const scanUrl = this.getAttribute('data-scan');
+            const processUrl = this.getAttribute('data-process');
             
-            // Panggil fungsi utama auto-scan
-            await processSync(baseUrl, source, rawSource);
+            await startSync(scanUrl, processUrl, source, rawSource);
         });
     }
 });
 
-/**
- * Fungsi Async untuk memproses Fetch dengan fitur Auto-Scan (3 Halaman)
- */
-async function processSync(baseUrl, source, rawSource, autoScanCount = 0) {
+async function startSync(scanUrl, processUrl, source, rawSource, autoScanCount = 0) {
     const page = pageTrackers[source] || 1;
-    const maxAutoScan = 3; // Batas sistem mencari otomatis di background
+    const maxAutoScan = 3; 
 
+    // Munculkan Loading Awal
     Swal.fire({
-        title: autoScanCount > 0 ? 'Mencari Anime Baru...' : 'Sinkronisasi API...',
-        html: `Memeriksa koleksi <b>${rawSource}</b> <br> Halaman: <b>${page}</b>`,
+        title: 'Mencari Anime Baru...',
+        html: `Memindai koleksi <b>${rawSource}</b> <br>Halaman: <b>${page}</b>...<br><br><span id="status-text" style="color:#ac11e9; font-weight:bold;">Menghubungkan ke Jikan API...</span>`,
         icon: 'info',
         allowOutsideClick: false,
         showConfirmButton: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
+        didOpen: () => Swal.showLoading()
     });
 
     try {
-        const response = await fetch(`${baseUrl}/${source}/${page}`);
-        
-        if (!response.ok) {
-            throw new Error(`Terjadi HTTP Error dengan status: ${response.status}`);
-        }
-
+        // TAHAP 1: SCAN HALAMAN
+        const response = await fetch(`${scanUrl}/${source}/${page}`);
         const data = await response.json();
 
-        if (data.status === 'success') {
-            // Skenario 1: Menemukan data baru atau memperbaiki data manual
-            if (data.fetched > 0 || data.healed > 0) {
-                let msgText = '';
-                if (data.fetched > 0) msgText += `<b>${data.fetched}</b> Anime baru dimasukkan ke Draft.<br>`;
-                if (data.healed > 0) msgText += `<b>${data.healed}</b> Data lama berhasil diperbaiki.<br>`;
+        if (data.status === 'success' && data.queue.length > 0) {
+            
+            let totalQueue = data.queue.length;
+            let successCount = 0;
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Proses Selesai',
-                    html: msgText, // Menyesuaikan kata-kata dengan mode Draft
-                }).then(() => {
-                    location.reload(); // Reload agar tabel Draft Admin terupdate
-                });
+            // TAHAP 2: PROSES ANTREAN SATU PER SATU (Di sini transparansi terjadi!)
+            for (let i = 0; i < totalQueue; i++) {
+                let anime = data.queue[i];
+                
+                // --- UPDATE TEKS LOADING DI SWEETALERT SECARA REAL-TIME ---
+                document.getElementById('status-text').innerHTML = 
+                    `<span style="color:#333;">Mengunduh (${i+1}/${totalQueue}):</span><br>
+                     <b style="font-size:1.1em; color:#ac11e9;">${anime.title}</b><br>
+                     <small><i>Menerjemahkan sinopsis & menarik episode...</i></small>`;
 
-            } 
-            // Skenario 2: Anime di halaman ini sudah ditarik semua, auto-lanjut ke halaman berikutnya
-            else if (data.fetched === 0 && data.has_next) {
+                // Kirim request ke backend untuk proses 1 anime ini saja
+                let formData = new FormData();
+                formData.append('mal_id', anime.mal_id);
+
+                const processReq = await fetch(processUrl, { method: 'POST', body: formData });
+                const processRes = await processReq.json();
+
+                if (processRes.status === 'success') {
+                    successCount++;
+                }
+                
+                // Jeda 1 detik antar anime agar tidak melanggar rate limit Jikan API
+                await new Promise(r => setTimeout(r, 1000)); 
+            }
+
+            // Jika semua antrean selesai
+            Swal.fire({
+                icon: 'success',
+                title: 'Tahap Selesai',
+                text: `${successCount} Anime baru berhasil dimasukkan ke Draft.`,
+            }).then(() => location.reload());
+
+        } 
+        else if (data.status === 'empty' || (data.status === 'success' && data.queue.length === 0)) {
+            // Jika halaman ini tidak punya anime baru, Lanjut Auto-Scan
+            if (data.has_next) {
                 pageTrackers[source]++; 
-
                 if (autoScanCount < maxAutoScan) {
-                    // Eksekusi ulang ke halaman berikutnya tanpa perlu user klik apa-apa
-                    await processSync(baseUrl, source, rawSource, autoScanCount + 1);
+                    await startSync(scanUrl, processUrl, source, rawSource, autoScanCount + 1);
                 } else {
-                    // Hentikan auto-scan dan beri opsi manual (Agar server tidak overload)
                     Swal.fire({
                         title: 'Sulit Menemukan Anime Baru',
-                        text: `Sistem sudah memindai ${maxAutoScan} halaman namun datanya sudah lengkap di DB Anda. Lanjutkan memindai?`,
+                        text: `Sudah memindai ${maxAutoScan} halaman namun datanya sudah ada di DB Anda. Lanjut scan?`,
                         icon: 'question',
                         showCancelButton: true,
                         confirmButtonText: 'Ya, Lanjut Scan',
-                        cancelButtonText: 'Berhenti'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            processSync(baseUrl, source, rawSource, 0); // Reset counter
-                        }
+                    }).then((res) => {
+                        if (res.isConfirmed) startSync(scanUrl, processUrl, source, rawSource, 0);
                     });
                 }
-            } 
-            // Skenario 3: Mentok ujung halaman Jikan API
-            else {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Sudah Mentok!',
-                    text: `Seluruh halaman di kategori ${rawSource} sudah Anda tarik semua.`,
-                    confirmButtonColor: '#ac11e9'
-                });
+            } else {
+                Swal.fire('Sudah Lengkap!', `Seluruh data di kategori ${rawSource} sudah Anda miliki.`, 'success');
             }
-        } else {
-            // Skenario 4: Jikan Rate Limit atau Error Internal CodeIgniter
-            Swal.fire('Proses Terhenti', data.message, 'warning');
+        } 
+        else {
+            Swal.fire('Proses Terhenti', data.message || 'Terjadi kesalahan.', 'warning');
         }
 
     } catch (error) {
-        // Skenario 5: Server down, database error, atau putus koneksi internet
-        console.error("Fetch API Error:", error);
-        Swal.fire(
-            'Koneksi Gagal', 
-            'Terjadi kesalahan internal atau jaringan terputus. Silakan periksa log server.', 
-            'error'
-        );
+        Swal.fire('Koneksi Gagal', 'Terjadi kesalahan sistem atau jaringan terputus.', 'error');
     }
 }
 

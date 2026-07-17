@@ -2389,209 +2389,144 @@ public function delete($slug)
         ]);
     }
 
-    public function fetchAnimeData($source = 'seasons/now', $page = 1)
+    public function scanPage($source = 'seasons/now', $page = 1)
     {
-        helper(['anime', 'mapAnimeStatus', 'translation', 'url']); 
         $client = \Config\Services::curlrequest();
-        $db = \Config\Database::connect();
-        
-        $fetched = 0; 
-        $healed = 0;  
-        
         $apiPath = str_replace('-', '/', $source); 
         
-        // 1. URL dinamis (Jangan paksakan sfw=true untuk top/anime)
         $apiUrl = "https://api.jikan.moe/v4/{$apiPath}?page={$page}";
-        if ($source !== 'top-anime') {
-            $apiUrl .= "&sfw=true"; // sfw hanya jalan di seasons, bukan di top ranking
-        }
+        if ($source !== 'top-anime') $apiUrl .= "&sfw=true";
 
         try {
             $response = $client->request('GET', $apiUrl, ['http_errors' => false]);
-            $statusCode = $response->getStatusCode();
+            if ($response->getStatusCode() !== 200) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'API Error: ' . $response->getStatusCode()]);
+            }
+
             $data = json_decode($response->getBody(), true);
-
-            // 2. TANGKAP SEMUA HTTP ERROR (Standar Profesional)
-            if ($statusCode !== 200) {
-                // Ambil pesan asli dari Jikan API
-                $apiErrorMsg = $data['message'] ?? "HTTP Error $statusCode";
-                
-                if ($statusCode === 429) {
-                    $apiErrorMsg = 'Rate limit Jikan API tercapai. Tunggu beberapa saat.';
-                }
-
-                return $this->response->setJSON([
-                    'status'  => 'error', 
-                    'message' => "Jikan API menolak request: $apiErrorMsg"
-                ]);
-            }
-
             $hasNextPage = $data['pagination']['has_next_page'] ?? false;
-
+            
             if (empty($data['data'])) {
-                return $this->response->setJSON(['status' => 'error', 'message' => 'Halaman ini kosong atau data anime tidak ditemukan.']);
+                return $this->response->setJSON(['status' => 'empty', 'has_next' => $hasNextPage]);
             }
 
+            $pendingAnimes = [];
+            // Kita batasi maksimal 5 anime per scan agar antrean tidak terlalu panjang
             $limitNewData = 5; 
-            $processedCount = 0;
 
             foreach ($data['data'] as $anime) {
-                // Hentikan loop jika sudah memproses 5 data (baru atau auto-heal)
-                if ($processedCount >= $limitNewData) break; 
+                if (count($pendingAnimes) >= $limitNewData) break;
 
-                // --- 2. CEK PRIORITAS 1: BERDASARKAN MAL ID ---
-                $existingAnime = $this->animeModel->where('mal_id', $anime['mal_id'])->first();
-                if ($existingAnime) continue; // Sudah ada dan sempurna, lewati!
+                // Cek apakah sudah ada di DB (mal_id)
+                if ($this->animeModel->where('mal_id', $anime['mal_id'])->first()) continue;
 
-                // --- 3. CEK PRIORITAS 2: AUTO-HEALING DATA MANUAL (Berdasarkan Judul) ---
+                // Cek apakah ada data manual lama
                 $titleOptions = [$anime['title']];
-                if (!empty($anime['title_english'])) {
-                    $titleOptions[] = $anime['title_english'];
-                }
+                if (!empty($anime['title_english'])) $titleOptions[] = $anime['title_english'];
+                $existingManual = $this->animeModel->whereIn('Judul', $titleOptions)->first();
 
-                $existingManualAnime = $this->animeModel->whereIn('Judul', $titleOptions)->first();
-
-                if ($existingManualAnime) {
-                    // Update data manual yang belum punya mal_id
-                    $updateData = ['mal_id' => $anime['mal_id']];
-                    if (empty($existingManualAnime['mal_score']) || $existingManualAnime['mal_score'] == 0) {
-                        $updateData['mal_score'] = $anime['score'] ?? 0.00;
-                    }
-                    $this->animeModel->update($existingManualAnime['id'], $updateData);
-
-                    // Catat log Auto-Heal
-                    $this->adminLogsModel->insert([
-                        'admin_id'    => session()->get('id') ?? 0,
-                        'admin_name'  => session()->get('nama') ?? 'System',
-                        'action'      => 'AUTO-HEAL',
-                        'item'        => 'Anime Master',
-                        'item_id'     => $existingManualAnime['id'],
-                        'description' => "Menambahkan MAL ID ({$anime['mal_id']}) ke data manual: <strong>" . $anime['title'] . "</strong>",
-                        'change_type' => "Update Data Manual"
-                    ]);
-
-                    $healed++;
-                    $processedCount++;
-                    continue; // Skip insert, lanjut ke anime berikutnya
-                }
-
-                // --- 4. INSERT DATA BARU DENGAN DATABASE TRANSACTION ---
-                $db->transStart(); 
-
-                $translatedDesc = $this->translateTextGoogle($anime['synopsis'] ?? '', 'id', 'en');
-
-                // Siapkan Data Utama
-                $animeData = [
-                    'Judul'           => $anime['title'],
-                    'slug'            => url_title($anime['title'], '-', true),
-                    'Poster'          => $anime['images']['webp']['large_image_url'] ?? null,
-                    'BackgroundCover' => $anime['images']['webp']['large_image_url'] ?? null,
-                    'Desc'            => $translatedDesc,
-                    'Eps'             => $anime['episodes'] ?? 0,
-                    'Durasi'          => $this->parseDurationToMinutes($anime['duration'] ?? ''),
-                    'Rilis'           => $anime['aired']['from'] ?? null,
-                    'JudulLainnya'    => $anime['title_japanese'] ?? null,
-                    'typeId'          => mapAnimeType($anime['type'] ?? 'TV'),
-                    'status'          => mapAnimeStatus($anime['status'] ?? 'Finished Airing'),
-                    
-                    'statusTayang'    => 'draft', // 🔥 UBAH MENJADI DRAFT (Sesuai Metode Hibrida)
-                    
-                    'mal_id'          => $anime['mal_id'],
-                    'mal_score'       => $anime['score'] ?? 0.00,
-                    'source'          => $anime['source'] ?? 'Unknown',
-                    'season'          => $anime['season'] ?? 'Unknown',
-                    'release_year'    => $anime['year'] ?? null,
-                    'created_at'      => date('Y-m-d H:i:s'),
-                ];
-
-                $this->animeModel->insert($animeData);
-                $animeInternalId = $this->animeModel->getInsertID();
-
-                // Studio Logic
-                $listStudio = [];
-                if (!empty($anime['studios'])) {
-                    foreach ($anime['studios'] as $s) {
-                        $listStudio[] = $s['name'];
-                        $existingStudio = $db->table('studios')->where('nama_studio', $s['name'])->get()->getRowArray();
-                        
-                        if (!$existingStudio) {
-                            $db->table('studios')->insert([
-                                'nama_studio' => $s['name'],
-                                'slug_studio' => url_title($s['name'], '-', true)
-                            ]);
-                            $studioId = $db->insertID();
-                        } else {
-                            $studioId = $existingStudio['id'];
-                        }
-
-                        $db->table('anime_studios')->insert(['anime_id' => $animeInternalId, 'studio_id' => $studioId]);
-                    }
-                }
-
-                // Genre Logic
-                $allTags = array_merge($anime['genres'] ?? [], $anime['themes'] ?? [], $anime['demographics'] ?? []);
-                $listGenre = [];
-                if (!empty($allTags)) {
-                    foreach ($allTags as $g) {
-                        $listGenre[] = $g['name']; 
-                        $existingGenre = $this->genreModel->where('genre', $g['name'])->first();
-                        
-                        if (!$existingGenre) {
-                            $this->genreModel->insert([
-                                'genre'      => $g['name'], 
-                                'slug_genre' => url_title($g['name'], '-', true)
-                            ]);
-                            $genreId = $this->genreModel->getInsertID();
-                        } else {
-                            $genreId = $existingGenre['id'];
-                        }
-                        
-                        $db->table('animegenre')->insert(['anime_id' => $animeInternalId, 'genre_id' => $genreId]);
-                    }
-                }
-
-                // Episode Fetch Logic
-                $jumlahEps = $this->autoFetchEpisodes($anime['mal_id'], $animeInternalId, $db);
-
-                // Admin Log Logic
-                $strStudio = !empty($listStudio) ? implode(", ", $listStudio) : 'Unknown';
-                $strGenre = !empty($listGenre) ? implode(", ", $listGenre) : 'Unknown';
-                
-                $this->adminLogsModel->insert([
-                    'admin_id'    => session()->get('id') ?? 0,
-                    'admin_name'  => session()->get('nama') ?? 'System',
-                    'action'      => 'SYNC API (DRAFT)',
-                    'item'        => 'Anime Master',
-                    'item_id'     => $animeInternalId,
-                    'description' => 'Sinkronisasi Jikan API, masuk sebagai Draft: <strong>' . $anime['title'] .'</strong>',
-                    'change_type' => "Tarikan API: <strong>$jumlahEps Eps</strong>, Studio: <strong>$strStudio</strong>, Genre: <strong>$strGenre</strong>"
-                ]);
-
-                // Eksekusi Transaction
-                $db->transComplete();
-
-                if ($db->transStatus() === FALSE) {
-                    log_message('error', "Rollback DB Transaction untuk MAL ID: " . $anime['mal_id']);
+                if ($existingManual) {
+                    // AUTO-HEAL DATA LAMA (Proses langsung di sini secara instan)
+                    $this->animeModel->update($existingManual['id'], ['mal_id' => $anime['mal_id']]);
                     continue; 
                 }
 
-                $fetched++;
-                $processedCount++;
-                sleep(1); // Jeda Rate Limit Jikan
+                // Jika benar-benar baru, masukkan ke daftar antrean
+                $pendingAnimes[] = [
+                    'mal_id' => $anime['mal_id'],
+                    'title'  => $anime['title']
+                ];
             }
 
             return $this->response->setJSON([
-                'status'   => 'success', 
-                'fetched'  => $fetched,
-                'healed'   => $healed,
-                'has_next' => $hasNextPage,
-                'message'  => "Sync selesai. $fetched masuk Draft, $healed data lama diperbaiki."
+                'status'    => 'success',
+                'has_next'  => $hasNextPage,
+                'queue'     => $pendingAnimes // Mengirim antrean ke JavaScript
             ]);
 
         } catch (\Exception $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
+
+    // --- 2. FUNGSI UNTUK MEMPROSES 1 ANIME SAJA (BESERTA EPISODE) ---
+    public function processSingle()
+    {
+        helper(['anime', 'mapAnimeStatus', 'translation', 'url']); 
+        $mal_id = $this->request->getPost('mal_id');
+
+        if (!$mal_id) return $this->response->setJSON(['status' => 'error']);
+
+        $client = \Config\Services::curlrequest();
+        $db = \Config\Database::connect();
+
+        try {
+            // Tarik detail Full Anime
+            $response = $client->request('GET', "https://api.jikan.moe/v4/anime/{$mal_id}/full", ['http_errors' => false]);
+            if ($response->getStatusCode() !== 200) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menarik data detail.']);
+            }
+
+            $anime = json_decode($response->getBody(), true)['data'];
+
+            // -- DATABASE TRANSACTION DIMULAI --
+            $db->transStart();
+
+            $translatedDesc = $this->translateTextGoogle($anime['synopsis'] ?? '', 'id', 'en');
+
+            $animeData = [
+                'Judul'           => $anime['title'],
+                'slug'            => url_title($anime['title'], '-', true),
+                'Poster'          => $anime['images']['webp']['large_image_url'] ?? null,
+                'BackgroundCover' => $anime['images']['webp']['large_image_url'] ?? null,
+                'Desc'            => $translatedDesc,
+                'Eps'             => $anime['episodes'] ?? 0,
+                'Durasi'          => $this->parseDurationToMinutes($anime['duration'] ?? ''),
+                'Rilis'           => $anime['aired']['from'] ?? null,
+                'typeId'          => mapAnimeType($anime['type'] ?? 'TV'),
+                'status'          => mapAnimeStatus($anime['status'] ?? 'Finished Airing'),
+                'statusTayang'    => 'draft', 
+                'mal_id'          => $anime['mal_id'],
+                'mal_score'       => $anime['score'] ?? 0.00,
+                'created_at'      => date('Y-m-d H:i:s'),
+            ];
+
+            $this->animeModel->insert($animeData);
+            $animeInternalId = $this->animeModel->getInsertID();
+
+            // Insert Studios & Genres (Singkatnya sama seperti kode sebelumnya)
+            if (!empty($anime['studios'])) {
+                foreach ($anime['studios'] as $s) {
+                    $studio = $db->table('studios')->where('nama_studio', $s['name'])->get()->getRowArray();
+                    $studioId = $studio ? $studio['id'] : $db->table('studios')->insert(['nama_studio' => $s['name'], 'slug_studio' => url_title($s['name'], '-', true)]) && $db->insertID();
+                    $db->table('anime_studios')->insert(['anime_id' => $animeInternalId, 'studio_id' => $studioId]);
+                }
+            }
+
+            if (!empty($anime['genres'])) {
+                foreach ($anime['genres'] as $g) {
+                    $genre = $this->genreModel->where('genre', $g['name'])->first();
+                    $genreId = $genre ? $genre['id'] : $this->genreModel->insert(['genre' => $g['name'], 'slug_genre' => url_title($g['name'], '-', true)]) && $this->genreModel->getInsertID();
+                    $db->table('animegenre')->insert(['anime_id' => $animeInternalId, 'genre_id' => $genreId]);
+                }
+            }
+
+            // Tarik Episode
+            $jumlahEps = $this->autoFetchEpisodes($anime['mal_id'], $animeInternalId, $db);
+
+            $db->transComplete();
+
+            if ($db->transStatus() === FALSE) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Database error.']);
+            }
+
+            return $this->response->setJSON(['status' => 'success', 'eps_count' => $jumlahEps]);
+
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
 
     private function autoFetchEpisodes($malId, $animeInternalId, $db)
     {
