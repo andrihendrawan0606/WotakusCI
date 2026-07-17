@@ -2464,8 +2464,9 @@ public function delete($slug)
         helper(['anime', 'mapAnimeStatus', 'translation', 'url']); 
         $mal_id = $this->request->getPost('mal_id');
 
-        if (!$mal_id) return $this->response->setJSON(['status' => 'error']);
+        if (!$mal_id) return $this->response->setJSON(['status' => 'error', 'message' => 'MAL ID kosong']);
 
+        // Proteksi Duplikat
         $existing = $this->animeModel->where('mal_id', $mal_id)->first();
         if ($existing) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Anime ini sudah ada di database.']);
@@ -2475,10 +2476,24 @@ public function delete($slug)
         $db = \Config\Database::connect();
 
         try {
-            // Tarik detail Full Anime
-            $response = $client->request('GET', "https://api.jikan.moe/v4/anime/{$mal_id}/full", ['http_errors' => false]);
+            // --- PERBAIKAN 1: AUTO-RETRY JIKA JIKAN MENOLAK (RATE LIMIT) ---
+            $response = null;
+            $maxRetries = 3; // Coba maksimal 3 kali jika ditolak
+            
+            for ($i = 0; $i < $maxRetries; $i++) {
+                $response = $client->request('GET', "https://api.jikan.moe/v4/anime/{$mal_id}/full", ['http_errors' => false]);
+                
+                if ($response->getStatusCode() === 200) {
+                    break; // Jika sukses, keluar dari loop
+                } else if ($response->getStatusCode() === 429) {
+                    sleep(2); // Jika ditolak karena limit, tidur 2 detik lalu coba lagi
+                } else {
+                    break; // Jika error lain (misal 404), langsung berhenti
+                }
+            }
+
             if ($response->getStatusCode() !== 200) {
-                return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menarik data detail.']);
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Jikan API menolak request detail (Status: '.$response->getStatusCode().').']);
             }
 
             $anime = json_decode($response->getBody(), true)['data'];
@@ -2489,8 +2504,9 @@ public function delete($slug)
             $translatedDesc = $this->translateTextGoogle($anime['synopsis'] ?? '', 'id', 'en');
 
             $animeData = [
-                'Judul'           => $anime['title'],
-                'slug'            => url_title($anime['title'], '-', true),
+                // PASTIKAN NAMA KOLOM DI BAWAH INI SAMA PERSIS DENGAN DATABASEMU
+                'Judul'           => mb_substr($anime['title'], 0, 200), // Potong judul jika kepanjangan
+                'slug'            => url_title(mb_substr($anime['title'], 0, 100), '-', true),
                 'Poster'          => $anime['images']['webp']['large_image_url'] ?? null,
                 'BackgroundCover' => $anime['images']['webp']['large_image_url'] ?? null,
                 'Desc'            => $translatedDesc,
@@ -2505,7 +2521,15 @@ public function delete($slug)
                 'created_at'      => date('Y-m-d H:i:s'),
             ];
 
-            $this->animeModel->insert($animeData);
+            // --- PERBAIKAN 2: RADAR DETEKTIF DATABASE ---
+            $insertAnime = $this->animeModel->insert($animeData);
+            
+            if (!$insertAnime) {
+                // Tangkap error asli dari database!
+                $dbError = $db->error();
+                return $this->response->setJSON(['status' => 'error', 'message' => "DB Error: " . $dbError['message']]);
+            }
+            
             $animeInternalId = $this->animeModel->getInsertID();
 
             // Insert Studios & Genres (Singkatnya sama seperti kode sebelumnya)
@@ -2531,14 +2555,10 @@ public function delete($slug)
             $db->transComplete();
 
             if ($db->transStatus() === FALSE) {
-                return $this->response->setJSON(['status' => 'error', 'message' => 'Database error.']);
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Transaction Gagal: Ada error di tabel relasi.']);
             }
 
-            return $this->response->setJSON([
-                'status'    => 'success', 
-                'eps_count' => $jumlahEps,
-                'anime_id'  => $animeInternalId // <-- Tambahan agar JS tahu ID animenya
-            ]);
+            return $this->response->setJSON(['status' => 'success', 'new_eps' => (int) $jumlahEps, 'anime_id' => $animeInternalId]);
 
         } catch (\Exception $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
