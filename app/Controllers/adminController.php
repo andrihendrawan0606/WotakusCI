@@ -1060,16 +1060,13 @@ public function createEpisode($slug)
             return $this->response->setStatusCode(400)->setJSON(['error' => $this->validator->getErrors()['video_path']]);
         }
 
-        $videoFile = $this->request->getFile('video_path');
-        if ($videoFile->isValid() && !$videoFile->hasMoved()) {
-            $newName = $videoFile->getRandomName();
-            // Pindahkan ke folder TEMP
-            $videoFile->move(FCPATH . 'assets/videos/temp', $newName);
+        $file = $this->request->getFile('video_path');
+    
+        if (!$file || !$file->isValid()) {
+            // Ambil pesan error asli dari PHP agar kita tahu penyebab pastinya!
+            $errorString = $file ? $file->getErrorString() . ' (Error Code: ' . $file->getError() . ')' : 'File tidak terbaca sama sekali.';
             
-            return $this->response->setJSON([
-                'status' => 'success', 
-                'filename' => $newName
-            ]);
+            return $this->response->setStatusCode(400)->setJSON(['error' => 'Gagal: ' . $errorString]);
         }
 
         return $this->response->setStatusCode(400)->setJSON(['error' => 'Gagal memindahkan file.']);
