@@ -282,7 +282,7 @@
 
                             <!-- AREA 1: UPLOAD LOCAL -->
                             <div id="videoUploadArea">
-                                <small class="text-muted d-block text-left mb-2">Maks 100MB (MP4, AVI, MKV)</small>
+                                <small class="text-muted d-block text-left mb-2">Maks 3GB (MP4, AVI, MKV)</small>
                                 
                                 <div id="drop-zone-video" class="drop-zone">
                                     <i class="fas fa-cloud-upload-alt"></i>

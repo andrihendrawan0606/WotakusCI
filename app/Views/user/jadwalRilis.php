@@ -248,7 +248,7 @@
 <body>
 <div class="container">
     <div class="header-jadwal">
-        Jadwal Rilis Anime Fall 2024
+        Jadwal Rilis Anime 2026
     </div>
     
     <div class="tabs">

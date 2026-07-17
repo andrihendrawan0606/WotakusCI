@@ -1603,10 +1603,6 @@ public function ProsesEdit($id)
         }
 
         $changes = [];
-
-        // ==========================================
-        // 3. PROSES UPLOAD GAMBAR (MENDUKUNG URL & FILE)
-        // ==========================================
         
         // --- BACKGROUND COVER ---
 // ==========================================
@@ -2457,6 +2453,11 @@ public function delete($slug)
 
         if (!$mal_id) return $this->response->setJSON(['status' => 'error']);
 
+        $existing = $this->animeModel->where('mal_id', $mal_id)->first();
+        if ($existing) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Anime ini sudah ada di database.']);
+        }
+
         $client = \Config\Services::curlrequest();
         $db = \Config\Database::connect();
 
@@ -2621,6 +2622,109 @@ public function delete($slug)
         if (preg_match('/(\d+)\s*min/', $durationStr, $matches)) $totalMinutes += intval($matches[1]);
         if ($totalMinutes === 0) $totalMinutes = intval(filter_var($durationStr, FILTER_SANITIZE_NUMBER_INT));
         return $totalMinutes;
+    }
+
+    // --- FUNGSI MENCARI ANIME ON-GOING DI DATABASE LOKAL ---
+    public function scanOngoing()
+    {
+        // Catatan: Pastikan string 'Currently Airing' sesuai dengan status yang kamu gunakan di DB-mu
+        $ongoingAnimes = $this->animeModel->where('status', 'Currently Airing')->findAll();
+        
+        $queue = [];
+        foreach ($ongoingAnimes as $anime) {
+            if (!empty($anime['mal_id'])) {
+                $queue[] = [
+                    'internal_id' => $anime['id'], 
+                    'mal_id'      => $anime['mal_id'],
+                    'title'       => $anime['Judul']
+                ];
+            }
+        }
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'queue'  => $queue
+        ]);
+    }
+
+    // --- FUNGSI MENGECEK & MENAMBAH EPISODE BARU SAJA ---
+    public function updateEpisodeSingle()
+    {
+        $mal_id = $this->request->getPost('mal_id');
+        $internal_id = $this->request->getPost('internal_id');
+
+        if (!$mal_id || !$internal_id) return $this->response->setJSON(['status' => 'error']);
+
+        $db = \Config\Database::connect();
+        $client = \Config\Services::curlrequest();
+        $newEpsCount = 0;
+        $page = 1;
+        $hasNextPage = true;
+
+        try {
+            while ($hasNextPage) {
+                $epUrl = "https://api.jikan.moe/v4/anime/{$mal_id}/episodes?page={$page}";
+                $response = $client->request('GET', $epUrl, ['http_errors' => false]);
+                if ($response->getStatusCode() !== 200) break;
+
+                $epData = json_decode($response->getBody(), true);
+
+                if (!empty($epData['data'])) {
+                    foreach ($epData['data'] as $ep) {
+                        // Cek apakah episode ini sudah ada di tabel berdasarkan episode_number
+                        $existingEp = $db->table('episodeanime')
+                                         ->where('anime_id', $internal_id)
+                                         ->where('episode_number', $ep['mal_id']) 
+                                         ->get()->getRow();
+
+                        // Jika BELUM ADA, maka Insert!
+                        if (!$existingEp) {
+                            $db->table('episodeanime')->insert([
+                                'anime_id'       => $internal_id,
+                                'judul'          => $ep['title'] ?? 'Episode ' . $ep['mal_id'],
+                                'slug-episode'   => 'episode-' . $ep['mal_id'] . '-' . bin2hex(random_bytes(2)),
+                                'episode_number' => $ep['mal_id'],
+                                'deskripsi'      => 'Episode terbaru dari seri ini.',
+                                'GambarPreview'  => 'default.png',
+                                'video_path'     => 'default.mp4',
+                                'created_at'     => date('Y-m-d H:i:s')
+                            ]);
+                            
+                            $lastEpId = $db->insertID();
+                            $db->table('episode_views')->insert([
+                                'episode_id' => $lastEpId,
+                                'view_count' => 0, 
+                                'created_at' => date('Y-m-d H:i:s')
+                            ]);
+                            $newEpsCount++;
+                        }
+                    }
+                }
+                
+                $hasNextPage = $epData['pagination']['has_next_page'] ?? false;
+                if ($hasNextPage) {
+                    $page++;
+                    sleep(1); 
+                }
+            }
+
+            if ($newEpsCount > 0) {
+                $this->adminLogsModel->insert([
+                    'admin_id'    => session()->get('id') ?? 0,
+                    'admin_name'  => session()->get('nama') ?? 'System',
+                    'action'      => 'UPDATE EPISODE',
+                    'item'        => 'Episode Anime',
+                    'item_id'     => $internal_id,
+                    'description' => "Menambahkan <strong>$newEpsCount episode baru</strong> via Jikan.",
+                    'change_type' => 'Update Rutin Mingguan'
+                ]);
+            }
+
+            return $this->response->setJSON(['status' => 'success', 'new_eps' => $newEpsCount]);
+
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 
     protected function translateTextGoogle($text, $targetLanguage = 'id', $sourceLanguage = 'en')
