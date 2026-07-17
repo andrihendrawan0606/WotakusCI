@@ -411,7 +411,7 @@
     </a>
 
     <!-- Grup Sinkronisasi (Select + Button) -->
-        <div class="sync-group-modern">
+    <div class="sync-group-modern">
         <div class="select-wrapper">
             <select id="fetchSource" class="custom-select-modern">
                 <option value="seasons/now">Anime Musim Ini (On-Going)</option>
@@ -421,10 +421,11 @@
             <i class="fas fa-chevron-down select-icon"></i>
         </div>
         
-        <!-- PERHATIKAN PERUBAHAN DI DALAM base_url INI -->
+        <!-- Tambahkan data-publish -->
         <button id="btnSync" 
                 data-scan="<?= base_url('dashboard/scanPage') ?>" 
                 data-process="<?= base_url('dashboard/processSingle') ?>" 
+                data-publish="<?= base_url('dashboard/publishBatch') ?>"
                 class="btn-modern-sync">
             <i class="fas fa-sync-alt"></i>
             <span>Sync</span>
@@ -959,17 +960,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const source = rawSource.replace('/', '-');
             const scanUrl = this.getAttribute('data-scan');
             const processUrl = this.getAttribute('data-process');
+            const publishUrl = this.getAttribute('data-publish'); // URL Publish
             
-            await startSync(scanUrl, processUrl, source, rawSource);
+            await startSync(scanUrl, processUrl, publishUrl, source, rawSource);
         });
     }
 });
 
-async function startSync(scanUrl, processUrl, source, rawSource, autoScanCount = 0) {
+async function startSync(scanUrl, processUrl, publishUrl, source, rawSource, autoScanCount = 0) {
     const page = pageTrackers[source] || 1;
     const maxAutoScan = 3; 
 
-    // Munculkan Loading Awal
     Swal.fire({
         title: 'Mencari Anime Baru...',
         html: `Memindai koleksi <b>${rawSource}</b> <br>Halaman: <b>${page}</b>...<br><br><span id="status-text" style="color:#ac11e9; font-weight:bold;">Menghubungkan ke Jikan API...</span>`,
@@ -980,7 +981,6 @@ async function startSync(scanUrl, processUrl, source, rawSource, autoScanCount =
     });
 
     try {
-        // TAHAP 1: SCAN HALAMAN
         const response = await fetch(`${scanUrl}/${source}/${page}`);
         const data = await response.json();
 
@@ -988,18 +988,16 @@ async function startSync(scanUrl, processUrl, source, rawSource, autoScanCount =
             
             let totalQueue = data.queue.length;
             let successCount = 0;
+            let newlyFetchedIds = []; // Variabel untuk menyimpan ID anime yang baru ditarik
 
-            // TAHAP 2: PROSES ANTREAN SATU PER SATU (Di sini transparansi terjadi!)
             for (let i = 0; i < totalQueue; i++) {
                 let anime = data.queue[i];
                 
-                // --- UPDATE TEKS LOADING DI SWEETALERT SECARA REAL-TIME ---
                 document.getElementById('status-text').innerHTML = 
                     `<span style="color:#333;">Mengunduh (${i+1}/${totalQueue}):</span><br>
                      <b style="font-size:1.1em; color:#ac11e9;">${anime.title}</b><br>
                      <small><i>Menerjemahkan sinopsis & menarik episode...</i></small>`;
 
-                // Kirim request ke backend untuk proses 1 anime ini saja
                 let formData = new FormData();
                 formData.append('mal_id', anime.mal_id);
 
@@ -1008,26 +1006,66 @@ async function startSync(scanUrl, processUrl, source, rawSource, autoScanCount =
 
                 if (processRes.status === 'success') {
                     successCount++;
+                    if (processRes.anime_id) {
+                        newlyFetchedIds.push(processRes.anime_id); // Simpan ID-nya!
+                    }
                 }
                 
-                // Jeda 1 detik antar anime agar tidak melanggar rate limit Jikan API
                 await new Promise(r => setTimeout(r, 1000)); 
             }
 
-            // Jika semua antrean selesai
-            Swal.fire({
-                icon: 'success',
-                title: 'Tahap Selesai',
-                text: `${successCount} Anime baru berhasil dimasukkan ke Draft.`,
-            }).then(() => location.reload());
+            // --- BAGIAN BARU: PILIHAN SETELAH SELESAI ---
+            if (newlyFetchedIds.length > 0) {
+                Swal.fire({
+                    title: 'Unduhan Selesai!',
+                    text: `${successCount} Anime baru berhasil ditarik. Apakah Anda ingin langsung mem-publish data ini atau menyimpannya sebagai Draft?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745', // Warna Hijau (Publish)
+                    cancelButtonColor: '#6c757d', // Warna Abu-abu (Draft)
+                    confirmButtonText: 'Langsung Publish',
+                    cancelButtonText: 'Biarkan di Draft',
+                    allowOutsideClick: false
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        // Jika Admin memilih PUBLISH
+                        Swal.fire({
+                            title: 'Mempublish Data...',
+                            allowOutsideClick: false,
+                            didOpen: () => Swal.showLoading()
+                        });
+
+                        try {
+                            await fetch(publishUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ ids: newlyFetchedIds }) // Kirim ID yang mau dipublish
+                            });
+                            Swal.fire('Berhasil!', 'Semua anime baru telah diterbitkan.', 'success')
+                                .then(() => location.reload());
+                        } catch (e) {
+                            Swal.fire('Error', 'Gagal mempublish. Data tetap tersimpan di Draft.', 'error')
+                                .then(() => location.reload());
+                        }
+
+                    } else {
+                        // Jika Admin memilih DRAFT
+                        Swal.fire('Tersimpan!', 'Data aman tersimpan di menu Draft Anda.', 'info')
+                            .then(() => location.reload());
+                    }
+                });
+            } else {
+                Swal.fire('Info', 'Proses selesai namun tidak ada data yang berhasil masuk.', 'info')
+                    .then(() => location.reload());
+            }
 
         } 
         else if (data.status === 'empty' || (data.status === 'success' && data.queue.length === 0)) {
-            // Jika halaman ini tidak punya anime baru, Lanjut Auto-Scan
+            // (Tetap biarkan logika auto-scan persis seperti sebelumnya)
             if (data.has_next) {
                 pageTrackers[source]++; 
                 if (autoScanCount < maxAutoScan) {
-                    await startSync(scanUrl, processUrl, source, rawSource, autoScanCount + 1);
+                    await startSync(scanUrl, processUrl, publishUrl, source, rawSource, autoScanCount + 1);
                 } else {
                     Swal.fire({
                         title: 'Sulit Menemukan Anime Baru',
@@ -1036,7 +1074,7 @@ async function startSync(scanUrl, processUrl, source, rawSource, autoScanCount =
                         showCancelButton: true,
                         confirmButtonText: 'Ya, Lanjut Scan',
                     }).then((res) => {
-                        if (res.isConfirmed) startSync(scanUrl, processUrl, source, rawSource, 0);
+                        if (res.isConfirmed) startSync(scanUrl, processUrl, publishUrl, source, rawSource, 0);
                     });
                 }
             } else {

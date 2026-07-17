@@ -2520,11 +2520,40 @@ public function delete($slug)
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Database error.']);
             }
 
-            return $this->response->setJSON(['status' => 'success', 'eps_count' => $jumlahEps]);
+            return $this->response->setJSON([
+                'status'    => 'success', 
+                'eps_count' => $jumlahEps,
+                'anime_id'  => $animeInternalId // <-- Tambahan agar JS tahu ID animenya
+            ]);
 
         } catch (\Exception $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
         }
+    }
+
+    public function publishBatch()
+    {
+        // Tangkap array ID yang dikirim oleh JavaScript
+        $json = $this->request->getJSON();
+        $ids = $json->ids ?? [];
+
+        if (!empty($ids)) {
+            // Ubah statusTayang dari 'draft' menjadi 'published' untuk anime baru
+            $this->animeModel->update($ids, ['statusTayang' => 'published']);
+            
+            // Catat ke log admin
+            $this->adminLogsModel->insert([
+                'admin_id'    => session()->get('id') ?? 0,
+                'admin_name'  => session()->get('nama') ?? 'System',
+                'action'      => 'PUBLISH BATCH',
+                'item'        => 'Anime Master',
+                'item_id'     => implode(', ', $ids),
+                'description' => count($ids) . ' Anime hasil tarikan Jikan API langsung di-publish.',
+                'change_type' => 'Status Draft -> Published'
+            ]);
+        }
+
+        return $this->response->setJSON(['status' => 'success']);
     }
 
 
