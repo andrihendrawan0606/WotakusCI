@@ -2481,7 +2481,7 @@ public function delete($slug)
             $maxRetries = 3; // Coba maksimal 3 kali jika ditolak
             
             for ($i = 0; $i < $maxRetries; $i++) {
-                $response = $client->request('GET', "https://api.jikan.moe/v4/anime/{$mal_id}/full", ['http_errors' => false]);
+                $response = $client->request('GET', "https://api.jikan.moe/v4/anime/{$mal_id}", ['http_errors' => false, 'timeout' => 15]);
                 
                 if ($response->getStatusCode() === 200) {
                     break; // Jika sukses, keluar dari loop
