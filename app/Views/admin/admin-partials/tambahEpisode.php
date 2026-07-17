@@ -1086,6 +1086,16 @@
             });
 
             const formData = new FormData(this);
+
+            formData.delete('video_path_dummy'); 
+            formData.delete('video_path'); 
+            
+            const autoThumb = formData.get('auto_generated_thumbnail');
+            if (autoThumb && autoThumb.trim() !== '') {
+                formData.delete('gambarPreview'); 
+            }
+            // ==============================================================
+
             $.ajax({
                 url: $(this).attr('action'),
                 method: 'POST',
