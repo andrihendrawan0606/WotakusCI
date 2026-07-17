@@ -1060,15 +1060,16 @@ public function createEpisode($slug)
             return $this->response->setStatusCode(400)->setJSON(['error' => $this->validator->getErrors()['video_path']]);
         }
 
-        $videoFile = $this->request->getFile('video_path');
-        if ($videoFile->isValid() && !$videoFile->hasMoved()) {
-            $newName = $videoFile->getRandomName();
-            // Pindahkan ke folder TEMP
-            $videoFile->move(FCPATH . 'assets/videos/temp', $newName);
+        $file = $this->request->getFile('video_path');
+    
+        // --- GANTI BAGIAN INI ---
+        if (!$file || !$file->isValid()) {
+            // Ini akan menangkap alasan ASLI dari server
+            $alasanError = $file ? $file->getErrorString() : 'File sama sekali tidak terkirim dari browser.';
+            $kodeError = $file ? $file->getError() : 'Unknown';
             
-            return $this->response->setJSON([
-                'status' => 'success', 
-                'filename' => $newName
+            return $this->response->setStatusCode(400)->setJSON([
+                'error' => "Gagal (Kode $kodeError): " . $alasanError
             ]);
         }
 
