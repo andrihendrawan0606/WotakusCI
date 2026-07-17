@@ -2691,6 +2691,15 @@ public function delete($slug)
                                 'video_path'     => 'default.mp4',
                                 'created_at'     => date('Y-m-d H:i:s')
                             ]);
+
+                            $inserted = $db->table('episodeanime')->insert($insertData);
+                            
+                            // --- RADAR PELACAK ERROR DATABASE (TAMBAHAN BARU) ---
+                            if (!$inserted) {
+                                $dbError = $db->error();
+                                // Ini akan menghentikan proses dan memunculkan error asli dari Database ke layarmu!
+                                throw new \Exception("DB Ditolak: " . $dbError['message']);
+                            }
                             
                             $lastEpId = $db->insertID();
                             $db->table('episode_views')->insert([
