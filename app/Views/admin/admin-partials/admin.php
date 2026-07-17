@@ -1084,9 +1084,16 @@ async function startMasterSync(urls, source, rawSource, autoScanCount = 0) {
                 const res = await req.json();
 
                 if (res.status === 'success') {
-                    successCount++;
-                    if (!isUpdateMode && res.anime_id) newlyFetchedIds.push(res.anime_id);
-                    if (isUpdateMode && res.new_eps > 0) totalNewEps += res.new_eps;
+                    successCount++; 
+                    
+                    if (!isUpdateMode && res.anime_id) {
+                        newlyFetchedIds.push(res.anime_id);
+                    }
+                    
+                    if (isUpdateMode) {
+                        let newEps = parseInt(res.new_eps) || 0; 
+                        totalNewEps += newEps;
+                    }
                 }
             } catch (e) { console.log('Skipped/Error on', item.title); }
 

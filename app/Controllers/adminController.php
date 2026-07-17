@@ -2742,7 +2742,10 @@ public function delete($slug)
                 ]);
             }
 
-            return $this->response->setJSON(['status' => 'success', 'new_eps' => $newEpsCount]);
+            return $this->response->setJSON([
+                'status'  => 'success', 
+                'new_eps' => (int) $newEpsCount 
+            ]);
 
         } catch (\Exception $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
