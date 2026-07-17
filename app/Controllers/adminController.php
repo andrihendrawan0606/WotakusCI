@@ -2667,13 +2667,24 @@ public function delete($slug)
             while ($hasNextPage) {
                 $epUrl = "https://api.jikan.moe/v4/anime/{$mal_id}/episodes?page={$page}";
                 $response = $client->request('GET', $epUrl, ['http_errors' => false]);
-                if ($response->getStatusCode() !== 200) break;
+                $statusCode = $response->getStatusCode();
+
+
+                if ($statusCode === 429) {
+                    sleep(3); 
+                    continue; 
+                }
+
+                if ($statusCode !== 200) {
+                    break; 
+                }
+                // --------------------------------------------
 
                 $epData = json_decode($response->getBody(), true);
 
                 if (!empty($epData['data'])) {
                     foreach ($epData['data'] as $ep) {
-                        // Cek apakah episode ini sudah ada di tabel berdasarkan episode_number
+
                         $existingEp = $db->table('episodeanime')
                                          ->where('anime_id', $internal_id)
                                          ->where('episode_number', $ep['mal_id']) 

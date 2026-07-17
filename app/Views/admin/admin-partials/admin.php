@@ -1090,7 +1090,7 @@ async function startMasterSync(urls, source, rawSource, autoScanCount = 0) {
                 }
             } catch (e) { console.log('Skipped/Error on', item.title); }
 
-            await new Promise(r => setTimeout(r, 1000)); // Jeda Rate-Limit
+            await new Promise(r => setTimeout(r, 2000)); // Jeda Rate-Limit
         }
 
         // ==========================================
