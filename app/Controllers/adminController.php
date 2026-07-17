@@ -2395,26 +2395,41 @@ public function delete($slug)
         $client = \Config\Services::curlrequest();
         $db = \Config\Database::connect();
         
-        $fetched = 0; // Menghitung anime baru yang berhasil di-insert ke Draft
-        $healed = 0;  // Menghitung anime manual yang berhasil diperbaiki (Auto-heal)
+        $fetched = 0; 
+        $healed = 0;  
         
         $apiPath = str_replace('-', '/', $source); 
-        $apiUrl = "https://api.jikan.moe/v4/{$apiPath}?page={$page}&sfw=true";
+        
+        // 1. URL dinamis (Jangan paksakan sfw=true untuk top/anime)
+        $apiUrl = "https://api.jikan.moe/v4/{$apiPath}?page={$page}";
+        if ($source !== 'top-anime') {
+            $apiUrl .= "&sfw=true"; // sfw hanya jalan di seasons, bukan di top ranking
+        }
 
         try {
             $response = $client->request('GET', $apiUrl, ['http_errors' => false]);
             $statusCode = $response->getStatusCode();
+            $data = json_decode($response->getBody(), true);
 
-            // 1. Handle Rate Limit Jikan API (HTTP 429)
-            if ($statusCode === 429) {
-                return $this->response->setJSON(['status' => 'error', 'message' => 'Rate limit Jikan API tercapai. Sistem dihentikan sejenak.']);
+            // 2. TANGKAP SEMUA HTTP ERROR (Standar Profesional)
+            if ($statusCode !== 200) {
+                // Ambil pesan asli dari Jikan API
+                $apiErrorMsg = $data['message'] ?? "HTTP Error $statusCode";
+                
+                if ($statusCode === 429) {
+                    $apiErrorMsg = 'Rate limit Jikan API tercapai. Tunggu beberapa saat.';
+                }
+
+                return $this->response->setJSON([
+                    'status'  => 'error', 
+                    'message' => "Jikan API menolak request: $apiErrorMsg"
+                ]);
             }
 
-            $data = json_decode($response->getBody(), true);
             $hasNextPage = $data['pagination']['has_next_page'] ?? false;
 
             if (empty($data['data'])) {
-                return $this->response->setJSON(['status' => 'error', 'message' => 'Data anime tidak ditemukan.']);
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Halaman ini kosong atau data anime tidak ditemukan.']);
             }
 
             $limitNewData = 5; 
