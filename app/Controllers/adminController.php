@@ -2627,8 +2627,10 @@ public function delete($slug)
     // --- FUNGSI MENCARI ANIME ON-GOING DI DATABASE LOKAL ---
     public function scanOngoing()
     {
-        // Catatan: Pastikan string 'Currently Airing' sesuai dengan status yang kamu gunakan di DB-mu
-        $ongoingAnimes = $this->animeModel->where('status', 'Currently Airing')->findAll();
+        // Gunakan whereIn agar semua variasi penulisan status On-Going bisa terdeteksi
+        $statusVariations = ['Currently Airing', 'On-Going', 'Ongoing', 'Sedang Tayang', 'airing'];
+        
+        $ongoingAnimes = $this->animeModel->whereIn('status', $statusVariations)->findAll();
         
         $queue = [];
         foreach ($ongoingAnimes as $anime) {
