@@ -2390,64 +2390,95 @@ public function delete($slug)
     }
 
     public function scanPage($source = 'seasons/now', $page = 1)
-    {
-        $client = \Config\Services::curlrequest();
-        $apiPath = str_replace('-', '/', $source); 
-        
-        $apiUrl = "https://api.jikan.moe/v4/{$apiPath}?page={$page}";
-        if ($source !== 'top-anime') $apiUrl .= "&sfw=true";
+{
+    $client = \Config\Services::curlrequest();
+    $apiPath = str_replace('-', '/', $source); 
+    
+    $apiUrl = "https://api.jikan.moe/v4/{$apiPath}?page={$page}";
+    if ($source !== 'top-anime') $apiUrl .= "&sfw=true";
 
-        try {
-            $response = $client->request('GET', $apiUrl, ['http_errors' => false]);
-            if ($response->getStatusCode() !== 200) {
-                return $this->response->setJSON(['status' => 'error', 'message' => 'API Error: ' . $response->getStatusCode()]);
+    // Set opsi request lengkap dengan User-Agent agar menyerupai browser asli
+    $options = [
+        'http_errors' => false,
+        'timeout'     => 30, // Batas waktu tunggu maksimal 30 detik
+        'headers'     => [
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept'     => 'application/json',
+        ]
+    ];
+
+    try {
+        $maxRetries = 3;  // Coba ulang maksimal 3 kali jika terjadi timeout
+        $attempt = 0;
+        $response = null;
+
+        while ($attempt < $maxRetries) {
+            $response = $client->request('GET', $apiUrl, $options);
+            $statusCode = $response->getStatusCode();
+
+            // Jika sukses 200 OK, langsung hentikan loop coba-ulang
+            if ($statusCode === 200) {
+                break; 
             }
 
-            $data = json_decode($response->getBody(), true);
-            $hasNextPage = $data['pagination']['has_next_page'] ?? false;
-            
-            if (empty($data['data'])) {
-                return $this->response->setJSON(['status' => 'empty', 'has_next' => $hasNextPage]);
+            // Jika terkena Gateway Timeout (504), Bad Gateway (502), atau Rate Limit (429)
+            if (in_array($statusCode, [504, 502, 429])) {
+                $attempt++;
+                sleep(2); // Beri jeda 2 detik sebelum mencoba kembali agar server Jikan lebih tenang
+                continue;
             }
 
-            $pendingAnimes = [];
-            // Kita batasi maksimal 5 anime per scan agar antrean tidak terlalu panjang
-            $limitNewData = 5; 
-
-            foreach ($data['data'] as $anime) {
-                if (count($pendingAnimes) >= $limitNewData) break;
-
-                // Cek apakah sudah ada di DB (mal_id)
-                if ($this->animeModel->where('mal_id', $anime['mal_id'])->first()) continue;
-
-                // Cek apakah ada data manual lama
-                $titleOptions = [$anime['title']];
-                if (!empty($anime['title_english'])) $titleOptions[] = $anime['title_english'];
-                $existingManual = $this->animeModel->whereIn('Judul', $titleOptions)->first();
-
-                if ($existingManual) {
-                    // AUTO-HEAL DATA LAMA (Proses langsung di sini secara instan)
-                    $this->animeModel->update($existingManual['id'], ['mal_id' => $anime['mal_id']]);
-                    continue; 
-                }
-
-                // Jika benar-benar baru, masukkan ke daftar antrean
-                $pendingAnimes[] = [
-                    'mal_id' => $anime['mal_id'],
-                    'title'  => $anime['title']
-                ];
-            }
-
-            return $this->response->setJSON([
-                'status'    => 'success',
-                'has_next'  => $hasNextPage,
-                'queue'     => $pendingAnimes // Mengirim antrean ke JavaScript
-            ]);
-
-        } catch (\Exception $e) {
-            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+            // Jika error lain yang sifatnya permanen (seperti 404), langsung hentikan loop
+            break;
         }
+
+        if ($response->getStatusCode() !== 200) {
+            return $this->response->setJSON([
+                'status'  => 'error', 
+                'message' => 'API Jikan sedang sibuk atau limit terlampaui (Error ' . $response->getStatusCode() . '). Silakan coba sesaat lagi.'
+            ]);
+        }
+
+        $data = json_decode($response->getBody(), true);
+        $hasNextPage = $data['pagination']['has_next_page'] ?? false;
+        
+        if (empty($data['data'])) {
+            return $this->response->setJSON(['status' => 'empty', 'has_next' => $hasNextPage]);
+        }
+
+        $pendingAnimes = [];
+        $limitNewData = 5; 
+
+        foreach ($data['data'] as $anime) {
+            if (count($pendingAnimes) >= $limitNewData) break;
+
+            if ($this->animeModel->where('mal_id', $anime['mal_id'])->first()) continue;
+
+            $titleOptions = [$anime['title']];
+            if (!empty($anime['title_english'])) $titleOptions[] = $anime['title_english'];
+            $existingManual = $this->animeModel->whereIn('Judul', $titleOptions)->first();
+
+            if ($existingManual) {
+                $this->animeModel->update($existingManual['id'], ['mal_id' => $anime['mal_id']]);
+                continue; 
+            }
+
+            $pendingAnimes[] = [
+                'mal_id' => $anime['mal_id'],
+                'title'  => $anime['title']
+            ];
+        }
+
+        return $this->response->setJSON([
+            'status'    => 'success',
+            'has_next'  => $hasNextPage,
+            'queue'     => $pendingAnimes
+        ]);
+
+    } catch (\Exception $e) {
+        return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
     }
+}
 
     // --- 2. FUNGSI UNTUK MEMPROSES 1 ANIME SAJA (BESERTA EPISODE) ---
     public function processSingle()
