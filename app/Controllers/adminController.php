@@ -2407,10 +2407,27 @@ public function delete($slug)
         if ($source !== 'top-anime') $apiUrl .= "&sfw=true";
 
         try {
-            $response = $client->request('GET', $apiUrl, ['http_errors' => false]);
+ -
+            $response = null;
+            $maxRetries = 3;
+            
+            for ($i = 0; $i < $maxRetries; $i++) {
+                $response = $client->request('GET', $apiUrl, ['http_errors' => false, 'timeout' => 20]);
+                $statusCode = $response->getStatusCode();
+                
+                if ($statusCode === 200) {
+                    break; 
+                } else if ($statusCode === 429 || $statusCode >= 500) {
+                    sleep(3); 
+                } else {
+                    break; 
+                }
+            }
+
             if ($response->getStatusCode() !== 200) {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'API Error: ' . $response->getStatusCode()]);
             }
+            // ------------------------------------------
 
             $data = json_decode($response->getBody(), true);
             $hasNextPage = $data['pagination']['has_next_page'] ?? false;
@@ -2476,25 +2493,26 @@ public function delete($slug)
         $db = \Config\Database::connect();
 
         try {
-            // --- PERBAIKAN 1: AUTO-RETRY JIKA JIKAN MENOLAK (RATE LIMIT) ---
             $response = null;
-            $maxRetries = 3; // Coba maksimal 3 kali jika ditolak
+            $maxRetries = 3; 
             
             for ($i = 0; $i < $maxRetries; $i++) {
-                $response = $client->request('GET', "https://api.jikan.moe/v4/anime/{$mal_id}", ['http_errors' => false, 'timeout' => 15]);
+                $response = $client->request('GET', "https://api.jikan.moe/v4/anime/{$mal_id}", ['http_errors' => false, 'timeout' => 20]);
+                $statusCode = $response->getStatusCode();
                 
-                if ($response->getStatusCode() === 200) {
-                    break; // Jika sukses, keluar dari loop
-                } else if ($response->getStatusCode() === 429) {
-                    sleep(2); // Jika ditolak karena limit, tidur 2 detik lalu coba lagi
+                if ($statusCode === 200) {
+                    break; // Sukses
+                } else if ($statusCode === 429 || $statusCode >= 500) {
+                    sleep(4);
                 } else {
-                    break; // Jika error lain (misal 404), langsung berhenti
+                    break; 
                 }
             }
 
             if ($response->getStatusCode() !== 200) {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Jikan API menolak request detail (Status: '.$response->getStatusCode().').']);
             }
+            // ------------------------------------------
 
             $anime = json_decode($response->getBody(), true)['data'];
 
