@@ -1266,7 +1266,7 @@ document.getElementById('btnExecuteSync').addEventListener('click', async functi
 });
 
 // 4. MESIN UTAMA (Modifikasi dari kode lamamu)
-aasync function fetchJikanDirect(url, retries = 3) { 
+async function fetchJikanDirect(url, retries = 3) { 
     for (let i = 0; i < retries; i++) {
         try {
             // 🔥 PERBAIKAN MUTLAK: CACHE BUSTER 🔥
