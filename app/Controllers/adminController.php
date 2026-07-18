@@ -2495,19 +2495,47 @@ public function delete($slug)
             $animeInternalId = $this->animeModel->getInsertID();
 
             // Insert Studios & Genres (Singkatnya sama seperti kode sebelumnya)
+            // Insert Studios
             if (!empty($anime['studios'])) {
                 foreach ($anime['studios'] as $s) {
                     $studio = $db->table('studios')->where('nama_studio', $s['name'])->get()->getRowArray();
-                    $studioId = $studio ? $studio['id'] : $db->table('studios')->insert(['nama_studio' => $s['name'], 'slug_studio' => url_title($s['name'], '-', true)]) && $db->insertID();
-                    $db->table('anime_studios')->insert(['anime_id' => $animeInternalId, 'studio_id' => $studioId]);
+                    
+                    if ($studio) {
+                        $studioId = $studio['id'];
+                    } else {
+                        $db->table('studios')->insert([
+                            'nama_studio'  => $s['name'], 
+                            'slug_studio'  => url_title($s['name'], '-', true)
+                        ]);
+                        $studioId = $db->insertID();
+                    }
+                    
+                    $db->table('anime_studios')->insert([
+                        'anime_id'  => $animeInternalId, 
+                        'studio_id' => $studioId
+                    ]);
                 }
             }
 
+            // Insert Genres
             if (!empty($anime['genres'])) {
                 foreach ($anime['genres'] as $g) {
                     $genre = $this->genreModel->where('genre', $g['name'])->first();
-                    $genreId = $genre ? $genre['id'] : $this->genreModel->insert(['genre' => $g['name'], 'slug_genre' => url_title($g['name'], '-', true)]) && $this->genreModel->getInsertID();
-                    $db->table('animegenre')->insert(['anime_id' => $animeInternalId, 'genre_id' => $genreId]);
+                    
+                    if ($genre) {
+                        $genreId = $genre['id'];
+                    } else {
+                        $this->genreModel->insert([
+                            'genre'      => $g['name'], 
+                            'slug_genre' => url_title($g['name'], '-', true)
+                        ]);
+                        $genreId = $this->genreModel->getInsertID();
+                    }
+                    
+                    $db->table('animegenre')->insert([
+                        'anime_id' => $animeInternalId, 
+                        'genre_id' => $genreId
+                    ]);
                 }
             }
 

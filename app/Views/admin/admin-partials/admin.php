@@ -634,6 +634,7 @@
                         <!-- Tombol Eksekusi -->
                         <!-- Simpan semua URL Route PHP di tombol ini -->
                         <button type="button" id="btnExecuteSync" class="btn btn-dark btn-block shadow" style="border-radius: 8px; font-weight: bold; padding: 12px;"
+                            data-scan="<?= base_url('dashboard/scanPage') ?>" 
                             data-checkdup="<?= base_url('dashboard/checkDuplicateBatch') ?>"
                             data-process="<?= base_url('dashboard/processSingle') ?>" 
                             data-publish="<?= base_url('dashboard/publishBatch') ?>"
