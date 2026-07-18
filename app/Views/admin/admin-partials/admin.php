@@ -1389,7 +1389,14 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
 
         let formData = new FormData();
         formData.append('mal_id', item.mal_id);
-        if (mode === 'maintenance') formData.append('internal_id', item.internal_id);
+        
+        if (mode !== 'manual') {
+            formData.append('anime_data', JSON.stringify(item));
+        }
+
+        if (mode === 'maintenance') {
+            formData.append('internal_id', item.internal_id);
+        }
 
         try {
             const targetUrl = (mode === 'maintenance') ? urls.updateEps : urls.process;
