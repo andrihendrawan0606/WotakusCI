@@ -624,7 +624,7 @@ class Page extends BaseController
     
             // Hitung jumlah episode yang sudah ditonton hari ini oleh user
             $watchedEpisodesToday = $this->episodeViews
-                ->where('user_id', $userId)
+                ->where('id', $userId)
                 ->where('DATE(created_at)', $today)
                 ->countAllResults();
     
