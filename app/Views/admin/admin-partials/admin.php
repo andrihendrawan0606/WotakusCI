@@ -537,20 +537,21 @@
     </div> -->
 
     <!-- Tombol Trigger Modal -->
-    <button type="button" class="btn btn-success shadow-sm" data-toggle="modal" data-target="#modalSyncCenter" style="border-radius: 8px; font-weight: 600; padding: 10px 20px;">
+<button type="button" class="btn btn-success shadow-sm" data-toggle="modal" data-target="#modalSyncCenter" style="border-radius: 8px; font-weight: 600; padding: 10px 20px;">
     <i class="fas fa-satellite-dish mr-2"></i> Pusat Sinkronisasi API
 </button>
-
+</div>
 <!-- MODAL COMMAND CENTER JIKAN API -->
 <div class="modal fade" id="modalSyncCenter" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
             
+            <!-- Header Modal -->
             <div class="modal-header bg-dark text-white" style="border-bottom: none; padding: 20px 25px;">
                 <h5 class="modal-title font-weight-bold" style="letter-spacing: 1px;">
                     <i class="fas fa-terminal text-success mr-2"></i> JIKAN API COMMAND CENTER
                 </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.8;">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.8; text-shadow: none;">
                     <span aria-hidden="true"><i class="fas fa-times"></i></span>
                 </button>
             </div>
@@ -561,7 +562,9 @@
                     <div class="col-lg-5 pr-lg-4">
                         <h6 class="text-uppercase text-muted font-weight-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">1. Pilih Mode Tarikan</h6>
                         
+                        <!-- Pilihan Cards -->
                         <div class="sync-card-group mb-4">
+                            <!-- Card 1: On-Going -->
                             <div class="sync-card active" data-mode="explore" data-source="seasons-now" onclick="selectSyncCard(this)">
                                 <i class="fas fa-broadcast-tower card-icon text-primary"></i>
                                 <div class="card-text">
@@ -569,6 +572,7 @@
                                     <span>Tarik data On-Going terbaru</span>
                                 </div>
                             </div>
+                            <!-- Card 2: Top Anime -->
                             <div class="sync-card" data-mode="explore" data-source="top-anime" onclick="selectSyncCard(this)">
                                 <i class="fas fa-trophy card-icon text-warning"></i>
                                 <div class="card-text">
@@ -576,6 +580,7 @@
                                     <span>Tarik anime legendaris (All Time)</span>
                                 </div>
                             </div>
+                            <!-- Card 3: Upcoming -->
                             <div class="sync-card" data-mode="explore" data-source="seasons-upcoming" onclick="selectSyncCard(this)">
                                 <i class="fas fa-calendar-alt card-icon text-info"></i>
                                 <div class="card-text">
@@ -583,6 +588,7 @@
                                     <span>Persiapan judul anime masa depan</span>
                                 </div>
                             </div>
+                            <!-- Card 4: Maintenance Episode -->
                             <div class="sync-card" data-mode="maintenance" data-source="update-episodes" onclick="selectSyncCard(this)">
                                 <i class="fas fa-sync card-icon text-success"></i>
                                 <div class="card-text">
@@ -590,6 +596,7 @@
                                     <span>Cek episode baru otomatis</span>
                                 </div>
                             </div>
+                            <!-- Card 5: Manual ID -->
                             <div class="sync-card" data-mode="manual" data-source="manual-id" onclick="selectSyncCard(this)">
                                 <i class="fas fa-crosshairs card-icon text-danger"></i>
                                 <div class="card-text">
@@ -599,20 +606,24 @@
                             </div>
                         </div>
 
+                        <!-- Parameter Box (Dinamis) -->
                         <div id="parameterBox" class="bg-white p-3 rounded shadow-sm border mb-4">
                             <h6 class="text-uppercase text-muted font-weight-bold mb-3" style="font-size: 0.8rem;">2. Parameter Tambahan</h6>
                             
+                            <!-- Muncul jika mode Explore -->
                             <div id="paramExplore">
                                 <label class="font-weight-bold text-dark" style="font-size: 0.9rem;">Mulai dari Halaman API ke-Berapa?</label>
                                 <input type="number" id="inputStartPage" class="form-control" value="1" min="1" style="background:#f8f9fe; border-radius:8px;">
                                 <small class="text-muted mt-1 d-block">Ubah jika Anda tahu halaman awal sudah penuh di DB.</small>
                             </div>
 
+                            <!-- Muncul jika mode Manual -->
                             <div id="paramManual" style="display: none;">
                                 <label class="font-weight-bold text-dark" style="font-size: 0.9rem;">Masukkan MAL ID</label>
                                 <input type="number" id="inputMalId" class="form-control" placeholder="Contoh: 5114" style="background:#f8f9fe; border-radius:8px;">
                             </div>
 
+                            <!-- Muncul jika mode Maintenance -->
                             <div id="paramMaintenance" style="display: none;">
                                 <div class="alert alert-success m-0 p-2" style="font-size: 0.85rem;">
                                     <i class="fas fa-info-circle mr-1"></i> Sistem akan me-scan seluruh anime yang berstatus <b>On-Going</b> di database Anda secara otomatis.
@@ -620,6 +631,8 @@
                             </div>
                         </div>
 
+                        <!-- Tombol Eksekusi -->
+                        <!-- Simpan semua URL Route PHP di tombol ini -->
                         <button type="button" id="btnExecuteSync" class="btn btn-dark btn-block shadow" style="border-radius: 8px; font-weight: bold; padding: 12px;"
                             data-scan="<?= base_url('dashboard/scanPage') ?>" 
                             data-process="<?= base_url('dashboard/processSingle') ?>" 
@@ -641,7 +654,7 @@
                             </div>
                         </div>
                         <div id="syncTerminal" class="bg-dark text-white p-3 rounded-bottom flex-grow-1" style="height: 450px; overflow-y: auto; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; line-height: 1.6; border: 1px solid #444;">
-                            <div class="text-muted">Jikan API Engine Ready. Menunggu perintah...</div>
+                            <div class="text-muted">Jikan API Engine v4.0 Ready. Menunggu perintah...</div>
                             <div class="text-muted">---------------------------------------------------</div>
                         </div>
                     </div>
@@ -1175,38 +1188,54 @@ let currentSyncMode = 'explore';
 let currentSyncSource = 'seasons-now';
 let isSyncRunning = false;
 
+// 1. FUNGSI UNTUK MENGGANTI KOTAK PILIHAN MODE
 function selectSyncCard(element) {
-    if(isSyncRunning) return;
+    if(isSyncRunning) return; // Cegah ubah mode saat proses berjalan
+
+    // Hapus kelas active dari semua card, pasang di yang diklik
     document.querySelectorAll('.sync-card').forEach(card => card.classList.remove('active'));
     element.classList.add('active');
+
     currentSyncMode = element.getAttribute('data-mode');
     currentSyncSource = element.getAttribute('data-source');
+
+    // Sembunyikan semua parameter, lalu tampilkan yang sesuai
     document.getElementById('paramExplore').style.display = 'none';
     document.getElementById('paramManual').style.display = 'none';
     document.getElementById('paramMaintenance').style.display = 'none';
+
     if(currentSyncMode === 'explore') document.getElementById('paramExplore').style.display = 'block';
     if(currentSyncMode === 'manual') document.getElementById('paramManual').style.display = 'block';
     if(currentSyncMode === 'maintenance') document.getElementById('paramMaintenance').style.display = 'block';
 }
 
+// 2. FUNGSI PENCATAT TERMINAL
 function logTerminal(message, type = 'info') {
     const term = document.getElementById('syncTerminal');
     const time = new Date().toLocaleTimeString('id-ID', { hour12: false });
-    let color = '#e2e8f0'; 
-    if (type === 'success') color = '#4ade80'; 
-    if (type === 'warning') color = '#fbbf24'; 
-    if (type === 'error') color = '#f87171'; 
-    if (type === 'process') color = '#60a5fa'; 
-    if (type === 'system') color = '#a78bfa'; 
-    term.innerHTML += `<div style="color:${color}; margin-bottom:4px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;"><span style="color:#64748b;">[${time}]</span> ${message}</div>`;
+    
+    let color = '#e2e8f0'; // info (putih keabuan)
+    if (type === 'success') color = '#4ade80'; // hijau
+    if (type === 'warning') color = '#fbbf24'; // kuning
+    if (type === 'error') color = '#f87171'; // merah
+    if (type === 'process') color = '#60a5fa'; // biru
+    if (type === 'system') color = '#a78bfa'; // ungu
+
+    term.innerHTML += `<div style="color:${color}; margin-bottom:4px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
+                        <span style="color:#64748b;">[${time}]</span> ${message}
+                       </div>`;
+    
+    // Auto-scroll ke bawah
     term.scrollTop = term.scrollHeight;
 }
 
+// 3. EVENT LISTENER SAAT TOMBOL "MULAI PROSES" DIKLIK
 document.getElementById('btnExecuteSync').addEventListener('click', async function() {
     if(isSyncRunning) {
-        Swal.fire('Proses Berjalan', 'Harap tunggu proses selesai.', 'warning');
+        Swal.fire('Proses Sedang Berjalan', 'Harap tunggu hingga proses di terminal selesai.', 'warning');
         return;
     }
+
     const urls = {
         scan: this.getAttribute('data-scan'),
         process: this.getAttribute('data-process'),
@@ -1214,112 +1243,149 @@ document.getElementById('btnExecuteSync').addEventListener('click', async functi
         scanOngoing: this.getAttribute('data-scanongoing'),
         updateEps: this.getAttribute('data-updateeps')
     };
+
+    // Bersihkan Terminal untuk tugas baru
     document.getElementById('syncTerminal').innerHTML = '';
+    
     isSyncRunning = true;
     this.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> SEDANG MEMPROSES...';
     this.classList.replace('btn-dark', 'btn-secondary');
-    document.querySelector('#modalSyncCenter .close').style.display = 'none';
+    
+    // Nonaktifkan tombol close agar tidak di-close tidak sengaja
+    const closeBtn = document.querySelector('#modalSyncCenter .close');
+    closeBtn.style.display = 'none';
 
+    // Mulai Eksekusi!
     await runEngine(urls, currentSyncMode, currentSyncSource);
 
+    // Reset tombol setelah selesai
     isSyncRunning = false;
     this.innerHTML = '<i class="fas fa-play mr-2"></i> MULAI PROSES SINKRONISASI';
     this.classList.replace('btn-secondary', 'btn-dark');
-    document.querySelector('#modalSyncCenter .close').style.display = 'block';
+    closeBtn.style.display = 'block';
 });
 
+// 4. MESIN UTAMA (Modifikasi dari kode lamamu)
 async function runEngine(urls, mode, source, forceStartPage = null) {
     let queue = [];
     let startPage = forceStartPage || (document.getElementById('inputStartPage') ? parseInt(document.getElementById('inputStartPage').value) : 1);
 
+    // --- TAHAP 1: MEMBANGUN ANTREAN (DENGAN SMART CRAWLER) ---
     if (mode === 'manual') {
         const malId = document.getElementById('inputMalId').value;
-        if (!malId) return logTerminal('ERROR: MAL ID kosong!', 'error');
+        if (!malId) {
+            logTerminal('ERROR: MAL ID tidak boleh kosong!', 'error');
+            return;
+        }
         queue = [{ mal_id: malId, title: `Anime Target ID: ${malId}` }];
         logTerminal(`Mode Manual Aktif. Mencari MAL ID: ${malId}...`, 'system');
     } 
     else {
-        logTerminal(`Menghubungi Server Backend untuk memindai Jikan API...`, 'system');
+        logTerminal(`Menginisialisasi koneksi ke Jikan API...`, 'system');
         logTerminal(`Tugas: Mode ${mode.toUpperCase()} - Sumber: ${source}`, 'info');
 
-        let currentPage = startPage;
-        let maxCrawlDepth = 5;
-        let isFound = false;
-        let retryCount = 0; // Menyimpan hitungan Retry Jikan
-
-        while (!isFound && maxCrawlDepth > 0) {
-            logTerminal(`Meminta Backend memindai Halaman ${currentPage}...`, 'process');
+        if (mode === 'maintenance') {
+            // Logika Maintenance (Tetap Sekali Tarik)
             try {
-                const fetchUrl = (mode === 'maintenance') ? urls.scanOngoing : `${urls.scan}/${source}/${currentPage}`;
-                const res = await fetch(fetchUrl);
+                const res = await fetch(urls.scanOngoing);
                 const data = await res.json();
-                
                 if (data.status === 'success') {
-                    retryCount = 0; // Reset retry bila sukses
-                    
-                    if (data.queue && data.queue.length > 0) {
-                        queue = data.queue;
-                        isFound = true;
-                        logTerminal(`Berhasil! Backend menemukan ${queue.length} target di Halaman ${currentPage}.`, 'success');
-                        if (document.getElementById('inputStartPage')) document.getElementById('inputStartPage').value = currentPage;
-                    } else {
-                        if (mode === 'maintenance') {
-                            logTerminal('INFO: Tidak ada anime On-Going di database.', 'warning');
-                            return;
-                        } else if (data.has_next) {
-                            logTerminal(`Halaman ${currentPage} sudah lengkap di DB. Melompat ke halaman berikutnya...`, 'warning');
-                            currentPage++;
-                            maxCrawlDepth--;
-                        } else {
-                            logTerminal(`Seluruh halaman kategori ini sudah ditarik habis!`, 'success');
-                            return;
-                        }
+                    queue = data.queue;
+                    if (queue.length === 0) {
+                        logTerminal('INFO: Tidak ada anime berstatus On-Going di database Anda.', 'warning');
+                        return;
                     }
-                } else {
-                    // PERBAIKAN: Auto-Recover Jika Jikan Timeout 504 / Rate Limit 429
-                    if (data.message && (data.message.includes('504') || data.message.includes('429') || data.message.includes('500'))) {
-                        if (retryCount < 3) {
-                            retryCount++;
-                            logTerminal(`Server Jikan Overload (${data.message}). Mencoba lagi (${retryCount}/3) dalam 5 detik...`, 'warning');
-                            await new Promise(r => setTimeout(r, 5000));
-                            continue; // Ulangi request fetch di halaman yang sama
-                        }
-                    }
-
-                    logTerminal(`GAGAL DARI BACKEND: ${data.message}`, 'error');
-                    return;
+                    logTerminal(`Berhasil! Menemukan ${queue.length} anime On-Going untuk dicek episodenya.`, 'success');
                 }
             } catch (err) {
-                logTerminal('KONEKSI TERPUTUS ke Server Backend.', 'error');
+                logTerminal('KONEKSI TERPUTUS: Gagal menyambung ke server.', 'error');
                 return;
             }
-        }
-        
-        if (!isFound) {
-            Swal.fire({
-                title: 'Database Lengkap!',
-                text: `Telah melompat 5 halaman dan semuanya sudah ada di DB. Lanjut mencari?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Lanjut',
-                cancelButtonText: 'Berhenti'
-            }).then((res) => {
-                if (res.isConfirmed) runEngine(urls, mode, source, currentPage);
-            });
-            return;
+        } 
+        else {
+            // ========================================================
+            // 🔥 LOGIKA SMART CRAWLER UNTUK PENCARIAN ANIME BARU
+            // ========================================================
+            let currentPage = startPage;
+            let maxCrawlDepth = 5; // Maksimal lompat 5 halaman otomatis agar tidak diblokir Jikan
+            let isFound = false;
+
+            while (!isFound && maxCrawlDepth > 0) {
+                logTerminal(`Memindai Jikan API Halaman ${currentPage}...`, 'process');
+                
+                try {
+                    const res = await fetch(`${urls.scan}/${source}/${currentPage}`);
+                    const data = await res.json();
+                    
+                    if (data.status === 'success') {
+                        if (data.queue.length > 0) {
+                            // Ketemu anime baru!
+                            queue = data.queue;
+                            isFound = true;
+                            logTerminal(`Berhasil! Menemukan ${queue.length} anime baru di Halaman ${currentPage}.`, 'success');
+                            
+                            // Update angka di input box agar admin tahu posisinya sekarang
+                            document.getElementById('inputStartPage').value = currentPage; 
+                        } else {
+                            // Halaman ini sudah penuh di DB
+                            if (data.has_next) {
+                                logTerminal(`Halaman ${currentPage} sudah lengkap di Database. Mencari ke halaman berikutnya...`, 'warning');
+                                currentPage++;
+                                maxCrawlDepth--;
+                                
+                                // Jeda 1 detik agar Jikan API tidak marah karena di-spam request
+                                await new Promise(r => setTimeout(r, 1000)); 
+                            } else {
+                                logTerminal(`INFO: Seluruh halaman dari kategori ini sudah ditarik semua!`, 'success');
+                                return;
+                            }
+                        }
+                    } else {
+                        logTerminal(`GAGAL: ${data.message}`, 'error');
+                        return;
+                    }
+                } catch (err) {
+                    logTerminal('KONEKSI TERPUTUS saat melakukan scanning.', 'error');
+                    return;
+                }
+            }
+
+            // Jika setelah 5x lompat tidak ketemu juga
+            if (!isFound) {
+                logTerminal(`Sistem telah memindai 5 halaman beruntun namun datanya sudah lengkap di DB Anda. Pencarian dihentikan sementara untuk menghemat resource.`, 'system');
+                
+                Swal.fire({
+                    title: 'Database Sangat Lengkap!',
+                    text: `Sistem sudah memindai sampai Halaman ${currentPage - 1} dan semuanya sudah ada di Web Anda. Ingin lanjut memindai lebih dalam?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Lanjut Cari',
+                    cancelButtonText: 'Berhenti'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Jalankan ulang fungsi runEngine dengan startPage yang baru
+                        runEngine(urls, mode, source, currentPage);
+                    } else {
+                        document.getElementById('inputStartPage').value = currentPage;
+                    }
+                });
+                return; // Hentikan eksekusi tahap 2 karena queue masih kosong
+            }
         }
     }
 
+    // --- TAHAP 2: EKSEKUSI ANTREAN (SATU PER SATU) ---
     let successCount = 0;
     let totalNewEps = 0;
     let newlyFetchedIds = [];
 
     logTerminal('---------------------------------------------------', 'info');
-    logTerminal('MEMULAI EKSEKUSI PENYIMPANAN...', 'system');
+    logTerminal('MEMULAI EKSEKUSI ANTREAN...', 'system');
 
     for (let i = 0; i < queue.length; i++) {
         let item = queue[i];
-        logTerminal(`[${i+1}/${queue.length}] Meminta Backend menyimpan: <b>${item.title}</b>...`, 'process');
+        
+        logTerminal(`[${i+1}/${queue.length}] Menghubungi Jikan untuk: <b>${item.title}</b>...`, 'process');
 
         let formData = new FormData();
         formData.append('mal_id', item.mal_id);
@@ -1332,44 +1398,67 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
 
             if (res.status === 'success') {
                 successCount++;
+                
                 if (mode !== 'maintenance' && res.anime_id) {
                     newlyFetchedIds.push(res.anime_id);
-                    logTerminal(`&nbsp;&nbsp;↳ SUKSES: Data tersimpan ke Draft.`, 'success');
-                } else if (mode === 'maintenance') {
+                    logTerminal(`&nbsp;&nbsp;↳ SUKSES: Metadata tersimpan ke Database Draft.`, 'success');
+                }
+                
+                if (mode === 'maintenance') {
                     let newEps = parseInt(res.new_eps) || parseInt(res.eps_count) || parseInt(res.newEpsCount) || 0;
                     totalNewEps += newEps;
-                    logTerminal(`&nbsp;&nbsp;↳ SUKSES: Masuk ${newEps} Episode baru.`, 'success');
+                    if(newEps > 0) {
+                        logTerminal(`&nbsp;&nbsp;↳ SUKSES: Ditemukan & disimpan ${newEps} Episode baru.`, 'success');
+                    } else {
+                        logTerminal(`&nbsp;&nbsp;↳ INFO: Tidak ada episode baru yang rilis.`, 'info');
+                    }
                 }
             } else {
-                logTerminal(`&nbsp;&nbsp;↳ DITOLAK: ${res.message}`, 'warning');
+                logTerminal(`&nbsp;&nbsp;↳ DITOLAK: ${res.message || 'Database error'}`, 'warning');
             }
         } catch (e) { 
-            logTerminal(`&nbsp;&nbsp;↳ GAGAL: Terjadi masalah jaringan saat menyimpan.`, 'error');
+            logTerminal(`&nbsp;&nbsp;↳ GAGAL: Terjadi masalah jaringan/server lokal.`, 'error');
         }
-        
-        // Jeda santai agar Backend PHP dan Jikan tidak stress
-        await new Promise(r => setTimeout(r, 2000));
+
+        // Jeda agar tidak terkena limit API Jikan (Sangat Penting)
+        if(i < queue.length - 1) {
+            await new Promise(r => setTimeout(r, 2000));
+        }
     }
 
+    logTerminal('---------------------------------------------------', 'info');
+    logTerminal(`PROSES SELESAI. Total diproses: ${queue.length}. Berhasil: ${successCount}.`, 'system');
+
+    // --- TAHAP 3: KEPUTUSAN AKHIR (POP-UP) ---
     if (mode === 'maintenance') {
-        Swal.fire('Update Selesai', `Diperiksa: ${queue.length} anime. Masuk ${totalNewEps} Episode Baru.`, 'success');
-    } else if (mode === 'manual' && successCount === 0) {
-        Swal.fire('Gagal', 'Anime ini sudah ada di database atau MAL ID salah.', 'error');
-    } else if (newlyFetchedIds.length > 0) {
+        Swal.fire('Update Selesai', `Telah memeriksa ${queue.length} anime. Masuk ${totalNewEps} Episode Baru.`, 'success');
+    } 
+    else if (mode === 'manual' && successCount === 0) {
+        Swal.fire('Gagal', 'Anime ini mungkin sudah ada di database, atau MAL ID tidak valid.', 'error');
+    } 
+    else if (newlyFetchedIds.length > 0) {
+        // Tanyakan ke admin mau di-publish atau tidak
         Swal.fire({
             title: 'Eksekusi Selesai!',
-            text: `${successCount} Anime baru ada di Draft. Publish sekarang?`,
+            text: `${successCount} Anime baru ada di Draft. Ingin mempublish sekarang?`,
             icon: 'question',
             showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
             confirmButtonText: 'Langsung Publish',
-            cancelButtonText: 'Biar di Draft'
+            cancelButtonText: 'Biar di Draft Saja'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                logTerminal('Menjalankan PUBLISH...', 'system');
-                await fetch(urls.publish, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids: newlyFetchedIds }) });
+                logTerminal('Menjalankan perintah PUBLISH massal...', 'system');
+                await fetch(urls.publish, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: newlyFetchedIds })
+                });
+                logTerminal('SUKSES! Semua anime telah diterbitkan.', 'success');
                 Swal.fire('Berhasil!', 'Anime diterbitkan.', 'success').then(() => location.reload());
             } else {
-                Swal.fire('Tersimpan!', 'Disimpan di Draft.', 'info').then(() => location.reload());
+                Swal.fire('Tersimpan!', 'Silakan cek menu Draft Anda nanti.', 'info').then(() => location.reload());
             }
         });
     }
