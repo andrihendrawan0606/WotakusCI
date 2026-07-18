@@ -1266,25 +1266,33 @@ document.getElementById('btnExecuteSync').addEventListener('click', async functi
 });
 
 // 4. MESIN UTAMA (Modifikasi dari kode lamamu)
-async function fetchJikanDirect(url, retries = 3) {
+aasync function fetchJikanDirect(url, retries = 3) { 
     for (let i = 0; i < retries; i++) {
         try {
-            const res = await fetch(url);
-            if (res.status === 200) return await res.json();
-            if (res.status === 429) {
-                logTerminal(`Limit API Jikan. Menunggu 3 detik...`, 'warning');
-                await new Promise(r => setTimeout(r, 3000));
+            // 🔥 PERBAIKAN MUTLAK: CACHE BUSTER 🔥
+            // Menambahkan timestamp unik di akhir URL agar browser mengira ini request baru
+            // Contoh: ?page=15 berubah menjadi ?page=15&_t=17040201923
+            const separator = url.includes('?') ? '&' : '?';
+            const bypassCacheUrl = `${url}${separator}_t=${new Date().getTime()}`;
+
+            // Tambahkan parameter { cache: 'no-store' } agar browser tidak berani menyimpan error
+            const res = await fetch(bypassCacheUrl, { cache: 'no-store' });
+            
+            if (res.status === 200) {
+                return await res.json();
+            }
+            
+            if (res.status === 429 || res.status >= 500) {
+                // KEMBALI KE 2 DETIK (Sesuai dengan penemuanmu bahwa Jikan pulih dengan cepat)
+                logTerminal(`Jikan cegukan (Status ${res.status}). Mengulang dalam 2 detik...`, 'warning');
+                await new Promise(r => setTimeout(r, 2000));
                 continue;
             }
-            if (res.status >= 500) {
-                logTerminal(`Server Jikan Sibuk (${res.status}). Menunggu 5 detik...`, 'warning');
-                await new Promise(r => setTimeout(r, 5000));
-                continue;
-            }
-            return null; // 404 atau data kosong
+            
+            return null; // Jika 404 (Halaman memang kosong)
         } catch (e) {
-            logTerminal(`Jaringan terputus. Mencoba ulang...`, 'error');
-            await new Promise(r => setTimeout(r, 3000));
+            logTerminal(`Jaringan terputus. Mengulang dalam 2 detik...`, 'error');
+            await new Promise(r => setTimeout(r, 2000));
         }
     }
     return null;
