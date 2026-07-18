@@ -1188,18 +1188,13 @@ let currentSyncMode = 'explore';
 let currentSyncSource = 'seasons-now';
 let isSyncRunning = false;
 
-// 1. FUNGSI UNTUK MENGGANTI KOTAK PILIHAN MODE
 function selectSyncCard(element) {
-    if(isSyncRunning) return; // Cegah ubah mode saat proses berjalan
-
-    // Hapus kelas active dari semua card, pasang di yang diklik
+    if(isSyncRunning) return;
     document.querySelectorAll('.sync-card').forEach(card => card.classList.remove('active'));
     element.classList.add('active');
-
     currentSyncMode = element.getAttribute('data-mode');
     currentSyncSource = element.getAttribute('data-source');
 
-    // Sembunyikan semua parameter, lalu tampilkan yang sesuai
     document.getElementById('paramExplore').style.display = 'none';
     document.getElementById('paramManual').style.display = 'none';
     document.getElementById('paramMaintenance').style.display = 'none';
@@ -1209,173 +1204,167 @@ function selectSyncCard(element) {
     if(currentSyncMode === 'maintenance') document.getElementById('paramMaintenance').style.display = 'block';
 }
 
-// 2. FUNGSI PENCATAT TERMINAL
 function logTerminal(message, type = 'info') {
     const term = document.getElementById('syncTerminal');
     const time = new Date().toLocaleTimeString('id-ID', { hour12: false });
-    
-    let color = '#e2e8f0'; // info (putih keabuan)
-    if (type === 'success') color = '#4ade80'; // hijau
-    if (type === 'warning') color = '#fbbf24'; // kuning
-    if (type === 'error') color = '#f87171'; // merah
-    if (type === 'process') color = '#60a5fa'; // biru
-    if (type === 'system') color = '#a78bfa'; // ungu
+    let color = '#e2e8f0'; 
+    if (type === 'success') color = '#4ade80'; 
+    if (type === 'warning') color = '#fbbf24'; 
+    if (type === 'error') color = '#f87171'; 
+    if (type === 'process') color = '#60a5fa'; 
+    if (type === 'system') color = '#a78bfa'; 
 
     term.innerHTML += `<div style="color:${color}; margin-bottom:4px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
                         <span style="color:#64748b;">[${time}]</span> ${message}
                        </div>`;
-    
-    // Auto-scroll ke bawah
     term.scrollTop = term.scrollHeight;
 }
 
-// 3. EVENT LISTENER SAAT TOMBOL "MULAI PROSES" DIKLIK
-document.getElementById('btnExecuteSync').addEventListener('click', async function() {
-    if(isSyncRunning) {
-        Swal.fire('Proses Sedang Berjalan', 'Harap tunggu hingga proses di terminal selesai.', 'warning');
-        return;
+// ========================================================
+// FUNGSI PENGAMBIL API KEBAL ERROR (TANPA CACHE BUSTER MERUSAK)
+// ========================================================
+async function fetchJikanDirect(url, retries = 3) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            // cache: 'reload' memaksa browser tidak membaca cache error lokal, 
+            // tapi TETAP membiarkan server Jikan bernapas dengan cache mereka.
+            const res = await fetch(url, { cache: 'reload' }); 
+            if (res.status === 200) return await res.json();
+            
+            if (res.status === 429) {
+                logTerminal(`Limit API Jikan. Menunggu 3 detik...`, 'warning');
+                await new Promise(r => setTimeout(r, 3000));
+                continue;
+            }
+            if (res.status >= 500) {
+                logTerminal(`Server Jikan Sibuk (504). Menunggu 5 detik...`, 'warning');
+                await new Promise(r => setTimeout(r, 5000));
+                continue;
+            }
+            return null;
+        } catch (e) {
+            logTerminal(`Jaringan terputus. Mencoba ulang...`, 'error');
+            await new Promise(r => setTimeout(r, 3000));
+        }
     }
+    return null;
+}
 
+document.getElementById('btnExecuteSync').addEventListener('click', async function() {
+    if(isSyncRunning) return;
+    
     const urls = {
         scan: this.getAttribute('data-scan'),
         process: this.getAttribute('data-process'),
         publish: this.getAttribute('data-publish'),
         scanOngoing: this.getAttribute('data-scanongoing'),
-        updateEps: this.getAttribute('data-updateeps')
+        updateEps: this.getAttribute('data-updateeps'),
+        checkdup: this.getAttribute('data-checkdup') 
     };
 
-    // Bersihkan Terminal untuk tugas baru
     document.getElementById('syncTerminal').innerHTML = '';
-    
     isSyncRunning = true;
     this.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> SEDANG MEMPROSES...';
     this.classList.replace('btn-dark', 'btn-secondary');
     
-    // Nonaktifkan tombol close agar tidak di-close tidak sengaja
     const closeBtn = document.querySelector('#modalSyncCenter .close');
     closeBtn.style.display = 'none';
 
-    // Mulai Eksekusi!
     await runEngine(urls, currentSyncMode, currentSyncSource);
 
-    // Reset tombol setelah selesai
     isSyncRunning = false;
     this.innerHTML = '<i class="fas fa-play mr-2"></i> MULAI PROSES SINKRONISASI';
     this.classList.replace('btn-secondary', 'btn-dark');
     closeBtn.style.display = 'block';
 });
 
-// 4. MESIN UTAMA (Modifikasi dari kode lamamu)
-async function fetchJikanDirect(url, retries = 3) { 
-    for (let i = 0; i < retries; i++) {
-        try {
-            // 🔥 PERBAIKAN MUTLAK: CACHE BUSTER 🔥
-            // Menambahkan timestamp unik di akhir URL agar browser mengira ini request baru
-            // Contoh: ?page=15 berubah menjadi ?page=15&_t=17040201923
-            const separator = url.includes('?') ? '&' : '?';
-            const bypassCacheUrl = `${url}${separator}_t=${new Date().getTime()}`;
-
-            // Tambahkan parameter { cache: 'no-store' } agar browser tidak berani menyimpan error
-            const res = await fetch(bypassCacheUrl, { cache: 'no-store' });
-            
-            if (res.status === 200) {
-                return await res.json();
-            }
-            
-            if (res.status === 429 || res.status >= 500) {
-                // KEMBALI KE 2 DETIK (Sesuai dengan penemuanmu bahwa Jikan pulih dengan cepat)
-                logTerminal(`Jikan cegukan (Status ${res.status}). Mengulang dalam 2 detik...`, 'warning');
-                await new Promise(r => setTimeout(r, 2000));
-                continue;
-            }
-            
-            return null; // Jika 404 (Halaman memang kosong)
-        } catch (e) {
-            logTerminal(`Jaringan terputus. Mengulang dalam 2 detik...`, 'error');
-            await new Promise(r => setTimeout(r, 2000));
-        }
-    }
-    return null;
-}
-
-// MESIN UTAMA BARU (CLIENT-SIDE SCRAPER)
+// ========================================================
+// MESIN UTAMA (CRAWLER & SAVER)
+// ========================================================
 async function runEngine(urls, mode, source, forceStartPage = null) {
     let queue = [];
     let startPage = forceStartPage || (document.getElementById('inputStartPage') ? parseInt(document.getElementById('inputStartPage').value) : 1);
 
-    // ==========================================
-    // TAHAP 1: BROWSER LANGSUNG MENEMBAK JIKAN API
-    // ==========================================
     if (mode === 'manual') {
         const malId = document.getElementById('inputMalId').value;
         if (!malId) return logTerminal('ERROR: MAL ID kosong!', 'error');
         
-        logTerminal(`Menarik data MAL ID: ${malId} langsung dari Jikan...`, 'process');
+        logTerminal(`Menarik data MAL ID: ${malId}...`, 'process');
         const data = await fetchJikanDirect(`https://api.jikan.moe/v4/anime/${malId}`);
         if (data && data.data) queue = [data.data];
     } 
     else if (mode === 'maintenance') {
-        // Maintenance tetep pakai PHP lokal untuk cari anime on-going
         logTerminal(`Mencari anime On-Going di database lokal...`, 'system');
         const res = await fetch(urls.scanOngoing);
         const data = await res.json();
         if (data.status === 'success') queue = data.queue;
     }
     else {
-        // MODE EXPLORE: SMART CRAWLER BROWSER-SIDE
         let currentPage = startPage;
         let maxCrawlDepth = 5; 
         let isFound = false;
 
         while (!isFound && maxCrawlDepth > 0) {
-            logTerminal(`Browser menyedot data Jikan API Halaman ${currentPage}...`, 'process');
+            logTerminal(`Browser menyedot Jikan API Halaman ${currentPage}...`, 'process');
             
-            // BROWSER LANGSUNG KE JIKAN (VPS-mu aman dari pemblokiran)
             const data = await fetchJikanDirect(`https://api.jikan.moe/v4/${source}?page=${currentPage}`);
             
-            if (data && data.data && data.data.length > 0) {
-                // Kumpulkan semua ID dari Halaman ini
-                const allIds = data.data.map(anime => anime.mal_id);
+            // --- FITUR SKIP/LEWATI HALAMAN YANG DOWN (SUDAH DIPASANG) ---
+            if (!data || !data.data || data.data.length === 0) {
+                logTerminal(`Jikan gagal merespon Halaman ${currentPage}.`, 'error');
                 
-                // Tanya ke PHP (Database lokal): "Adakah ID ini yang belum tersimpan?"
-                logTerminal(`Memeriksa ${allIds.length} anime ke database lokal...`, 'system');
-                const checkRes = await fetch(urls.checkdup, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ids: allIds })
+                const skipConfirm = await Swal.fire({
+                    title: 'Server Jikan Sibuk',
+                    text: `Jikan API gagal memuat Halaman ${currentPage}. Ingin melewati halaman ini dan lanjut ke Halaman ${currentPage + 1}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Lewati',
+                    cancelButtonText: 'Berhenti'
                 });
-                const checkData = await checkRes.json();
-                
-                if (checkData.new_ids && checkData.new_ids.length > 0) {
-                    // Filter hanya anime yang ID-nya benar-benar baru
-                    queue = data.data.filter(anime => checkData.new_ids.includes(anime.mal_id));
-                    isFound = true;
-                    logTerminal(`Berhasil! Menemukan ${queue.length} anime baru di Halaman ${currentPage}.`, 'success');
-                    document.getElementById('inputStartPage').value = currentPage;
+
+                if (skipConfirm.isConfirmed) {
+                    logTerminal(`Melewati Halaman ${currentPage}...`, 'warning');
+                    currentPage++;
+                    continue; 
                 } else {
-                    if (data.pagination.has_next_page) {
-                        logTerminal(`Halaman ${currentPage} sudah lengkap di Database. Lanjut mencari...`, 'warning');
-                        currentPage++;
-                        maxCrawlDepth--;
-                        await new Promise(r => setTimeout(r, 1000)); 
-                    } else {
-                        logTerminal(`Seluruh halaman sudah ditarik habis!`, 'success');
-                        return;
-                    }
+                    logTerminal('Proses dihentikan oleh admin.', 'system');
+                    return;
                 }
+            }
+            
+            const allIds = data.data.map(anime => anime.mal_id);
+            const checkRes = await fetch(urls.checkdup, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids: allIds })
+            });
+            const checkData = await checkRes.json();
+            
+            if (checkData.new_ids && checkData.new_ids.length > 0) {
+                queue = data.data.filter(anime => checkData.new_ids.includes(anime.mal_id));
+                isFound = true;
+                logTerminal(`Menemukan ${queue.length} anime baru di Halaman ${currentPage}.`, 'success');
+                document.getElementById('inputStartPage').value = currentPage;
             } else {
-                logTerminal('Data halaman kosong atau terjadi Error API Jikan.', 'error');
-                return;
+                if (data.pagination.has_next_page) {
+                    logTerminal(`Halaman ${currentPage} sudah lengkap di DB. Melompat...`, 'warning');
+                    currentPage++;
+                    maxCrawlDepth--;
+                    await new Promise(r => setTimeout(r, 1000)); 
+                } else {
+                    logTerminal(`Seluruh halaman sudah ditarik habis!`, 'success');
+                    return;
+                }
             }
         }
 
         if (!isFound) {
             Swal.fire({
-                title: 'Database Lengkap!',
-                text: `Sistem memindai sampai Halaman ${currentPage - 1}. Semuanya sudah ada di DB. Lanjut cari?`,
+                title: 'Lanjut Memindai?',
+                text: `Sistem memindai sampai Halaman ${currentPage - 1}. Semua sudah ada di DB. Lanjut?`,
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'Ya, Lanjut',
+                confirmButtonText: 'Lanjut',
                 cancelButtonText: 'Berhenti'
             }).then((res) => {
                 if (res.isConfirmed) runEngine(urls, mode, source, currentPage);
@@ -1384,11 +1373,11 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
         }
     }
 
-    if (queue.length === 0) return logTerminal('Tidak ada antrean untuk diproses.', 'warning');
+    if (queue.length === 0) return logTerminal('Tidak ada antrean.', 'warning');
 
-    // ==========================================
+    // ========================================================
     // TAHAP 2: EKSEKUSI PENYIMPANAN KE PHP
-    // ==========================================
+    // ========================================================
     let successCount = 0;
     let totalNewEps = 0;
     let newlyFetchedIds = [];
@@ -1406,7 +1395,6 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
         if (mode === 'maintenance') {
             formData.append('internal_id', item.internal_id);
         } else {
-            // BAWA SEMUA JSON HASIL SEDOTAN BROWSER KE PHP (PHP TIDAK PERLU REQUEST LAGI)
             formData.append('anime_data', JSON.stringify(item));
         }
 
@@ -1429,28 +1417,27 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
                 logTerminal(`&nbsp;&nbsp;↳ DITOLAK: ${res.message}`, 'error');
             }
         } catch (e) { 
-            logTerminal(`&nbsp;&nbsp;↳ GAGAL: Terjadi masalah lokal.`, 'error');
+            logTerminal(`&nbsp;&nbsp;↳ GAGAL: Terjadi masalah PHP lokal.`, 'error');
         }
         await new Promise(r => setTimeout(r, 1000));
     }
 
-    // TAHAP 3: (Biarkan Pop Up SweetAlert persis seperti kode sebelumnya)
     if (mode === 'maintenance') {
         Swal.fire('Update Selesai', `Diperiksa: ${queue.length} anime. Masuk ${totalNewEps} Eps Baru.`, 'success');
     } else if (newlyFetchedIds.length > 0) {
         Swal.fire({
             title: 'Eksekusi Selesai!',
-            text: `${successCount} Anime baru ada di Draft. Publish sekarang?`,
+            text: `${successCount} Anime baru masuk Draft. Publish sekarang?`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Publish',
-            cancelButtonText: 'Draft'
+            cancelButtonText: 'Biar Draft'
         }).then(async (result) => {
             if (result.isConfirmed) {
                 await fetch(urls.publish, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ ids: newlyFetchedIds }) });
                 Swal.fire('Berhasil!', 'Anime diterbitkan.', 'success').then(() => location.reload());
             } else {
-                Swal.fire('Tersimpan!', 'Silakan cek menu Draft.', 'info').then(() => location.reload());
+                Swal.fire('Tersimpan!', 'Disimpan di Draft.', 'info').then(() => location.reload());
             }
         });
     }
