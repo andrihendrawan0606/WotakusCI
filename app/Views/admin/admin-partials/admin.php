@@ -1245,6 +1245,7 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
         let currentPage = startPage;
         let maxCrawlDepth = 5;
         let isFound = false;
+        let retryCount = 0; // Menyimpan hitungan Retry Jikan
 
         while (!isFound && maxCrawlDepth > 0) {
             logTerminal(`Meminta Backend memindai Halaman ${currentPage}...`, 'process');
@@ -1254,6 +1255,8 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
                 const data = await res.json();
                 
                 if (data.status === 'success') {
+                    retryCount = 0; // Reset retry bila sukses
+                    
                     if (data.queue && data.queue.length > 0) {
                         queue = data.queue;
                         isFound = true;
@@ -1273,6 +1276,16 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
                         }
                     }
                 } else {
+                    // PERBAIKAN: Auto-Recover Jika Jikan Timeout 504 / Rate Limit 429
+                    if (data.message && (data.message.includes('504') || data.message.includes('429') || data.message.includes('500'))) {
+                        if (retryCount < 3) {
+                            retryCount++;
+                            logTerminal(`Server Jikan Overload (${data.message}). Mencoba lagi (${retryCount}/3) dalam 5 detik...`, 'warning');
+                            await new Promise(r => setTimeout(r, 5000));
+                            continue; // Ulangi request fetch di halaman yang sama
+                        }
+                    }
+
                     logTerminal(`GAGAL DARI BACKEND: ${data.message}`, 'error');
                     return;
                 }
@@ -1333,6 +1346,7 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
         } catch (e) { 
             logTerminal(`&nbsp;&nbsp;↳ GAGAL: Terjadi masalah jaringan saat menyimpan.`, 'error');
         }
+        
         // Jeda santai agar Backend PHP dan Jikan tidak stress
         await new Promise(r => setTimeout(r, 2000));
     }

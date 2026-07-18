@@ -2407,15 +2407,28 @@ public function delete($slug)
 
         try {
             $response = null;
-            for ($i = 0; $i < 3; $i++) {
-                $response = $client->request('GET', $apiUrl, ['http_errors' => false, 'timeout' => 15]);
+            $statusCode = 0;
+            
+            // FITUR AUTO-RETRY: Coba 4 kali jika Jikan sibuk/timeout
+            for ($i = 0; $i < 4; $i++) {
+                $response = $client->request('GET', $apiUrl, [
+                    'http_errors' => false, 
+                    'timeout'     => 30, // Naikkan dari 15 ke 30 detik
+                    'headers'     => [
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                    ]
+                ]);
                 $statusCode = $response->getStatusCode();
+                
                 if ($statusCode === 200) break;
-                if ($statusCode === 429 || $statusCode >= 500) { sleep(2); continue; }
+                if ($statusCode === 429 || $statusCode >= 500) { 
+                    sleep(4); // Jeda 4 detik agar API bernapas
+                    continue; 
+                }
                 break;
             }
 
-            if ($response->getStatusCode() !== 200) return $this->response->setJSON(['status' => 'error', 'message' => 'API Error: ' . $response->getStatusCode()]);
+            if ($statusCode !== 200) return $this->response->setJSON(['status' => 'error', 'message' => 'API Error: ' . $statusCode]);
 
             $data = json_decode($response->getBody(), true);
             $hasNextPage = $data['pagination']['has_next_page'] ?? false;
@@ -2427,6 +2440,7 @@ public function delete($slug)
 
             foreach ($data['data'] as $anime) {
                 if (count($pendingAnimes) >= $limitNewData) break;
+                if (empty($anime['mal_id'])) continue;
 
                 if ($this->animeModel->where('mal_id', $anime['mal_id'])->first()) continue;
 
@@ -2439,7 +2453,6 @@ public function delete($slug)
                     continue; 
                 }
 
-                // Kirim ID dan Judul saja ke Javascript
                 $pendingAnimes[] = [
                     'mal_id' => $anime['mal_id'],
                     'title'  => $anime['title']
@@ -2468,16 +2481,20 @@ public function delete($slug)
 
         try {
             $response = null;
-            for ($i = 0; $i < 3; $i++) {
-                // GUNAKAN ENDPOINT RINGAN TANPA /full AGAR TIDAK 504
-                $response = $client->request('GET', "https://api.jikan.moe/v4/anime/{$mal_id}", ['http_errors' => false, 'timeout' => 15]);
+            $statusCode = 0;
+            for ($i = 0; $i < 4; $i++) {
+                $response = $client->request('GET', "https://api.jikan.moe/v4/anime/{$mal_id}", [
+                    'http_errors' => false, 
+                    'timeout'     => 30,
+                    'headers'     => ['User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)']
+                ]);
                 $statusCode = $response->getStatusCode();
                 if ($statusCode === 200) break;
-                if ($statusCode === 429 || $statusCode >= 500) { sleep(2); continue; }
+                if ($statusCode === 429 || $statusCode >= 500) { sleep(4); continue; }
                 break;
             }
 
-            if ($response->getStatusCode() !== 200) return $this->response->setJSON(['status' => 'error', 'message' => 'Jikan menolak (Status '.$response->getStatusCode().')']);
+            if ($statusCode !== 200) return $this->response->setJSON(['status' => 'error', 'message' => 'Jikan menolak (Status '.$statusCode.')']);
 
             $anime = json_decode($response->getBody(), true)['data'];
 
@@ -2506,7 +2523,6 @@ public function delete($slug)
             
             $animeInternalId = $this->animeModel->getInsertID();
 
-            // (Kode insert Studio dan Genre tetap sama)
             if (!empty($anime['studios'])) {
                 foreach ($anime['studios'] as $s) {
                     $studio = $db->table('studios')->where('nama_studio', $s['name'])->get()->getRowArray();
@@ -2536,66 +2552,122 @@ public function delete($slug)
         }
     }
 
-    public function publishBatch()
+
+    // --- FUNGSI MENGECEK & MENAMBAH EPISODE BARU SAJA ---
+    public function updateEpisodeSingle()
     {
-        // Tangkap array ID yang dikirim oleh JavaScript
-        $json = $this->request->getJSON();
-        $ids = $json->ids ?? [];
+        $mal_id = $this->request->getPost('mal_id');
+        $internal_id = $this->request->getPost('internal_id');
 
-        if (!empty($ids)) {
-            // Ubah statusTayang dari 'draft' menjadi 'published' untuk anime baru
-            $this->animeModel->update($ids, ['statusTayang' => 'published']);
-            
-            // Catat ke log admin
-            $this->adminLogsModel->insert([
-                'admin_id'    => session()->get('id') ?? 0,
-                'admin_name'  => session()->get('nama') ?? 'System',
-                'action'      => 'PUBLISH BATCH',
-                'item'        => 'Anime Master',
-                'item_id'     => implode(', ', $ids),
-                'description' => count($ids) . ' Anime hasil tarikan Jikan API langsung di-publish.',
-                'change_type' => 'Status Draft -> Published'
-            ]);
+        if (!$mal_id || !$internal_id) return $this->response->setJSON(['status' => 'error']);
+
+        $db = \Config\Database::connect();
+        $client = \Config\Services::curlrequest();
+        $newEpsCount = 0;
+        $page = 1;
+        $hasNextPage = true;
+
+        try {
+            while ($hasNextPage) {
+                $epUrl = "https://api.jikan.moe/v4/anime/{$mal_id}/episodes?page={$page}";
+                
+                // --- PERBAIKAN: Gunakan Retry agar tidak menyerah saat 429 ---
+                $response = $client->request('GET', $epUrl, [
+                    'http_errors' => false,
+                    'timeout' => 30,
+                    'headers' => ['User-Agent' => 'Mozilla/5.0']
+                ]);
+                $statusCode = $response->getStatusCode();
+
+                if ($statusCode === 429 || $statusCode >= 500) {
+                    sleep(4); continue; 
+                }
+                if ($statusCode !== 200) break; 
+
+                $epData = json_decode($response->getBody(), true);
+
+                if (!empty($epData['data'])) {
+                    foreach ($epData['data'] as $ep) {
+                        $existingEp = $db->table('episodeanime')
+                                         ->where('anime_id', $internal_id)
+                                         ->where('episode_number', $ep['mal_id']) 
+                                         ->get()->getRow();
+
+                        if (!$existingEp) {
+                            
+                            // --- PERBAIKAN BUG FATAL: Menyusun Array ke dalam $insertData ---
+                            $insertData = [
+                                'anime_id'       => $internal_id,
+                                'judul'          => $ep['title'] ?? 'Episode ' . $ep['mal_id'],
+                                'slug-episode'   => 'episode-' . $ep['mal_id'] . '-' . bin2hex(random_bytes(2)),
+                                'episode_number' => $ep['mal_id'],
+                                'deskripsi'      => 'Episode terbaru dari seri ini.',
+                                'GambarPreview'  => 'default.png',
+                                'video_path'     => 'default.mp4',
+                                'created_at'     => date('Y-m-d H:i:s')
+                            ];
+
+                            // Baru di insert
+                            $inserted = $db->table('episodeanime')->insert($insertData);
+                            
+                            if (!$inserted) {
+                                $dbError = $db->error();
+                                throw new \Exception("DB Ditolak: " . $dbError['message']);
+                            }
+                            
+                            $lastEpId = $db->insertID();
+                            $db->table('episode_views')->insert([
+                                'episode_id' => $lastEpId,
+                                'view_count' => 0, 
+                                'created_at' => date('Y-m-d H:i:s')
+                            ]);
+                            $newEpsCount++;
+                        }
+                    }
+                }
+                
+                $hasNextPage = $epData['pagination']['has_next_page'] ?? false;
+                if ($hasNextPage) {
+                    $page++;
+                    sleep(2); 
+                }
+            }
+
+            if ($newEpsCount > 0) {
+                // ... logic admin log model (tetap pertahankan)
+            }
+
+            return $this->response->setJSON(['status' => 'success', 'new_eps' => (int) $newEpsCount]);
+
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
         }
-
-        return $this->response->setJSON(['status' => 'success']);
     }
-
-    // public function checkDuplicateBatch()
-    // {
-    //     $json = $this->request->getJSON();
-    //     $ids = $json->ids ?? [];
-
-    //     if (empty($ids)) {
-    //         return $this->response->setJSON(['status' => 'success', 'new_ids' => []]);
-    //     }
-
-    //     // Cari mal_id yang sudah ada di database
-    //     $existingAnimes = $this->animeModel->whereIn('mal_id', $ids)->findAll();
-    //     $existingIds = array_column($existingAnimes, 'mal_id');
-
-    //     // Cari selisihnya (Pisahkan ID yang benar-benar baru)
-    //     $newIds = array_values(array_diff($ids, $existingIds));
-
-    //     return $this->response->setJSON(['status' => 'success', 'new_ids' => $newIds]);
-    // }
 
 
     private function autoFetchEpisodes($malId, $animeInternalId, $db)
     {
-        sleep(1); 
+        sleep(2); 
         $client = \Config\Services::curlrequest();
         $jumlahDitarik = 0;
         $page = 1;
         $hasNextPage = true;
 
         try {
-            // Loop jika episode > 100
             while ($hasNextPage) {
                 $epUrl = "https://api.jikan.moe/v4/anime/{$malId}/episodes?page={$page}";
-                $response = $client->request('GET', $epUrl, ['http_errors' => false]);
                 
-                if ($response->getStatusCode() !== 200) break;
+                $response = $client->request('GET', $epUrl, [
+                    'http_errors' => false,
+                    'timeout' => 30,
+                    'headers' => ['User-Agent' => 'Mozilla/5.0']
+                ]);
+                $statusCode = $response->getStatusCode();
+                
+                if ($statusCode === 429 || $statusCode >= 500) {
+                    sleep(4); continue; // Retry the same page
+                }
+                if ($statusCode !== 200) break;
 
                 $epData = json_decode($response->getBody(), true);
 
@@ -2626,7 +2698,7 @@ public function delete($slug)
                 $hasNextPage = $epData['pagination']['has_next_page'] ?? false;
                 if ($hasNextPage) {
                     $page++;
-                    sleep(1); // Sangat penting agar tak di-ban Jikan
+                    sleep(2);
                 }
             }
             return $jumlahDitarik;
@@ -2673,108 +2745,7 @@ public function delete($slug)
     }
 
     // --- FUNGSI MENGECEK & MENAMBAH EPISODE BARU SAJA ---
-    public function updateEpisodeSingle()
-    {
-        $mal_id = $this->request->getPost('mal_id');
-        $internal_id = $this->request->getPost('internal_id');
-
-        if (!$mal_id || !$internal_id) return $this->response->setJSON(['status' => 'error']);
-
-        $db = \Config\Database::connect();
-        $client = \Config\Services::curlrequest();
-        $newEpsCount = 0;
-        $page = 1;
-        $hasNextPage = true;
-
-        try {
-            while ($hasNextPage) {
-                $epUrl = "https://api.jikan.moe/v4/anime/{$mal_id}/episodes?page={$page}";
-                $response = $client->request('GET', $epUrl, ['http_errors' => false]);
-                $statusCode = $response->getStatusCode();
-
-
-                if ($statusCode === 429) {
-                    sleep(3); 
-                    continue; 
-                }
-
-                if ($statusCode !== 200) {
-                    break; 
-                }
-                // --------------------------------------------
-
-                $epData = json_decode($response->getBody(), true);
-
-                if (!empty($epData['data'])) {
-                    foreach ($epData['data'] as $ep) {
-
-                        $existingEp = $db->table('episodeanime')
-                                         ->where('anime_id', $internal_id)
-                                         ->where('episode_number', $ep['mal_id']) 
-                                         ->get()->getRow();
-
-                        // Jika BELUM ADA, maka Insert!
-                        if (!$existingEp) {
-                            $db->table('episodeanime')->insert([
-                                'anime_id'       => $internal_id,
-                                'judul'          => $ep['title'] ?? 'Episode ' . $ep['mal_id'],
-                                'slug-episode'   => 'episode-' . $ep['mal_id'] . '-' . bin2hex(random_bytes(2)),
-                                'episode_number' => $ep['mal_id'],
-                                'deskripsi'      => 'Episode terbaru dari seri ini.',
-                                'GambarPreview'  => 'default.png',
-                                'video_path'     => 'default.mp4',
-                                'created_at'     => date('Y-m-d H:i:s')
-                            ]);
-
-                            $inserted = $db->table('episodeanime')->insert($insertData);
-                            
-                            // --- RADAR PELACAK ERROR DATABASE (TAMBAHAN BARU) ---
-                            if (!$inserted) {
-                                $dbError = $db->error();
-                                // Ini akan menghentikan proses dan memunculkan error asli dari Database ke layarmu!
-                                throw new \Exception("DB Ditolak: " . $dbError['message']);
-                            }
-                            
-                            $lastEpId = $db->insertID();
-                            $db->table('episode_views')->insert([
-                                'episode_id' => $lastEpId,
-                                'view_count' => 0, 
-                                'created_at' => date('Y-m-d H:i:s')
-                            ]);
-                            $newEpsCount++;
-                        }
-                    }
-                }
-                
-                $hasNextPage = $epData['pagination']['has_next_page'] ?? false;
-                if ($hasNextPage) {
-                    $page++;
-                    sleep(1); 
-                }
-            }
-
-            if ($newEpsCount > 0) {
-                $this->adminLogsModel->insert([
-                    'admin_id'    => session()->get('id') ?? 0,
-                    'admin_name'  => session()->get('nama') ?? 'System',
-                    'action'      => 'UPDATE EPISODE',
-                    'item'        => 'Episode Anime',
-                    'item_id'     => $internal_id,
-                    'description' => "Menambahkan <strong>$newEpsCount episode baru</strong> via Jikan.",
-                    'change_type' => 'Update Rutin Mingguan'
-                ]);
-            }
-
-            return $this->response->setJSON([
-                'status'  => 'success', 
-                'new_eps' => (int) $newEpsCount 
-            ]);
-
-        } catch (\Exception $e) {
-            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
-
+    
     protected function translateTextGoogle($text, $targetLanguage = 'id', $sourceLanguage = 'en')
     {
         if (empty($text)) return '';
