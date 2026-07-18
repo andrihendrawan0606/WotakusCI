@@ -632,10 +632,9 @@ class Page extends BaseController
                 ->where('DATE(watched_at)', $today)
                 ->countAllResults();
     
-            // Tendang kembali ke beranda jika limit habis
             $maxEpisodesPerDay = 5;
             if ($userLevel === 'Basic' && $watchedEpisodesToday >= $maxEpisodesPerDay) {
-                return redirect()->to('/dashboard')->with('error', 'Anda telah menonton 5 episode hari ini. Upgrade ke PRO!');
+                // return redirect()->to('/dashboard')->with('error', 'Anda telah menonton 5 episode hari ini. Upgrade ke PRO!');
             }
 
             // Catat history Anime Terakhir Ditonton
