@@ -268,7 +268,7 @@
                                     <div style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-top: 10px;">
                                         Anda telah menggunakan kuota <b>5 Episode / Hari</b> untuk pengguna <i>Basic</i>.<br><br>
                                         <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 15px; border-radius: 12px; color: #fbbf24; text-align: left;">
-                                            <i class="fas fa-gem mr-2"></i> Ingin menonton tanpa batas dan tanpa iklan?<br>
+                                            <i class="fas fa-gem mr-2"></i> Ingin menonton tanpa batas?<br>
                                             <span style="color:#cbd5e1; font-size: 0.85rem; display:block; margin-top:5px;">Upgrade ke <b>Wotakus PRO</b> sekarang juga!</span>
                                         </div>
                                     </div>

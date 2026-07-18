@@ -601,20 +601,21 @@ class Page extends BaseController
 
     public function showPreviewVideo($animeSlug, $episodeSlug)
     {
+        // 1. Ambil data Episode & Anime
         $episode = $this->episodModel->getEpisodeBySlug($animeSlug, $episodeSlug);
         if (!$episode) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Episode tidak ditemukan.');
         }
-
-            // Increment view count
-        $this->incrementView($episode['id']);
     
         $anime = $this->animeModel->getAnimeBySlug($animeSlug);
         if (!$anime) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime tidak ditemukan.');
         }
+
+        // Tentukan default level
+        $userLevel = 'Guest';
     
-        // Cek apakah pengguna sudah login
+        // 2. Cek apakah pengguna sudah login
         if (session()->has('isLoggedIn')) {
             $userLevel = session()->get('level');
             $userId = session()->get('id');
@@ -622,54 +623,56 @@ class Page extends BaseController
             $animeId = $anime['id'];
             $episodeId = $episode['id'];
     
-            // Hitung jumlah episode yang sudah ditonton hari ini oleh user
-            $watchedEpisodesToday = $this->episodeViews
-                ->where('id', $userId)
-                ->where('DATE(created_at)', $today)
+            // --- PERBAIKAN LOGIKA KUOTA LIMIT HARIAN ---
+            // Kita panggil Model riwayat tontonan user (Bukan episodeViews)
+            $userWatchedModel = new \App\Models\UserWatchedModel();
+
+            $watchedEpisodesToday = $userWatchedModel
+                ->where('user_id', $userId)
+                ->where('DATE(watched_at)', $today)
                 ->countAllResults();
     
-            // Jika level pengguna adalah "Basic" dan sudah menonton 5 episode
+            // Tendang kembali ke beranda jika limit habis
             $maxEpisodesPerDay = 5;
             if ($userLevel === 'Basic' && $watchedEpisodesToday >= $maxEpisodesPerDay) {
-                return redirect()->to('/animes-home')->with('error', 'Anda telah menonton 5 episode hari ini. Silakan kembali besok untuk menonton lagi.');
+                return redirect()->to('/dashboard')->with('error', 'Anda telah menonton 5 episode hari ini. Upgrade ke PRO!');
             }
+
+            // Catat history Anime Terakhir Ditonton
+            $existingRecord = $this->userRecentAnimeModel
+                ->where('user_id', $userId)
+                ->where('anime_id', $animeId)
+                ->first();
+
+            if ($existingRecord) {
+                $this->userRecentAnimeModel->update($existingRecord['id'], [
+                    'episode_id' => $episodeId
+                ]);
+            }
+
         } else {
+            // Jika belum login, tendang ke login
             return redirect()->to('/login')->with('error', 'Anda harus login untuk menonton episode ini.');
         }
         
-
-          // Ambil view count dari episode
+        // 3. Ambil total View Count keseluruhan episode untuk ditampilkan di HTML
         $viewRecord = $this->episodeViews->where('episode_id', $episode['id'])->first();
         $episode['view_count'] = $viewRecord ? $viewRecord['view_count'] : 0;
         
-    
+        // 4. Siapkan Data Navigasi & Daftar Episode
         $previousEpisode = $this->episodModel->getPreviousEpisode($anime['id'], $episode['id']);
         $nextEpisode = $this->episodModel->getNextEpisode($anime['id'], $episode['id']);
-           // Ambil semua episode dengan view count
         $allEpisodes = $this->episodModel->getAllEpisodesWithViewsByAnimeId($anime['id']);
-
-        // Cari record existing di recent_anime berdasarkan user_id dan anime_id
-        $existingRecord = $this->userRecentAnimeModel
-            ->where('user_id', $userId)
-            ->where('anime_id', $animeId)
-            ->first();
-
-        if ($existingRecord) {
-            // Update episode_id jika sudah ada anime_id
-            $this->userRecentAnimeModel->update($existingRecord['id'], [
-                'episode_id' => $episodeId
-            ]);
-        }
     
+        // 5. Kembalikan ke Tampilan (View)
         $data = [
-            'title' => $anime['Judul'] . ' | Episode ' . $episode['episode_number'] . ' | ' . 'Wotakus ' ,
-            'anime' => $anime,
-            'episode' => $episode,
-            'EpisodeSebelumnya' => $previousEpisode,
+            'title'              => $anime['Judul'] . ' | Episode ' . $episode['episode_number'] . ' | Wotakus',
+            'anime'              => $anime,
+            'episode'            => $episode,
+            'EpisodeSebelumnya'  => $previousEpisode,
             'EpisodeSelanjutnya' => $nextEpisode,
-            'allEpisodes' => $allEpisodes,
-            'userLevel' => $userLevel,
-            // 'view_count' => formatViews($episode['view_count']) 
+            'allEpisodes'        => $allEpisodes,
+            'userLevel'          => $userLevel,
         ];
     
         return view('user/videoPre', $data);
