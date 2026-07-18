@@ -5,34 +5,7 @@
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <style>
-.premium-swal-popup {
-    border-radius: 20px !important;
-    border: 1px solid rgba(255,255,255,0.05) !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
-    padding-bottom: 20px !important;
-}
 
-.premium-swal-btn {
-    color: #1e293b !important;
-    font-weight: 700 !important;
-    border-radius: 12px !important;
-    padding: 12px 30px !important;
-    letter-spacing: 0.5px !important;
-    box-shadow: 0 4px 6px -1px rgba(251, 191, 36, 0.3) !important;
-    transition: transform 0.2s ease !important;
-}
-
-.premium-swal-btn:hover {
-    transform: translateY(-2px) !important;
-}
-
-.premium-swal-cancel-btn {
-    color: #cbd5e1 !important;
-    font-weight: 600 !important;
-    border-radius: 12px !important;
-    padding: 12px 25px !important;
-    border: 1px solid #475569 !important;
-}
 </style>
     <!-- VIDEO -->
     <section class="theater-section">
@@ -240,63 +213,29 @@
                 if (!sessionStorage.getItem(sessionKey)) {
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-                    // Sesuaikan URL ini dengan nama Route API yang benar di routes.php kamu!
-                    // Contoh jika route-nya memanggil function incrementView:
-                    const API_URL = "<?= rtrim(base_url(), '/') ?>/dashboard/incrementView/" + episodeId;
-
-                    fetch(API_URL, {
-                        method: 'POST', // atau GET jika route-mu GET
+                    fetch(WATCH_API_URL, {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': csrfToken
-                        }
+                        },
+                        body: JSON.stringify({ episodeId: episodeId })
                     })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
                             sessionStorage.setItem(sessionKey, 'true');
                             console.log('Analytics: View recorded.');
-                        } 
-                        else if (data.status === 'limit_reached' || data.message === 'Daily view limit reached') {
-                            // JIKA LIMIT TERCAPAI
-                            if (playerInst) playerInst.pause(); // Hentikan video
-                            
-                            // UI SWEETALERT PREMIUM (Dark & Elegant)
+                        } else if (data.status === 'limit_reached') {
+                            if (playerInst) playerInst.pause(); 
                             Swal.fire({
-                                icon: 'info',
-                                iconHtml: '<i class="fas fa-crown" style="color: #fbbf24;"></i>',
-                                title: '<span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">BATAS HARIAN TERCAPAI</span>',
-                                html: `
-                                    <div style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-top: 10px;">
-                                        Anda telah menggunakan kuota <b>5 Episode / Hari</b> untuk pengguna <i>Basic</i>.<br><br>
-                                        <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 15px; border-radius: 12px; color: #fbbf24; text-align: left;">
-                                            <i class="fas fa-gem mr-2"></i> Ingin menonton tanpa batas dan tanpa iklan?<br>
-                                            <span style="color:#cbd5e1; font-size: 0.85rem; display:block; margin-top:5px;">Upgrade ke <b>Wotakus PRO</b> sekarang juga!</span>
-                                        </div>
-                                    </div>
-                                `,
-                                background: '#1e293b', // Warna biru dongker sangat gelap (Slate)
-                                color: '#f8fafc',
-                                showCancelButton: true,
-                                confirmButtonColor: '#fbbf24', // Warna Kuning Emas Elegan
-                                cancelButtonColor: '#334155', // Warna Abu gelap
-                                confirmButtonText: '<i class="fas fa-rocket mr-2"></i> UPGRADE PRO',
-                                cancelButtonText: 'Nanti Saja',
-                                customClass: {
-                                    popup: 'premium-swal-popup',
-                                    confirmButton: 'premium-swal-btn',
-                                    cancelButton: 'premium-swal-cancel-btn'
-                                },
-                                allowOutsideClick: false
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    // Arahkan ke halaman berlangganan/upgrade
-                                    window.location.href = "<?= url_to('subscriptionPage') ?? '#' ?>"; 
-                                } else {
-                                    // Arahkan kembali ke beranda jika menolak
-                                    window.location.href = "<?= url_to('dashboard') ?>"; 
-                                }
+                                icon: 'warning',
+                                title: 'Batas Tontonan',
+                                text: 'User Basic dibatasi 5 episode per hari. Upgrade ke PRO!',
+                                confirmButtonColor: '#ac11e9'
+                            }).then(() => {
+                                if (!playerInst) window.location.href = "<?= url_to('dashboard') ?>"; 
                             });
                         }
                     })
