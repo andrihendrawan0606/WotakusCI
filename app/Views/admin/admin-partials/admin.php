@@ -634,7 +634,7 @@
                         <!-- Tombol Eksekusi -->
                         <!-- Simpan semua URL Route PHP di tombol ini -->
                         <button type="button" id="btnExecuteSync" class="btn btn-dark btn-block shadow" style="border-radius: 8px; font-weight: bold; padding: 12px;"
-                            data-scan="<?= base_url('dashboard/scanPage') ?>" 
+                            data-checkdup="<?= base_url('dashboard/checkDuplicateBatch') ?>"
                             data-process="<?= base_url('dashboard/processSingle') ?>" 
                             data-publish="<?= base_url('dashboard/publishBatch') ?>"
                             data-scanongoing="<?= base_url('dashboard/scanOngoing') ?>"
@@ -1389,7 +1389,14 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
 
         let formData = new FormData();
         formData.append('mal_id', item.mal_id);
-        if (mode === 'maintenance') formData.append('internal_id', item.internal_id);
+        
+        if (mode !== 'manual') {
+            formData.append('anime_data', JSON.stringify(item));
+        }
+
+        if (mode === 'maintenance') {
+            formData.append('internal_id', item.internal_id);
+        }
 
         try {
             const targetUrl = (mode === 'maintenance') ? urls.updateEps : urls.process;
