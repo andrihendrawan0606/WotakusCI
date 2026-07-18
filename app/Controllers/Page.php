@@ -602,55 +602,74 @@ class Page extends BaseController
     public function showPreviewVideo($animeSlug, $episodeSlug)
     {
         $episode = $this->episodModel->getEpisodeBySlug($animeSlug, $episodeSlug);
-        if (!$episode) throw new \CodeIgniter\Exceptions\PageNotFoundException('Episode tidak ditemukan.');
+        if (!$episode) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Episode tidak ditemukan.');
+        }
+
+            // Increment view count
+        $this->incrementView($episode['id']);
     
         $anime = $this->animeModel->getAnimeBySlug($animeSlug);
-        if (!$anime) throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime tidak ditemukan.');
-    
-        // TENTUKAN DEFAULT LEVEL
-        $userLevel = 'Guest';
-
-        if (session()->has('isLoggedIn')) {
-            $userLevel = session()->get('level') ?? 'Basic';
-            $userId = session()->get('id');
-            $role = session()->get('role');
-    
-            // PENGAMAN 1: Cek batas saat halaman dimuat (Optional, tapi bagus agar user tidak buang kuota internet)
-            if ($role !== 'admin' && $userLevel === 'Basic') {
-                // Gunakan model yang persis sama dengan yang ada di API Controller kamu
-                $userWatchedModel = new \App\Models\UserWatchedModel();
-                $watchedEpisodesToday = $userWatchedModel->where('user_id', $userId)
-                                                         ->where('DATE(watched_at)', date('Y-m-d'))
-                                                         ->countAllResults();
-    
-                if ($watchedEpisodesToday >= 5) {
-                    return redirect()->to('/dashboard')->with('error', 'Limit harian tercapai. Upgrade ke PRO!');
-                }
-            }
-
-            // Catat history "Terakhir Ditonton"
-            $existingRecord = $this->userRecentAnimeModel->where('user_id', $userId)->where('anime_id', $anime['id'])->first();
-            if ($existingRecord) {
-                $this->userRecentAnimeModel->update($existingRecord['id'], ['episode_id' => $episode['id']]);
-            }
+        if (!$anime) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Anime tidak ditemukan.');
         }
     
-        // Ambil view count untuk ditampilkan di HTML
+        // Cek apakah pengguna sudah login
+        if (session()->has('isLoggedIn')) {
+            $userLevel = session()->get('level');
+            $userId = session()->get('id');
+            $today = date('Y-m-d');
+            $animeId = $anime['id'];
+            $episodeId = $episode['id'];
+    
+            // Hitung jumlah episode yang sudah ditonton hari ini oleh user
+            $watchedEpisodesToday = $this->episodeViews
+                ->where('id', $userId)
+                ->where('DATE(created_at)', $today)
+                ->countAllResults();
+    
+            // Jika level pengguna adalah "Basic" dan sudah menonton 5 episode
+            $maxEpisodesPerDay = 5;
+            if ($userLevel === 'Basic' && $watchedEpisodesToday >= $maxEpisodesPerDay) {
+                return redirect()->to('/animes-home')->with('error', 'Anda telah menonton 5 episode hari ini. Silakan kembali besok untuk menonton lagi.');
+            }
+        } else {
+            return redirect()->to('/login')->with('error', 'Anda harus login untuk menonton episode ini.');
+        }
+        
+
+          // Ambil view count dari episode
         $viewRecord = $this->episodeViews->where('episode_id', $episode['id'])->first();
         $episode['view_count'] = $viewRecord ? $viewRecord['view_count'] : 0;
         
+    
         $previousEpisode = $this->episodModel->getPreviousEpisode($anime['id'], $episode['id']);
         $nextEpisode = $this->episodModel->getNextEpisode($anime['id'], $episode['id']);
+           // Ambil semua episode dengan view count
         $allEpisodes = $this->episodModel->getAllEpisodesWithViewsByAnimeId($anime['id']);
+
+        // Cari record existing di recent_anime berdasarkan user_id dan anime_id
+        $existingRecord = $this->userRecentAnimeModel
+            ->where('user_id', $userId)
+            ->where('anime_id', $animeId)
+            ->first();
+
+        if ($existingRecord) {
+            // Update episode_id jika sudah ada anime_id
+            $this->userRecentAnimeModel->update($existingRecord['id'], [
+                'episode_id' => $episodeId
+            ]);
+        }
     
         $data = [
-            'title' => $anime['Judul'] . ' | Episode ' . $episode['episode_number'] . ' | Wotakus',
+            'title' => $anime['Judul'] . ' | Episode ' . $episode['episode_number'] . ' | ' . 'Wotakus ' ,
             'anime' => $anime,
             'episode' => $episode,
             'EpisodeSebelumnya' => $previousEpisode,
             'EpisodeSelanjutnya' => $nextEpisode,
             'allEpisodes' => $allEpisodes,
-            'userLevel' => $userLevel
+            'userLevel' => $userLevel,
+            // 'view_count' => formatViews($episode['view_count']) 
         ];
     
         return view('user/videoPre', $data);
