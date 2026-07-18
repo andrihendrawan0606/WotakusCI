@@ -5,7 +5,34 @@
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <style>
+.premium-swal-popup {
+    border-radius: 20px !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    padding-bottom: 20px !important;
+}
 
+.premium-swal-btn {
+    color: #1e293b !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    padding: 12px 30px !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 6px -1px rgba(251, 191, 36, 0.3) !important;
+    transition: transform 0.2s ease !important;
+}
+
+.premium-swal-btn:hover {
+    transform: translateY(-2px) !important;
+}
+
+.premium-swal-cancel-btn {
+    color: #cbd5e1 !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+    padding: 12px 25px !important;
+    border: 1px solid #475569 !important;
+}
 </style>
     <!-- VIDEO -->
     <section class="theater-section">
@@ -213,17 +240,14 @@
                 if (!sessionStorage.getItem(sessionKey)) {
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-                    // Sesuaikan URL ini dengan nama Route API yang benar di routes.php kamu!
-                    // Contoh jika route-nya memanggil function incrementView:
-                    const API_URL = "<?= rtrim(base_url(), '/') ?>/dashboard/incrementView/" + episodeId;
-
-                    fetch(API_URL, {
-                        method: 'POST', // atau GET jika route-mu GET
+                    fetch(WATCH_API_URL, {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': csrfToken
-                        }
+                        },
+                        body: JSON.stringify({ episodeId: episodeId })
                     })
                     .then(response => response.json())
                     .then(data => {
@@ -231,11 +255,11 @@
                             sessionStorage.setItem(sessionKey, 'true');
                             console.log('Analytics: View recorded.');
                         } 
-                        else if (data.status === 'limit_reached' || data.message === 'Daily view limit reached') {
-                            // JIKA LIMIT TERCAPAI
-                            if (playerInst) playerInst.pause(); // Hentikan video
+                        else if (data.status === 'limit_reached') {
+                            // JIKA API MERETURN LIMIT_REACHED
+                            if (playerInst) playerInst.pause(); // Hentikan pemutaran video
                             
-                            // UI SWEETALERT PREMIUM (Dark & Elegant)
+                            // MUNCULKAN PENAWARAN PREMIUM
                             Swal.fire({
                                 icon: 'info',
                                 iconHtml: '<i class="fas fa-crown" style="color: #fbbf24;"></i>',
@@ -249,11 +273,11 @@
                                         </div>
                                     </div>
                                 `,
-                                background: '#1e293b', // Warna biru dongker sangat gelap (Slate)
+                                background: '#1e293b', 
                                 color: '#f8fafc',
                                 showCancelButton: true,
-                                confirmButtonColor: '#fbbf24', // Warna Kuning Emas Elegan
-                                cancelButtonColor: '#334155', // Warna Abu gelap
+                                confirmButtonColor: '#fbbf24', 
+                                cancelButtonColor: '#334155', 
                                 confirmButtonText: '<i class="fas fa-rocket mr-2"></i> UPGRADE PRO',
                                 cancelButtonText: 'Nanti Saja',
                                 customClass: {
@@ -264,11 +288,11 @@
                                 allowOutsideClick: false
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    // Arahkan ke halaman berlangganan/upgrade
-                                    window.location.href = "<?= url_to('subscriptionPage') ?? '#' ?>"; 
+                                    // Arahkan ke halaman berlangganan/upgrade (Pastikan URL ini valid)
+                                    window.location.href = "<?= base_url('upgrade') ?>"; 
                                 } else {
-                                    // Arahkan kembali ke beranda jika menolak
-                                    window.location.href = "<?= url_to('dashboard') ?>"; 
+                                    // Tendang user kembali ke dashboard
+                                    window.location.href = "<?= base_url('dashboard') ?>"; 
                                 }
                             });
                         }
