@@ -2602,6 +2602,25 @@ public function delete($slug)
         return $this->response->setJSON(['status' => 'success']);
     }
 
+    public function checkDuplicateBatch()
+    {
+        $json = $this->request->getJSON();
+        $ids = $json->ids ?? [];
+
+        if (empty($ids)) {
+            return $this->response->setJSON(['status' => 'success', 'new_ids' => []]);
+        }
+
+        // Cari mal_id yang sudah ada di database
+        $existingAnimes = $this->animeModel->whereIn('mal_id', $ids)->findAll();
+        $existingIds = array_column($existingAnimes, 'mal_id');
+
+        // Cari selisihnya (Pisahkan ID yang benar-benar baru)
+        $newIds = array_values(array_diff($ids, $existingIds));
+
+        return $this->response->setJSON(['status' => 'success', 'new_ids' => $newIds]);
+    }
+
 
     private function autoFetchEpisodes($malId, $animeInternalId, $db)
     {

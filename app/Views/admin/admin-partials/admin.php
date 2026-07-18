@@ -634,7 +634,7 @@
                         <!-- Tombol Eksekusi -->
                         <!-- Simpan semua URL Route PHP di tombol ini -->
                         <button type="button" id="btnExecuteSync" class="btn btn-dark btn-block shadow" style="border-radius: 8px; font-weight: bold; padding: 12px;"
-                            data-scan="<?= base_url('dashboard/scanPage') ?>" 
+                            data-checkdup="<?= base_url('dashboard/checkDuplicateBatch') ?>"
                             data-process="<?= base_url('dashboard/processSingle') ?>" 
                             data-publish="<?= base_url('dashboard/publishBatch') ?>"
                             data-scanongoing="<?= base_url('dashboard/scanOngoing') ?>"
@@ -1266,136 +1266,140 @@ document.getElementById('btnExecuteSync').addEventListener('click', async functi
 });
 
 // 4. MESIN UTAMA (Modifikasi dari kode lamamu)
+async function fetchJikanDirect(url, retries = 3) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const res = await fetch(url);
+            if (res.status === 200) return await res.json();
+            if (res.status === 429) {
+                logTerminal(`Limit API Jikan. Menunggu 3 detik...`, 'warning');
+                await new Promise(r => setTimeout(r, 3000));
+                continue;
+            }
+            if (res.status >= 500) {
+                logTerminal(`Server Jikan Sibuk (${res.status}). Menunggu 5 detik...`, 'warning');
+                await new Promise(r => setTimeout(r, 5000));
+                continue;
+            }
+            return null; // 404 atau data kosong
+        } catch (e) {
+            logTerminal(`Jaringan terputus. Mencoba ulang...`, 'error');
+            await new Promise(r => setTimeout(r, 3000));
+        }
+    }
+    return null;
+}
+
+// MESIN UTAMA BARU (CLIENT-SIDE SCRAPER)
 async function runEngine(urls, mode, source, forceStartPage = null) {
     let queue = [];
     let startPage = forceStartPage || (document.getElementById('inputStartPage') ? parseInt(document.getElementById('inputStartPage').value) : 1);
 
-    // --- TAHAP 1: MEMBANGUN ANTREAN (DENGAN SMART CRAWLER) ---
+    // ==========================================
+    // TAHAP 1: BROWSER LANGSUNG MENEMBAK JIKAN API
+    // ==========================================
     if (mode === 'manual') {
         const malId = document.getElementById('inputMalId').value;
-        if (!malId) {
-            logTerminal('ERROR: MAL ID tidak boleh kosong!', 'error');
-            return;
-        }
-        queue = [{ mal_id: malId, title: `Anime Target ID: ${malId}` }];
-        logTerminal(`Mode Manual Aktif. Mencari MAL ID: ${malId}...`, 'system');
+        if (!malId) return logTerminal('ERROR: MAL ID kosong!', 'error');
+        
+        logTerminal(`Menarik data MAL ID: ${malId} langsung dari Jikan...`, 'process');
+        const data = await fetchJikanDirect(`https://api.jikan.moe/v4/anime/${malId}`);
+        if (data && data.data) queue = [data.data];
     } 
+    else if (mode === 'maintenance') {
+        // Maintenance tetep pakai PHP lokal untuk cari anime on-going
+        logTerminal(`Mencari anime On-Going di database lokal...`, 'system');
+        const res = await fetch(urls.scanOngoing);
+        const data = await res.json();
+        if (data.status === 'success') queue = data.queue;
+    }
     else {
-        logTerminal(`Menginisialisasi koneksi ke Jikan API...`, 'system');
-        logTerminal(`Tugas: Mode ${mode.toUpperCase()} - Sumber: ${source}`, 'info');
+        // MODE EXPLORE: SMART CRAWLER BROWSER-SIDE
+        let currentPage = startPage;
+        let maxCrawlDepth = 5; 
+        let isFound = false;
 
-        if (mode === 'maintenance') {
-            // Logika Maintenance (Tetap Sekali Tarik)
-            try {
-                const res = await fetch(urls.scanOngoing);
-                const data = await res.json();
-                if (data.status === 'success') {
-                    queue = data.queue;
-                    if (queue.length === 0) {
-                        logTerminal('INFO: Tidak ada anime berstatus On-Going di database Anda.', 'warning');
+        while (!isFound && maxCrawlDepth > 0) {
+            logTerminal(`Browser menyedot data Jikan API Halaman ${currentPage}...`, 'process');
+            
+            // BROWSER LANGSUNG KE JIKAN (VPS-mu aman dari pemblokiran)
+            const data = await fetchJikanDirect(`https://api.jikan.moe/v4/${source}?page=${currentPage}`);
+            
+            if (data && data.data && data.data.length > 0) {
+                // Kumpulkan semua ID dari Halaman ini
+                const allIds = data.data.map(anime => anime.mal_id);
+                
+                // Tanya ke PHP (Database lokal): "Adakah ID ini yang belum tersimpan?"
+                logTerminal(`Memeriksa ${allIds.length} anime ke database lokal...`, 'system');
+                const checkRes = await fetch(urls.checkdup, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: allIds })
+                });
+                const checkData = await checkRes.json();
+                
+                if (checkData.new_ids && checkData.new_ids.length > 0) {
+                    // Filter hanya anime yang ID-nya benar-benar baru
+                    queue = data.data.filter(anime => checkData.new_ids.includes(anime.mal_id));
+                    isFound = true;
+                    logTerminal(`Berhasil! Menemukan ${queue.length} anime baru di Halaman ${currentPage}.`, 'success');
+                    document.getElementById('inputStartPage').value = currentPage;
+                } else {
+                    if (data.pagination.has_next_page) {
+                        logTerminal(`Halaman ${currentPage} sudah lengkap di Database. Lanjut mencari...`, 'warning');
+                        currentPage++;
+                        maxCrawlDepth--;
+                        await new Promise(r => setTimeout(r, 1000)); 
+                    } else {
+                        logTerminal(`Seluruh halaman sudah ditarik habis!`, 'success');
                         return;
                     }
-                    logTerminal(`Berhasil! Menemukan ${queue.length} anime On-Going untuk dicek episodenya.`, 'success');
                 }
-            } catch (err) {
-                logTerminal('KONEKSI TERPUTUS: Gagal menyambung ke server.', 'error');
+            } else {
+                logTerminal('Data halaman kosong atau terjadi Error API Jikan.', 'error');
                 return;
             }
-        } 
-        else {
-            // ========================================================
-            // 🔥 LOGIKA SMART CRAWLER UNTUK PENCARIAN ANIME BARU
-            // ========================================================
-            let currentPage = startPage;
-            let maxCrawlDepth = 5; // Maksimal lompat 5 halaman otomatis agar tidak diblokir Jikan
-            let isFound = false;
+        }
 
-            while (!isFound && maxCrawlDepth > 0) {
-                logTerminal(`Memindai Jikan API Halaman ${currentPage}...`, 'process');
-                
-                try {
-                    const res = await fetch(`${urls.scan}/${source}/${currentPage}`);
-                    const data = await res.json();
-                    
-                    if (data.status === 'success') {
-                        if (data.queue.length > 0) {
-                            // Ketemu anime baru!
-                            queue = data.queue;
-                            isFound = true;
-                            logTerminal(`Berhasil! Menemukan ${queue.length} anime baru di Halaman ${currentPage}.`, 'success');
-                            
-                            // Update angka di input box agar admin tahu posisinya sekarang
-                            document.getElementById('inputStartPage').value = currentPage; 
-                        } else {
-                            // Halaman ini sudah penuh di DB
-                            if (data.has_next) {
-                                logTerminal(`Halaman ${currentPage} sudah lengkap di Database. Mencari ke halaman berikutnya...`, 'warning');
-                                currentPage++;
-                                maxCrawlDepth--;
-                                
-                                // Jeda 1 detik agar Jikan API tidak marah karena di-spam request
-                                await new Promise(r => setTimeout(r, 1000)); 
-                            } else {
-                                logTerminal(`INFO: Seluruh halaman dari kategori ini sudah ditarik semua!`, 'success');
-                                return;
-                            }
-                        }
-                    } else {
-                        logTerminal(`GAGAL: ${data.message}`, 'error');
-                        return;
-                    }
-                } catch (err) {
-                    logTerminal('KONEKSI TERPUTUS saat melakukan scanning.', 'error');
-                    return;
-                }
-            }
-
-            // Jika setelah 5x lompat tidak ketemu juga
-            if (!isFound) {
-                logTerminal(`Sistem telah memindai 5 halaman beruntun namun datanya sudah lengkap di DB Anda. Pencarian dihentikan sementara untuk menghemat resource.`, 'system');
-                
-                Swal.fire({
-                    title: 'Database Sangat Lengkap!',
-                    text: `Sistem sudah memindai sampai Halaman ${currentPage - 1} dan semuanya sudah ada di Web Anda. Ingin lanjut memindai lebih dalam?`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Lanjut Cari',
-                    cancelButtonText: 'Berhenti'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Jalankan ulang fungsi runEngine dengan startPage yang baru
-                        runEngine(urls, mode, source, currentPage);
-                    } else {
-                        document.getElementById('inputStartPage').value = currentPage;
-                    }
-                });
-                return; // Hentikan eksekusi tahap 2 karena queue masih kosong
-            }
+        if (!isFound) {
+            Swal.fire({
+                title: 'Database Lengkap!',
+                text: `Sistem memindai sampai Halaman ${currentPage - 1}. Semuanya sudah ada di DB. Lanjut cari?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Lanjut',
+                cancelButtonText: 'Berhenti'
+            }).then((res) => {
+                if (res.isConfirmed) runEngine(urls, mode, source, currentPage);
+            });
+            return;
         }
     }
 
-    // --- TAHAP 2: EKSEKUSI ANTREAN (SATU PER SATU) ---
+    if (queue.length === 0) return logTerminal('Tidak ada antrean untuk diproses.', 'warning');
+
+    // ==========================================
+    // TAHAP 2: EKSEKUSI PENYIMPANAN KE PHP
+    // ==========================================
     let successCount = 0;
     let totalNewEps = 0;
     let newlyFetchedIds = [];
 
     logTerminal('---------------------------------------------------', 'info');
-    logTerminal('MEMULAI EKSEKUSI ANTREAN...', 'system');
+    logTerminal('MEMULAI PENYIMPANAN KE DATABASE...', 'system');
 
     for (let i = 0; i < queue.length; i++) {
         let item = queue[i];
-        
-        logTerminal(`[${i+1}/${queue.length}] Menghubungi Jikan untuk: <b>${item.title}</b>...`, 'process');
+        logTerminal(`[${i+1}/${queue.length}] Menyimpan: <b>${item.title || item.Judul}</b>...`, 'process');
 
         let formData = new FormData();
         formData.append('mal_id', item.mal_id);
         
-        if (mode !== 'manual') {
-            formData.append('anime_data', JSON.stringify(item));
-        }
-
         if (mode === 'maintenance') {
             formData.append('internal_id', item.internal_id);
+        } else {
+            // BAWA SEMUA JSON HASIL SEDOTAN BROWSER KE PHP (PHP TIDAK PERLU REQUEST LAGI)
+            formData.append('anime_data', JSON.stringify(item));
         }
 
         try {
@@ -1405,67 +1409,40 @@ async function runEngine(urls, mode, source, forceStartPage = null) {
 
             if (res.status === 'success') {
                 successCount++;
-                
                 if (mode !== 'maintenance' && res.anime_id) {
                     newlyFetchedIds.push(res.anime_id);
-                    logTerminal(`&nbsp;&nbsp;↳ SUKSES: Metadata tersimpan ke Database Draft.`, 'success');
-                }
-                
-                if (mode === 'maintenance') {
+                    logTerminal(`&nbsp;&nbsp;↳ SUKSES: Data tersimpan.`, 'success');
+                } else if (mode === 'maintenance') {
                     let newEps = parseInt(res.new_eps) || parseInt(res.eps_count) || parseInt(res.newEpsCount) || 0;
                     totalNewEps += newEps;
-                    if(newEps > 0) {
-                        logTerminal(`&nbsp;&nbsp;↳ SUKSES: Ditemukan & disimpan ${newEps} Episode baru.`, 'success');
-                    } else {
-                        logTerminal(`&nbsp;&nbsp;↳ INFO: Tidak ada episode baru yang rilis.`, 'info');
-                    }
+                    logTerminal(`&nbsp;&nbsp;↳ SUKSES: ${newEps} Episode masuk.`, 'success');
                 }
             } else {
-                logTerminal(`&nbsp;&nbsp;↳ DITOLAK: ${res.message || 'Database error'}`, 'warning');
+                logTerminal(`&nbsp;&nbsp;↳ DITOLAK: ${res.message}`, 'error');
             }
         } catch (e) { 
-            logTerminal(`&nbsp;&nbsp;↳ GAGAL: Terjadi masalah jaringan/server lokal.`, 'error');
+            logTerminal(`&nbsp;&nbsp;↳ GAGAL: Terjadi masalah lokal.`, 'error');
         }
-
-        // Jeda agar tidak terkena limit API Jikan (Sangat Penting)
-        if(i < queue.length - 1) {
-            await new Promise(r => setTimeout(r, 2000));
-        }
+        await new Promise(r => setTimeout(r, 1000));
     }
 
-    logTerminal('---------------------------------------------------', 'info');
-    logTerminal(`PROSES SELESAI. Total diproses: ${queue.length}. Berhasil: ${successCount}.`, 'system');
-
-    // --- TAHAP 3: KEPUTUSAN AKHIR (POP-UP) ---
+    // TAHAP 3: (Biarkan Pop Up SweetAlert persis seperti kode sebelumnya)
     if (mode === 'maintenance') {
-        Swal.fire('Update Selesai', `Telah memeriksa ${queue.length} anime. Masuk ${totalNewEps} Episode Baru.`, 'success');
-    } 
-    else if (mode === 'manual' && successCount === 0) {
-        Swal.fire('Gagal', 'Anime ini mungkin sudah ada di database, atau MAL ID tidak valid.', 'error');
-    } 
-    else if (newlyFetchedIds.length > 0) {
-        // Tanyakan ke admin mau di-publish atau tidak
+        Swal.fire('Update Selesai', `Diperiksa: ${queue.length} anime. Masuk ${totalNewEps} Eps Baru.`, 'success');
+    } else if (newlyFetchedIds.length > 0) {
         Swal.fire({
             title: 'Eksekusi Selesai!',
-            text: `${successCount} Anime baru ada di Draft. Ingin mempublish sekarang?`,
+            text: `${successCount} Anime baru ada di Draft. Publish sekarang?`,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#28a745',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Langsung Publish',
-            cancelButtonText: 'Biar di Draft Saja'
+            confirmButtonText: 'Publish',
+            cancelButtonText: 'Draft'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                logTerminal('Menjalankan perintah PUBLISH massal...', 'system');
-                await fetch(urls.publish, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ids: newlyFetchedIds })
-                });
-                logTerminal('SUKSES! Semua anime telah diterbitkan.', 'success');
+                await fetch(urls.publish, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ ids: newlyFetchedIds }) });
                 Swal.fire('Berhasil!', 'Anime diterbitkan.', 'success').then(() => location.reload());
             } else {
-                Swal.fire('Tersimpan!', 'Silakan cek menu Draft Anda nanti.', 'info').then(() => location.reload());
+                Swal.fire('Tersimpan!', 'Silakan cek menu Draft.', 'info').then(() => location.reload());
             }
         });
     }

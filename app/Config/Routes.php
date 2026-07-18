@@ -49,6 +49,7 @@ $routes->group('dashboard', ['filter' => 'adminCheck'], function($routes) {
     $routes->post('publishBatch', 'adminController::publishBatch');
     $routes->get('scanOngoing', 'adminController::scanOngoing');
     $routes->post('updateEpisodeSingle', 'adminController::updateEpisodeSingle');
+    $routes->post('checkDuplicateBatch', 'adminController::checkDuplicateBatch');
 
     $routes->post('studios/update/(:num)', 'StudioController::update/$1', ['as' => 'updateStudio']);
     $routes->post('studios/delete/(:num)', 'StudioController::delete/$1', ['as' => 'deleteStudio']);
