@@ -624,7 +624,7 @@ class Page extends BaseController
     
             // Hitung jumlah episode yang sudah ditonton hari ini oleh user
             $watchedEpisodesToday = $this->episodeViews
-                ->where('id', $userId)
+                ->where('user_id', $userId)
                 ->where('DATE(created_at)', $today)
                 ->countAllResults();
     
@@ -675,39 +675,6 @@ class Page extends BaseController
         return view('user/videoPre', $data);
     }
     
-
-    // public function incrementView($episodeId)
-    // {
-    //     if ($this->request->isAJAX()) {
-    //         // Ambil data episode berdasarkan ID
-    //         $episode = $this->episodModel->find($episodeId);
-    //         if ($episode) {
-    //             // Ambil atau buat entri episode view
-    //             $episodeView = $this->episodeViews->where('episode_id', $episodeId)->first();
-    
-    //             if ($episodeView) {
-    //                 // Jika sudah ada, perbarui view count
-    //                 $viewCount = $episodeView['view_count'] + 1;
-    //                 $this->episodeViews->update($episodeView['id'], ['view_count' => $viewCount]);
-    //             } else {
-    //                 // Jika belum ada, buat entri baru
-    //                 $this->episodeViews->insert([
-    //                     'episode_id' => $episodeId,
-    //                     'view_count' => 1
-    //                 ]);
-    //             }
-    
-    //             return $this->response->setJSON(['status' => 'success']);
-    //         }
-    
-    //         // Jika episode tidak ditemukan
-    //         log_message('error', 'Episode tidak ditemukan dengan ID: ' . $episodeId);
-    //         return $this->response->setJSON(['status' => 'error', 'message' => 'Episode not found']);
-    //     }
-    
-    //     // Jika bukan permintaan AJAX
-    //     return $this->response->setStatusCode(403, 'Forbidden');
-    // }
 
     public function incrementView($episodeId)
     {

@@ -122,7 +122,6 @@ $routes->group('', function($routes) {
     $routes->get('jadwal-rilis/', 'Page::jadwalRilis', ['as' => 'jadwal-rilis']);
     $routes->get('genre/(:segment)', 'Page::animesByGenre/$1/$2', ['as' => 'animesbyGenre']);
     $routes->get('anime/(:segment)', 'Page::showEpisodes/$1', ['as' => 'showEpisodes']);
-    // $routes->post('anime/trackUserWatch/(:num)', 'Page::trackUserWatch/$1', ['as' => 'trackUserWatch']);
     $routes->post('anime/incrementView/(:num)', 'Page::incrementView/$1', ['as' => 'incrementView']);
     $routes->get('anime(:segment)', 'Page::showGenre/$1', ['as' => 'showGenre']);
     $routes->get('profileUser', 'Page::profileUser', ['as' => 'profileUser']);
