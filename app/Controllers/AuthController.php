@@ -25,61 +25,69 @@ class AuthController extends BaseController
 
     public function attemptLogin()
     {
+        // 1. TAMBAHKAN PESAN ERROR KUSTOM (Bahasa Indonesia)
         $validation = $this->validate([
-            'email' => 'required|valid_email',
-            'password' => 'required'
+            'email' => [
+                'rules'  => 'required|valid_email',
+                'errors' => [
+                    'required'    => 'Email wajib diisi.',
+                    'valid_email' => 'Format email tidak valid.'
+                ]
+            ],
+            'password' => [
+                'rules'  => 'required',
+                'errors' => [
+                    'required' => 'Password wajib diisi.'
+                ]
+            ]
         ]);
-    
+
         if (!$validation) {
             return redirect()->back()->withInput()->with('validation', $this->validator);
         }
-    
+
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
-        $redirectUrl = $this->request->getPost('redirect') ?? $this->request->getGet('redirect'); // Ambil redirect dari form atau URL
-    
-        // Debugging log untuk redirect URL
-        error_log('Redirect URL: ' . $redirectUrl);
-    
+        $redirectUrl = $this->request->getPost('redirect') ?? $this->request->getGet('redirect'); 
+
         // Cek user berdasarkan email
         $user = $this->userModel->getUserByEmail($email);
-    
-        if (!$user) {
-            return redirect()->back()->with('error', 'Email tidak ditemukan.');
+
+        // 2. KEAMANAN: Jangan beritahu hacker apakah email atau password yang salah
+        if (!$user || !password_verify($password, $user['password'])) {
+            return redirect()->back()->withInput()->with('error', 'Email atau Password salah.');
         }
-    
-        if (!password_verify($password, $user['password'])) {
-            return redirect()->back()->with('error', 'Password salah.');
-        }
-    
+
+        // 3. Cek Status Akun
         if ($user['Status'] !== 'active') {
-            return redirect()->back()->with('error', 'Akun Anda tidak aktif.');
+            return redirect()->back()->with('error', 'Akun Anda ditangguhkan atau tidak aktif. Silakan hubungi Admin.');
         }
-    
+
         // Set session data
         session()->set([
-            'id' => $user['id'],
-            'nama' => $user['nama'],
-            'email' => $user['email'],
-            'role' => $user['role'],
+            'id'         => $user['id'],
+            'nama'       => $user['nama'],
+            'email'      => $user['email'],
+            'role'       => $user['role'],
             'ProfileImg' => $user['ProfileImg'],
-            'level' => $user['level'],
+            'level'      => $user['level'],
             'isLoggedIn' => true
         ]);
         
+        // Update last login
         $this->userModel->update($user['id'], [
             'last_login' => date('Y-m-d H:i:s')
         ]);
-    
-        session()->setFlashdata('pesan', 'Berhasil Login.');
-    
+
+        session()->setFlashdata('pesan', 'Selamat datang kembali, ' . $user['nama'] . '!');
+
         // Redirect berdasarkan role atau redirect URL
         if (!empty($redirectUrl)) {
             return redirect()->to(urldecode($redirectUrl));
         } elseif ($user['role'] === 'admin') {
-            return redirect()->route('dashboard');
+            return redirect()->to(url_to('dashboard'));
         } else {
-            return redirect()->route('animes-home');
+            return redirect()->to(url_to('animes-home'));
         }
     }
     

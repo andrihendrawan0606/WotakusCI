@@ -181,9 +181,9 @@ body, html {
                 <p class="jp-text">ログイン | Login</p>
             </div>
 
-            <form action="<?= url_to('prosesLogin'); ?>" method="post" class="signin-form mt-4">
+            <form action="<?= url_to('prosesLogin'); ?>" method="post" id="loginForm" class="signin-form mt-4">
                 <?= csrf_field(); ?>
-                <input type="hidden" name="redirect" value="<?= service('request')->getGet('redirect'); ?>">
+                <input type="hidden" name="redirect" value="<?= esc(service('request')->getGet('redirect')); ?>">
 
                 <div class="form-group custom-input">
                     <i class="fa fa-envelope input-icon"></i>
@@ -197,22 +197,23 @@ body, html {
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mt-3 mb-4 small">
+                    <!-- Fitur Remember Me umumnya butuh logika cookies di CI4, tapi biarkan secara UI -->
                     <label class="checkbox-container">Remember Me
-                        <input type="checkbox">
+                        <input type="checkbox" name="remember">
                         <span class="checkmark"></span>
                     </label>
                     <a href="#" class="forgot-link">Forgot Password?</a>
                 </div>
 
-                <button type="submit" class="btn btn-anime-primary w-100">
+                <button type="submit" id="btnLogin" class="btn btn-anime-primary w-100">
                     <span>SIGN IN | サインイン</span>
                 </button>
 
                 <div class="text-center mt-4">
                     <p class="register-text">Don't have an account? <a href="<?= url_to('register') ?>">Register</a></p>
                 </div>
-                <div class="text-center mt-4">
-                    <p class="register-text">Masuk Tanpa Akun Disini <a href="<?= url_to('animes-home') ?>">Masuk</a></p>
+                <div class="text-center mt-2">
+                    <p class="register-text">Atau <a href="<?= url_to('animes-home') ?>">Masuk Tanpa Akun</a></p>
                 </div>
             </form>
         </div>
@@ -227,55 +228,79 @@ body, html {
  
     </script>
     <script>
-        $(document).ready(function() {
-            <?php if (session()->get('error')) : ?>
-                const ToastError = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 400,  // Timer otomatis 5 detik
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    },
-                    willClose: () => {
-                        window.location.href = '<?= base_url('/auth/login'); ?>'; // Redirect ke halaman login setelah alert ditutup
-                    }
-                });
-
-                ToastError.fire({
-                    icon: 'error',
-                    title: "<?= session()->get('error'); ?>"
-                });
-            <?php endif; ?>
+       document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. TANGKAP PESAN ERROR (Email/Pass Salah)
+    <?php if (session()->get('error')) : ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Login',
+            text: "<?= session()->get('error'); ?>",
+            background: '#1e293b',
+            color: '#fff',
+            confirmButtonColor: '#ff4757'
         });
+    <?php endif; ?>
 
-        (function($) {
-        "use strict";
-
-        var fullHeight = function() {
-
-            $('.js-fullheight').css('height', $(window).height());
-            $(window).resize(function(){
-                $('.js-fullheight').css('height', $(window).height());
-            });
-
-        };
-        fullHeight();
-
-        $(".toggle-password").click(function() {
-
-        $(this).toggleClass("fa-eye fa-eye-slash");
-        var input = $($(this).attr("toggle"));
-        if (input.attr("type") == "password") {
-            input.attr("type", "text");
-        } else {
-            input.attr("type", "password");
-        }
+    // 2. TANGKAP PESAN SUKSES (Misal habis Register)
+    <?php if (session()->get('pesan')) : ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: "<?= session()->get('pesan'); ?>",
+            background: '#1e293b',
+            color: '#fff',
+            confirmButtonColor: '#2ed573'
         });
+    <?php endif; ?>
 
-        })(jQuery);
+    // 3. TANGKAP ERROR VALIDASI FORM (Kosong/Format Salah)
+    <?php if (session()->get('validation')) : ?>
+        let errorMessages = "";
+        <?php foreach (session()->get('validation')->getErrors() as $error) : ?>
+            errorMessages += "<li><?= esc($error) ?></li>";
+        <?php endforeach; ?>
+        
+        Swal.fire({
+            icon: 'warning',
+            title: 'Periksa Kembali',
+            html: `<ul style="text-align: left; margin: 0; padding-left: 20px;">${errorMessages}</ul>`,
+            background: '#1e293b',
+            color: '#fff',
+            confirmButtonColor: '#ff4757'
+        });
+    <?php endif; ?>
+
+    // 4. FITUR SHOW/HIDE PASSWORD (Vanilla JS - Sangat Cepat & Aman)
+    const toggleIcons = document.querySelectorAll('.toggle-password');
+    toggleIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+            
+            const targetInputId = this.getAttribute('toggle');
+            const inputElement = document.querySelector(targetInputId);
+            
+            if (inputElement.getAttribute('type') === 'password') {
+                inputElement.setAttribute('type', 'text');
+            } else {
+                inputElement.setAttribute('type', 'password');
+            }
+        });
+    });
+
+    // 5. MENCEGAH SPAM KLIK PADA TOMBOL LOGIN (Anti-Double Submit)
+    const form = document.getElementById('loginForm');
+    const btnLogin = document.getElementById('btnLogin');
+
+    form.addEventListener('submit', function() {
+        // Ubah teks dan disable tombol saat disubmit
+        btnLogin.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Authenticating...';
+        btnLogin.style.pointerEvents = 'none';
+        btnLogin.style.opacity = '0.7';
+    });
+
+});
         
     </script>
 </body>
