@@ -122,12 +122,38 @@
             }
         }
 
+        /* =========================================
+        TOP PROGRESS BAR STYLING
+        ========================================= */
+        .top-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%; /* Dimulai dari 0% */
+            height: 3px; /* Ketebalan garis loading */
+            background: linear-gradient(90deg, #ac11e9, #FF3D00); /* Warna gradasi premium */
+            z-index: 999999; /* Pastikan selalu berada di paling atas */
+            transition: width 0.4s ease, opacity 0.3s ease;
+            opacity: 0; /* Tersembunyi secara default */
+            pointer-events: none; /* Agar tidak menghalangi klik pada navbar */
+        }
 
+        /* Efek cahaya kecil di ujung kanan progress bar */
+        .top-progress-bar .progress-glow {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 100px;
+            box-shadow: 0 0 10px #FF3D00, 0 0 5px #ac11e9;
+            opacity: 0.8;
+            transform: translateY(-25%);
+        }
     </style>
 </head>
 <body style="background-color: black;" >
-    <div class="loading-overlay">
-        <span class="loader"></span>
+    <div id="top-progress-bar" class="top-progress-bar">
+        <div class="progress-glow"></div>
     </div>
     <?= $this->include('animesLayout/navbar') ?>
     <?= $this->renderSection('content') ?>
@@ -156,22 +182,49 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
+        const progressBar = document.getElementById('top-progress-bar');
         const links = document.querySelectorAll('a');
-        const loadingOverlay = document.querySelector('.loading-overlay');
 
         links.forEach(link => {
             link.addEventListener('click', function(event) {
-            if (link.getAttribute('target') !== '_blank' && link.getAttribute('href') !== '#' && !link.href.startsWith('javascript:')) {
-                loadingOverlay.style.display = 'flex';
-            }
+                const href = link.getAttribute('href');
+                const target = link.getAttribute('target');
+
+                // Syarat agar loading bar muncul:
+                // 1. Punya href
+                // 2. Bukan anchor link (#)
+                // 3. Bukan script (javascript:)
+                // 4. Bukan buka di tab baru (_blank)
+                if (href && href !== '#' && !href.startsWith('javascript:') && target !== '_blank') {
+                    
+                    // Mencegah loading bar muncul jika user klik tengah (scroll wheel) 
+                    // atau klik sambil tahan tombol CTRL/CMD (buka di tab baru)
+                    if (event.button === 0 && !event.ctrlKey && !event.metaKey) {
+                        // Munculkan progress bar dan jalankan ke 75% (Fake Loading)
+                        progressBar.style.opacity = '1';
+                        progressBar.style.width = '75%';
+                    }
+                }
             });
         });
 
+        // Ketika halaman tujuan sudah selesai dimuat sepenuhnya
         window.addEventListener('pageshow', function(event) {
-            loadingOverlay.style.display = 'none';
+            // Tembak progress bar ke 100%
+            progressBar.style.width = '100%';
+            
+            // Beri sedikit jeda agar user melihat angka 100%, lalu pudarkan
+            setTimeout(() => {
+                progressBar.style.opacity = '0';
+                
+                // Setelah memudar, reset kembali panjangnya menjadi 0% untuk klik berikutnya
+                setTimeout(() => {
+                    progressBar.style.width = '0%';
+                }, 300); // Tunggu efek transisi opacity selesai
+            }, 300);
         });
-        });
+    });
 
     $('#summernote').summernote({
         placeholder: '',
