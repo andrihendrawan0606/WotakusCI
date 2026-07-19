@@ -29,7 +29,7 @@ body, html {
 }
 
 .login-page {
-    background: url('https://images5.alphacoders.com/105/1053417.jpg') no-repeat center center fixed; /* Ganti dengan URL gambar anime Anda */
+    background: url('https://images5.alphacoders.com/105/1053417.jpg') no-repeat center center fixed; 
     background-size: cover;
     min-height: 100vh;
     display: flex;
@@ -148,7 +148,7 @@ body, html {
                 </div>
             <?php endif; ?>
 
-            <form action="<?= url_to('prosesRegister'); ?>" method="post" class="signin-form mt-4">
+            <form action="<?= url_to('prosesRegister'); ?>" method="post" id="registerForm" class="signin-form mt-4">
                 <?= csrf_field(); ?>
 
                 <div class="form-group custom-input">
@@ -173,7 +173,7 @@ body, html {
                     <input type="number" name="age" class="form-control" value="<?= old('age'); ?>" placeholder="Age | 年齢" required>
                 </div>
 
-                <button type="submit" class="btn btn-anime-primary w-100 mt-4">
+                <button type="submit" id="btnRegister" class="btn btn-anime-primary w-100 mt-4">
                     <span>REGISTER | 登録する</span>
                 </button>
 
@@ -190,51 +190,67 @@ body, html {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 <script>
-    $(document).ready(function() {
-        <?php if (session()->get('error')) : ?>
-            const ToastError = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                }
-            });
-
-            ToastError.fire({
-                icon: 'error',
-                title: "<?= session()->get('error'); ?>"
-            });
-        <?php endif; ?>
-    });
-
-    (function($) {
-    "use strict";
-
-    var fullHeight = function() {
-
-        $('.js-fullheight').css('height', $(window).height());
-        $(window).resize(function(){
-            $('.js-fullheight').css('height', $(window).height());
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. TANGKAP ERROR DARI FLASHDATA (Error Biasa)
+    <?php if (session()->get('error')) : ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "<?= session()->get('error'); ?>",
+            background: '#1e293b',
+            color: '#fff',
+            confirmButtonColor: '#ff4757'
         });
+    <?php endif; ?>
 
-    };
-    fullHeight();
+    // 2. TANGKAP ERROR VALIDASI FORM (Menampilkan List Error dengan Rapi di SweetAlert)
+    <?php if (session()->get('validation')) : ?>
+        let errorMessages = "";
+        <?php foreach (session()->get('validation')->getErrors() as $error) : ?>
+            errorMessages += "<li><?= esc($error) ?></li>";
+        <?php endforeach; ?>
+        
+        Swal.fire({
+            icon: 'warning',
+            title: 'Validasi Gagal',
+            html: `<ul style="text-align: left; margin: 0; padding-left: 20px;">${errorMessages}</ul>`,
+            background: '#1e293b',
+            color: '#fff',
+            confirmButtonColor: '#ff4757'
+        });
+    <?php endif; ?>
 
-    $(".toggle-password").click(function() {
-
-    $(this).toggleClass("fa-eye fa-eye-slash");
-    var input = $($(this).attr("toggle"));
-    if (input.attr("type") == "password") {
-        input.attr("type", "text");
-    } else {
-        input.attr("type", "password");
-    }
+    // 3. FITUR SHOW/HIDE PASSWORD (Vanilla JS - Lebih Cepat dari JQuery)
+    const toggleIcons = document.querySelectorAll('.toggle-password');
+    toggleIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+            
+            const targetInputId = this.getAttribute('toggle');
+            const inputElement = document.querySelector(targetInputId);
+            
+            if (inputElement.getAttribute('type') === 'password') {
+                inputElement.setAttribute('type', 'text');
+            } else {
+                inputElement.setAttribute('type', 'password');
+            }
+        });
     });
 
-    })(jQuery);
+    // 4. MENCEGAH SPAM KLIK PADA TOMBOL REGISTER (Anti-Double Submit)
+    const form = document.getElementById('registerForm');
+    const btnRegister = document.getElementById('btnRegister');
+
+    form.addEventListener('submit', function() {
+        // Ubah teks dan disable tombol saat disubmit
+        btnRegister.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
+        btnRegister.style.pointerEvents = 'none';
+        btnRegister.style.opacity = '0.7';
+    });
+
+});
 </script>

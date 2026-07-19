@@ -110,42 +110,91 @@ class AuthController extends BaseController
 
     public function attemptRegister()
     {
+        // 1. TAMBAHKAN PESAN ERROR KUSTOM (Bahasa Indonesia)
         $validation = $this->validate([
-            'email' => 'required|valid_email|is_unique[users.email]',
-            'password' => 'required|min_length[6]',
-            'confirm_password' => 'required|matches[password]',
-            'age' => 'required|integer|min_length[1]'
+            'email' => [
+                'rules'  => 'required|valid_email|is_unique[users.email]',
+                'errors' => [
+                    'required'    => 'Email wajib diisi.',
+                    'valid_email' => 'Format email tidak valid.',
+                    'is_unique'   => 'Email ini sudah terdaftar. Silakan gunakan email lain atau Login.'
+                ]
+            ],
+            'password' => [
+                'rules'  => 'required|min_length[6]',
+                'errors' => [
+                    'required'   => 'Password wajib diisi.',
+                    'min_length' => 'Password minimal harus 6 karakter.'
+                ]
+            ],
+            'confirm_password' => [
+                'rules'  => 'required|matches[password]',
+                'errors' => [
+                    'required' => 'Konfirmasi password wajib diisi.',
+                    'matches'  => 'Konfirmasi password tidak cocok dengan password di atas.'
+                ]
+            ],
+            'age' => [
+                'rules'  => 'required|integer|greater_than_equal_to[13]', // Tambahkan batas usia minimal (Misal: 13 thn)
+                'errors' => [
+                    'required'              => 'Umur wajib diisi.',
+                    'integer'               => 'Umur harus berupa angka.',
+                    'greater_than_equal_to' => 'Anda harus berusia minimal 13 tahun untuk mendaftar.'
+                ]
+            ]
         ]);
     
         if (!$validation) {
             return redirect()->back()->withInput()->with('validation', $this->validator);
         }
     
-        $userData = [
-            'email' => $this->request->getPost('email'),
-            'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT),
-            'age' => $this->request->getPost('age'),
-            'status' => 'active', 
-            'role' => 'user',
-            'nama' => $this->request->getPost('email') 
-        ];
+        $email = $this->request->getPost('email');
+        
+        // 2. EKSTRAK NAMA DARI EMAIL (Misal: andri@gmail.com -> Andri)
+        $emailParts = explode('@', $email);
+        $defaultNama = ucfirst($emailParts[0]); 
     
-        // Simpan data user
-        $this->userModel->save($userData);
+        // 3. GUNAKAN DATABASE TRANSACTION UNTUK KEAMANAN DATA RELASIONAL
+        $db = \Config\Database::connect();
+        $db->transStart();
     
-        // Ambil ID user yang baru disimpan
-        $userId = $this->userModel->insertID();
+        try {
+            $userData = [
+                'email'    => $email,
+                'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT),
+                'age'      => $this->request->getPost('age'),
+                'status'   => 'active', 
+                'role'     => 'user',
+                'nama'     => $defaultNama // Menggunakan nama yang sudah diekstrak
+            ];
     
-        // Simpan level "Basic" untuk user tersebut
-        $this->userLevelModel->insert([
-            'user_id' => $userId,
-            'level' => 'Basic',
-            'coins' => 0,
-            'subscription_expiry' => null,
-        ]);
+            // Simpan data user
+            $this->userModel->insert($userData);
+            $userId = $this->userModel->getInsertID();
     
-        session()->setFlashdata('pesan', 'Registrasi berhasil. Silakan login.');
-        return redirect()->to('/auth/login');
+            // Simpan level "Basic" untuk user tersebut
+            $this->userLevelModel->insert([
+                'user_id'             => $userId,
+                'level'               => 'Basic',
+                'coins'               => 0,
+                'subscription_expiry' => null,
+            ]);
+    
+            $db->transComplete();
+    
+            // Jika transaksi gagal (rollback terjadi)
+            if ($db->transStatus() === FALSE) {
+                log_message('error', 'Gagal mendaftar user baru karena DB error.');
+                return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan sistem saat mendaftar. Silakan coba lagi.');
+            }
+    
+            session()->setFlashdata('pesan', 'Registrasi berhasil! Silakan login untuk memulai.');
+            return redirect()->to(url_to('login'));
+    
+        } catch (\Exception $e) {
+            // Tangkap jika ada error tak terduga (misal database mati)
+            return redirect()->back()->withInput()->with('error', 'Error sistem: ' . $e->getMessage());
+        }
     }
 
     public function checkSession()
