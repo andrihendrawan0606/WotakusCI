@@ -1101,101 +1101,156 @@ public function createEpisode($slug)
 
             $videoSourceType = $this->request->getPost('video_source_type');
 
-            // 1. VALIDASI DATA TEKS
+            // ==========================================
+            // 1. VALIDASI (MIRIP PROSES TAMBAH)
+            // ==========================================
             $validationRules = [
                 'judul'         => ['rules' => 'required', 'errors' => ['required' => 'Judul Episode Harus diisi']],
                 'episodeNumber' => ['rules' => 'required', 'errors' => ['required' => 'Nomor Episode Harus diisi']],
                 'Deskripsi'     => ['rules' => 'required', 'errors' => ['required' => 'Deskripsi Harus diisi']]
             ];
 
-            // 2. VALIDASI JENIS VIDEO BILA DIGANTI
-            $isChangingVideo = false;
+            // Jika admin mencoba mengganti video dengan UPLOAD BARU
             $tempFilename = trim($this->request->getPost('uploaded_temp_video') ?? '');
-            $embedLink    = trim($this->request->getPost('video_embed_link') ?? '');
-
             if ($videoSourceType === 'upload' && !empty($tempFilename)) {
-                $isChangingVideo = true;
-            } elseif ($videoSourceType === 'embed' && !empty($embedLink)) {
+                // Kita tidak perlu validasi 'required' di sini karena pada Edit, video boleh kosong (artinya pakai video lama)
+            } 
+            // Jika admin mencoba mengganti video dengan EMBED BARU
+            else if ($videoSourceType === 'embed') {
+                $embedLink = $this->request->getPost('video_embed_link');
+                
+                // Cek manual jika link tersebut berakhiran format gambar
                 $isImage = preg_match('/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i', $embedLink);
+
                 if ($isImage) {
-                    return $this->response->setStatusCode(400)->setJSON(['error' => ['video_embed_link' => 'Link yang dimasukkan adalah gambar. Harap masukkan URL Video atau iFrame!']]);
+                    // Buat rule fiktif agar gagal (Sama seperti halaman Tambah)
+                    $validationRules['video_embed_link'] = [
+                        'rules' => 'in_list[video]', 
+                        'errors' => ['in_list' => 'Link yang dimasukkan adalah gambar. Harap masukkan URL Video atau iFrame!']
+                    ];
+                } elseif (empty($embedLink) && empty($oldEpisode['video_path'])) {
+                    // Cegah embed kosong jika sebelumnya memang belum ada video
+                    $validationRules['video_embed_link'] = [
+                        'rules' => 'required',
+                        'errors' => ['required' => 'Link Embed harus diisi!']
+                    ];
                 }
-                $isChangingVideo = true;
             }
 
             if (!$this->validate($validationRules)) {
                 return $this->response->setStatusCode(400)->setJSON(['error' => $this->validator->getErrors()]);
             }
 
-            $animeData = [
-                'episode_number' => $this->request->getPost('episodeNumber'),
-                'judul'          => $this->request->getPost('judul'),
-                'deskripsi'      => $this->request->getPost('Deskripsi'),
-            ];
-
             // ==========================================
-            // 3. PROSES PENGGANTIAN VIDEO
+            // 2. PROSES PEMINDAHAN VIDEO & PEMBERSIHAN TEMP
             // ==========================================
-            if ($isChangingVideo) {
-                $oldVideo = $oldEpisode['video_path'];
+            $newName = $oldEpisode['video_path']; // Default pakai video lama
+            $isVideoChanged = false;
+            
+            $tempPath = FCPATH . 'assets/videos/temp/' . $tempFilename;
 
-                if ($videoSourceType === 'embed') {
-                    // Jika diganti jadi Embed
-                    $animeData['video_path'] = base64_decode($embedLink) ?: $embedLink;
-                    
-                    // Hapus file video lama JIKA video lamanya adalah file lokal (mp4/mkv)
-                    if (!empty($oldVideo) && !filter_var($oldVideo, FILTER_VALIDATE_URL) && strpos($oldVideo, '<iframe') === false) {
-                        $pathLama = FCPATH . 'assets/videos/' . $oldVideo;
-                        if (file_exists($pathLama)) unlink($pathLama);
-                    }
-                } 
-                else {
-                    // Jika diganti jadi Upload File Local Baru
-                    $tempPath = FCPATH . 'assets/videos/temp/' . $tempFilename;
-                    $finalPath = FCPATH . 'assets/videos/' . $tempFilename;
-
-                    if (file_exists($tempPath)) {
-                        rename($tempPath, $finalPath);
-                        $animeData['video_path'] = $tempFilename;
-
-                        // Hapus file video lama JIKA video lamanya adalah file lokal
+            if ($videoSourceType === 'embed') {
+                $base64Input = $this->request->getPost('video_embed_link');
+                
+                // Jika ada input embed baru dan berbeda dari yang lama
+                if (!empty($base64Input)) {
+                    $decodedEmbed = base64_decode($base64Input) ?: $base64Input;
+                    if ($decodedEmbed !== $oldEpisode['video_path']) {
+                        $newName = $decodedEmbed;
+                        $isVideoChanged = true;
+                        
+                        // Hapus file video lama JIKA dulunya adalah file fisik (mp4)
+                        $oldVideo = $oldEpisode['video_path'];
                         if (!empty($oldVideo) && !filter_var($oldVideo, FILTER_VALIDATE_URL) && strpos($oldVideo, '<iframe') === false) {
                             $pathLama = FCPATH . 'assets/videos/' . $oldVideo;
                             if (file_exists($pathLama)) unlink($pathLama);
                         }
                     }
                 }
-            }
 
-            // ==========================================
-            // 4. PROSES PENGGANTIAN GAMBAR PREVIEW
-            // ==========================================
-            $autoThumbData = $this->request->getPost('auto_generated_thumbnail');
-            
-            if (!empty($autoThumbData)) {
-                // Jika pakai fitur Jepret Otomatis
-                $image_parts = explode(";base64,", $autoThumbData);
-                $image_base64 = base64_decode($image_parts[1]);
-                $namaGambarPreview = time() . '_auto_thumbnail.jpg';
-                file_put_contents(FCPATH . 'assets/imgPreview/' . $namaGambarPreview, $image_base64);
-                $animeData['GambarPreview'] = $namaGambarPreview;
+                // KUNCI PENGAMANAN: Hapus file video lokal (temp) jika ada yang nyangkut
+                if (!empty($tempFilename) && file_exists($tempPath)) {
+                    unlink($tempPath); 
+                }
+
             } else {
-                // Jika upload gambar manual
-                $fileGambarPreview = $this->request->getFile('gambarPreview');
-                if ($fileGambarPreview && $fileGambarPreview->isValid() && !$fileGambarPreview->hasMoved()) {
-                    $namaGambarPreview = time() . '_' . $fileGambarPreview->getName();
-                    $fileGambarPreview->move('assets/imgPreview', $namaGambarPreview);
-                    $animeData['GambarPreview'] = $namaGambarPreview;
+                // JIKA ADMIN MEMILIH UPLOAD LOCAL
+                if (!empty($tempFilename)) {
+                    $finalPath = FCPATH . 'assets/videos/' . $tempFilename;
+
+                    if (file_exists($tempPath)) {
+                        // Pindahkan file dari temp ke folder utama
+                        rename($tempPath, $finalPath);
+                        $newName = $tempFilename;
+                        $isVideoChanged = true;
+
+                        // Hapus file video lama
+                        $oldVideo = $oldEpisode['video_path'];
+                        if (!empty($oldVideo) && !filter_var($oldVideo, FILTER_VALIDATE_URL) && strpos($oldVideo, '<iframe') === false) {
+                            $pathLama = FCPATH . 'assets/videos/' . $oldVideo;
+                            if (file_exists($pathLama)) unlink($pathLama);
+                        }
+                    } else {
+                        return $this->response->setStatusCode(400)->setJSON(['error' => ['video' => 'File video hilang di server. Silakan upload ulang.']]);
+                    }
                 }
             }
 
-            // Hapus gambar lama JIKA ada gambar baru yang masuk
-            if (isset($animeData['GambarPreview']) && !empty($oldEpisode['GambarPreview']) && $oldEpisode['GambarPreview'] !== 'default.png') {
+            // ==========================================
+            // 3. PROSES UPLOAD GAMBAR PREVIEW (THUMBNAIL)
+            // ==========================================
+            $namaGambarPreview = $oldEpisode['GambarPreview']; // Default pakai gambar lama
+            $isGambarChanged = false;
+            
+            $autoThumbData = $this->request->getPost('auto_generated_thumbnail');
+            $isThumbnailReset = $this->request->getPost('ThumbnailReset') === '1';
+
+            if ($isThumbnailReset) {
+                // Jika tombol 'X' (hapus thumbnail) ditekan
+                $namaGambarPreview = 'default.jpg';
+                $isGambarChanged = true;
+            } 
+            elseif (!empty($autoThumbData)) {
+                // Jika ada jepretan otomatis
+                $image_parts = explode(";base64,", $autoThumbData);
+                $image_base64 = base64_decode($image_parts[1]); 
+                
+                $namaGambarPreview = time() . '_auto_thumbnail.jpg';
+                file_put_contents(FCPATH . 'assets/imgPreview/' . $namaGambarPreview, $image_base64);
+                $isGambarChanged = true;
+            } 
+            else {
+                // Jika upload gambar manual
+                $fileGambarPreview = $this->request->getFile('gambarPreview');
+                
+                if ($fileGambarPreview && $fileGambarPreview->isValid() && !$fileGambarPreview->hasMoved()) {
+                    $namaGambarPreview = time() . '_' . $fileGambarPreview->getName();
+                    $fileGambarPreview->move('assets/imgPreview', $namaGambarPreview);
+                    $isGambarChanged = true;
+                }
+            }
+
+            // Jika gambar berubah, hapus gambar yang lama (kecuali default)
+            if ($isGambarChanged && !empty($oldEpisode['GambarPreview']) && $oldEpisode['GambarPreview'] !== 'default.jpg' && $oldEpisode['GambarPreview'] !== 'default.png') {
                 $pathGambarLama = FCPATH . 'assets/imgPreview/' . $oldEpisode['GambarPreview'];
                 if (file_exists($pathGambarLama)) unlink($pathGambarLama);
             }
 
-            // UPDATE DATABASE
+            // ==========================================
+            // 4. SIMPAN PERUBAHAN KE DATABASE
+            // ==========================================
+            $episodeNumber = $this->request->getPost('episodeNumber');
+            $judulInput    = trim($this->request->getPost('judul') ?? '');
+            $descInput     = trim($this->request->getPost('Deskripsi') ?? '');
+            
+            $animeData = [
+                'episode_number' => $episodeNumber,
+                'judul'          => $judulInput,
+                'deskripsi'      => $descInput,
+                'GambarPreview'  => $namaGambarPreview,
+                'video_path'     => $newName
+            ];
+
             $this->episodeModel->update($id, $animeData);
 
             // ==========================================
@@ -1207,8 +1262,8 @@ public function createEpisode($slug)
             $perubahan = [];
             if ($oldEpisode['judul'] !== $animeData['judul']) $perubahan[] = "Judul Diubah";
             if ($oldEpisode['episode_number'] != $animeData['episode_number']) $perubahan[] = "No. Eps Diubah";
-            if (isset($animeData['GambarPreview'])) $perubahan[] = "Thumbnail Diganti";
-            if (isset($animeData['video_path'])) $perubahan[] = "Video Diganti (" . strtoupper($videoSourceType) . ")";
+            if ($isGambarChanged) $perubahan[] = "Thumbnail Diganti";
+            if ($isVideoChanged) $perubahan[] = "Video Diganti (" . strtoupper($videoSourceType) . ")";
 
             $detailUbah = !empty($perubahan) ? implode(", ", $perubahan) : "Mengubah deskripsi atau detail lainnya.";
 
