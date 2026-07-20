@@ -354,7 +354,7 @@
 }
 .section-personalized { padding: 0 40px; }
 
-.ai-card {
+/* .ai-card {
     display: block;
     text-decoration: none !important;
     transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -472,7 +472,7 @@
 .personalized-swiper:hover .ai-nav-next, 
 .personalized-swiper:hover .ai-nav-prev {
     opacity: 1;
-}
+} */
 
 @media (max-width: 768px) {
     .section-personalized { padding: 0 15px; }
