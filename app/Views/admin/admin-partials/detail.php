@@ -829,11 +829,18 @@
     .swal2-popup .img-source-toggle input[type="radio"]:checked + label,
     .swal-edit-modal .img-source-toggle input[type="radio"]:checked + label {
         background: #fff !important;
-        color: #ac11e9 !important; /* Ungu Neon khas web kamu */
+        color: #ac11e9 !important; 
         box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
     }
 
-    
+    #edit_embed-display iframe,
+    #embed-display iframe {
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        border-radius: 8px !important; 
+        object-fit: cover;
+    }
 
 </style>
 <!-- Breadcrumb -->
