@@ -378,28 +378,54 @@
     visibility: visible !important;
 }
 
-/* Header Section */
+/* Header Section (DIPERBESAR & LEBIH MENCOLOK) */
 .ai-section-header {
     display: flex;
     align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 30px; /* Jarak ke slider diperlebar sedikit */
 }
 
 .ai-icon-box {
     background: linear-gradient(135deg, #f59e0b, #d97706); 
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 55px; /* Diperbesar dari 40px */
+    height: 55px; /* Diperbesar dari 40px */
+    border-radius: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 15px;
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); 
+    margin-right: 20px;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); /* Glow emas lebih keluar */
 }
 
-.ai-icon-box i { color: #ffffff; font-size: 1.2rem; }
-.ai-section-title { color: #ffffff; font-size: 1.5rem; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
-.ai-section-subtitle { color: #64748b; font-size: 0.85rem; font-weight: 500; margin-top: 4px; }
+.ai-icon-box i { 
+    color: #ffffff; 
+    font-size: 1.8rem; /* Ikon lebih besar */
+}
+
+.ai-section-title { 
+    color: #ffffff; 
+    font-size: 2.2rem; /* Diperbesar dari 1.5rem */
+    font-weight: 900; /* Font paling tebal (Black/Heavy) */
+    margin: 0; 
+    letter-spacing: 0.5px; 
+    text-transform: uppercase; /* Memaksa huruf besar semua agar terlihat premium */
+}
+
+.ai-section-subtitle { 
+    color: #94a3b8; /* Warna abu-abu terang */
+    font-size: 1.05rem; /* Teks penjelasan sedikit diperbesar */
+    font-weight: 500; 
+    margin-top: 5px; 
+    letter-spacing: 0.2px;
+}
+
+/* Sesuaikan ukuran di HP agar tidak kebesaran */
+@media (max-width: 768px) {
+    .ai-section-title { font-size: 1.4rem; }
+    .ai-section-subtitle { font-size: 0.85rem; }
+    .ai-icon-box { width: 45px; height: 45px; margin-right: 15px; }
+    .ai-icon-box i { font-size: 1.3rem; }
+}
 
 /* Card Styling */
 .ai-card {
@@ -607,28 +633,27 @@ $heroList = array_slice($heroList, 0, 5);
 
  <!-- SECTION: PERSONALIZED DISCOVERY (EXPLAINABLE AI) -->
 <?php if (session()->get('isLoggedIn') && !empty($personalizedAnimes)) : ?>
-<div class="section-personalized">
+    <div class="section-personalized">
     
-    <!-- 1. HEADER (Menggunakan wrapper khusus agar padding kiri sama dengan slider) -->
+    <!-- 1. HEADER (Di dalam container agar sejajar dengan web) -->
     <div class="ai-header-wrapper">
         <div class="ai-section-header">
             <div class="ai-icon-box">
                 <i class="fas fa-magic"></i>
             </div>
             <div>
-                <h1 class="ai-section-title">Pilihan Untukmu, <?= strtoupper(session()->get('nama')) ?></h1>
-                <p class="ai-section-subtitle">Rekomendasi cerdas AI berdasarkan riwayat penilaian Anda.</p>
+                <h1 class="ai-section-title">Pilihan Untukmu, <?= session()->get('nama') ?></h1>
+                <p class="ai-section-subtitle">Rekomendasi cerdas AI berdasarkan riwayat aktivitas dan penilaian Anda.</p>
             </div>
         </div>
     </div>
 
-    <!-- 2. SLIDER (Di luar container, padding khusus agar tidak kepotong) -->
-    <div class="personalized-swiper-container">
+     <!-- 2. SLIDER (Di luar container, padding khusus agar tidak kepotong) -->
+     <div class="personalized-swiper-container">
         <div class="swiper personalized-swiper">
             <div class="swiper-wrapper">
                 <?php foreach ($personalizedAnimes as $anime) : ?>
                     
-                    <!-- HAPUS CLASS ANIMASI DARI SINI AGAR TIDAK PUDAR -->
                     <div class="swiper-slide">
                         <a href="<?= url_to('animeDetail', $anime['slug']) ?>" class="ai-card">
                             
@@ -657,7 +682,7 @@ $heroList = array_slice($heroList, 0, 5);
                                     $reasonText = isset($anime['reason']) ? $anime['reason'] : 'Disarankan oleh sistem cerdas.';
                                     $baseTitleToHighlight = isset($anime['base_anime']) ? $anime['base_anime'] : '';
                                     
-                                    // HIGHLIGHT TEKS ELEGAN (Warna putih biasa dengan ketebalan font)
+                                    // HIGHLIGHT TEKS ELEGAN
                                     $highlightSpan = '<span style="color: #f8fafc; font-weight: 700;">'; 
                                     
                                     if (!empty($baseTitleToHighlight)) {
@@ -689,7 +714,7 @@ $heroList = array_slice($heroList, 0, 5);
                 <?php endforeach; ?>
             </div>
             
-            <!-- Navigasi Swiper (Opsional) -->
+            <!-- Navigasi Swiper -->
             <div class="swiper-button-next ai-nav-btn"></div>
             <div class="swiper-button-prev ai-nav-btn"></div>
         </div>
