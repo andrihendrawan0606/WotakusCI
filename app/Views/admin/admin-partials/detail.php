@@ -1074,11 +1074,25 @@
             
             // Kolom 5: Action Buttons
             { data: null, render: function(data, type, row) {
-                // Amankan data video agar tidak merusak HTML
-                let safeVideo = row.video_path ? encodeURIComponent(row.video_path) : '';
-                
+                // 1. Enkripsi string video ke Base64 agar karakter iframe (<, >, ") tidak merusak HTML
+                let safeVideo = '';
+                if (row.video_path) {
+                    safeVideo = btoa(unescape(encodeURIComponent(row.video_path)));
+                }
+
+                // 2. Amankan juga judul dan deskripsi dari tanda kutip ganda yang bisa merusak atribut
+                let safeTitle = row.judul ? row.judul.replace(/"/g, '&quot;') : '';
+                let safeDesc = row.deskripsi ? row.deskripsi.replace(/"/g, '&quot;') : '';
+
                 return `<div class="ep-action-buttons">
-                            <button type="button" class="btn btn-warning text-white edit-episode" data-id="${row.id}" data-title="${row.judul}" data-desc="${row.deskripsi}" data-episode="${row.episode_number}" data-gambar="${basePath}imgPreview/${row.GambarPreview}" data-video="${safeVideo}" title="Edit Episode">
+                            <button type="button" class="btn btn-warning text-white edit-episode" 
+                                data-id="${row.id}" 
+                                data-title="${safeTitle}" 
+                                data-desc="${safeDesc}" 
+                                data-episode="${row.episode_number}" 
+                                data-gambar="${basePath}imgPreview/${row.GambarPreview}" 
+                                data-video="${safeVideo}" 
+                                title="Edit Episode">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button type="button" class="btn btn-danger delete-episode" data-id="${row.id}" title="Hapus Episode">
@@ -1278,14 +1292,38 @@
         const id = $(this).data('id');
         const title = $(this).data('title');
         const desc = $(this).data('desc');
-        const episodeNumber = parseInt($(this).data('episode')); // Pastikan jadi angka
+        const episodeNumber = parseInt($(this).data('episode')); 
         const gambar = $(this).data('gambar');
-        const rawVideo = $(this).data('video');
+        
+        // BUKA SANDI BASE64 DARI TOMBOL DATATABLES
+        let encodedVideo = $(this).data('video');
+        let rawVideo = '';
+        if (encodedVideo) {
+            try {
+                rawVideo = decodeURIComponent(escape(atob(encodedVideo)));
+            } catch(e) {
+                rawVideo = encodedVideo; // Fallback jika format lama
+            }
+        }
 
         // ==========================================
-        // 🔥 LOGIKA PEMBUATAN DROPDOWN EPISODE (MIRIP HALAMAN TAMBAH)
+        //  LOGIKA PENDETEKSI LOCAL VS EMBED
         // ==========================================
-        // 1. Ambil Max Episode dari PHP
+        let isCurrentEmbed = false;
+        let videoUrlOrIframe = "";
+
+        if (rawVideo) {
+            // Jika mengandung <iframe atau berawalan HTTP tapi bukan file mp4/mkv
+            if (rawVideo.includes('<iframe') || (rawVideo.startsWith('http') && !rawVideo.includes('.mp4') && !rawVideo.includes('.mkv') && !rawVideo.includes('.avi'))) {
+                isCurrentEmbed = true;
+                videoUrlOrIframe = rawVideo;
+            } else {
+                isCurrentEmbed = false;
+                videoUrlOrIframe = "<?= base_url('assets/videos/') ?>" + rawVideo;
+            }
+        }
+
+        // (Logika pembuatan dropdown episode tetap sama seperti sebelumnya)
         const maxEps = <?= ($animes['Eps'] > 0) ? $animes['Eps'] : 1000 ?>;
         
         // 2. Kumpulkan semua episode yang sudah terunggah dari tombol di halaman ini
