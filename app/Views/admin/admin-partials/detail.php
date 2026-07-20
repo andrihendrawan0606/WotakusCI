@@ -1548,7 +1548,67 @@
                         }
                     });
                 }
+                const editForm = document.getElementById('editEpisodeForm');
+                
+                editForm.addEventListener('submit', function(e) {
+                    // 1. MENCEGAH HALAMAN BERPINDAH (MENCEGAH LAYAR HITAM JSON)
+                    e.preventDefault(); 
+
+                    // 2. CEK JIKA VIDEO MASIH UPLOADING
+                    const btnSubmit = document.getElementById('btnEditSubmit');
+                    if (btnSubmit.disabled) {
+                        Swal.fire('Tunggu!', 'Video masih dalam proses unggah. Harap tunggu hingga 100%.', 'warning');
+                        return;
+                    }
+
+                    // 3. ENCODE EMBED (Sama seperti halaman Tambah)
+                    const isUpload = document.getElementById('edit_videoTypeUpload').checked;
+                    let embedInput = document.getElementById('edit_video_embed_input');
+                    let originalEmbedValue = embedInput ? embedInput.value : '';
+
+                    if (!isUpload && embedInput && embedInput.value.trim() !== '') {
+                        embedInput.value = btoa(unescape(encodeURIComponent(embedInput.value))); 
+                    }
+
+                    // 4. MUNCULKAN LOADING
+                    Swal.fire({
+                        title: 'Menyimpan Perubahan...',
+                        text: 'Mohon tunggu sebentar.',
+                        allowOutsideClick: false,
+                        didOpen: () => { Swal.showLoading(); }
+                    });
+
+                    // 5. KEMAS DATA (Hapus file fisik agar tidak dobel upload)
+                    const formData = new FormData(this);
+                    formData.delete('video_path');
+
+                    // 6. KIRIM KE PHP VIA AJAX
+                    $.ajax({
+                        url: this.action,
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            Swal.fire('Sukses!', 'Episode berhasil diupdate.', 'success')
+                            .then(() => location.reload());
+                        },
+                        error: function(xhr) {
+                            if(embedInput) embedInput.value = originalEmbedValue; // Kembalikan nilai textarea
+                            let errMsg = 'Terjadi kesalahan saat mengupdate episode.';
+                            if(xhr.responseJSON && xhr.responseJSON.error) {
+                                if (typeof xhr.responseJSON.error === 'object') {
+                                    errMsg = Object.values(xhr.responseJSON.error).join("<br>");
+                                } else {
+                                    errMsg = xhr.responseJSON.error;
+                                }
+                            }
+                            Swal.fire('Gagal!', errMsg, 'error');
+                        }
+                    });
+                });
             }
+            
         });
     });
 
