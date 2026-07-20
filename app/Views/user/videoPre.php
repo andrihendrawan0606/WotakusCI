@@ -234,300 +234,300 @@
 <script>
     const WATCH_API_URL = "<?= rtrim(base_url(), '/') ?>/api/watchEpisodeAndIncrementView";
 
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // ==========================================
-    // 1. LOGIKA VIDEO PLAYER & VIEW COUNTER
-    // ==========================================
-    try {
-        const triggerViewCounter = (episodeId, sessionKey, playerInst) => {
-            if (!sessionStorage.getItem(sessionKey)) {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-                fetch(WATCH_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({ episodeId: episodeId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        sessionStorage.setItem(sessionKey, 'true');
-                        console.log('Analytics: View recorded.');
-                    } 
-                    else if (data.status === 'limit_reached') {
-                        if (playerInst) playerInst.pause(); 
-                        
-                        Swal.fire({
-                            icon: 'info',
-                            iconHtml: '<i class="fas fa-crown" style="color: #fbbf24;"></i>',
-                            title: '<span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">BATAS HARIAN TERCAPAI</span>',
-                            html: `
-                                <div style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-top: 10px;">
-                                    Anda telah menggunakan kuota <b>5 Episode / Hari</b> untuk pengguna <i>Basic</i>.<br><br>
-                                    <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 15px; border-radius: 12px; color: #fbbf24; text-align: left;">
-                                        <i class="fas fa-gem mr-2"></i> Ingin menonton tanpa batas?<br>
-                                        <span style="color:#cbd5e1; font-size: 0.85rem; display:block; margin-top:5px;">Upgrade ke <b>Wotakus PRO</b> sekarang juga!</span>
-                                    </div>
-                                </div>
-                            `,
-                            background: '#1e293b', 
-                            color: '#f8fafc',
-                            showCancelButton: true,
-                            confirmButtonColor: '#fbbf24', 
-                            cancelButtonColor: '#334155', 
-                            confirmButtonText: '<i class="fas fa-rocket mr-2"></i> UPGRADE PRO',
-                            cancelButtonText: 'Nanti Saja',
-                            customClass: {
-                                popup: 'premium-swal-popup',
-                                confirmButton: 'premium-swal-btn',
-                                cancelButton: 'premium-swal-cancel-btn'
-                            },
-                            allowOutsideClick: false
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = "<?= base_url('upgrade') ?>"; 
-                            } else {
-                                window.location.href = "<?= base_url('dashboard') ?>"; 
-                            }
-                        });
-                    }
-                })
-                .catch(err => console.error('Failed view count:', err));
-            }
-        };
-
-        const videoElement = document.getElementById('video-player');
-        const embedElement = document.getElementById('embed-wrapper');
-        const embedOverlay = document.getElementById('embed-play-overlay'); 
-
-        // KONDISI A: LOKAL (Video.js)
-        if (videoElement && typeof videojs !== 'undefined') {
-            const playerInstance = videojs(videoElement);
-            const epId = videoElement.getAttribute('data-episode-id');
-            if (epId) {
-                const sKey = `ep_${epId}_viewed_today`;
-                
-                if (!sessionStorage.getItem(sKey)) {
-                    playerInstance.on('play', function() {
-                        triggerViewCounter(epId, sKey, playerInstance);
-                    });
-                }
-            }
-        } 
-        // KONDISI B: EMBED (Iframe)
-        else if (embedElement && embedOverlay) {
-            const epId = embedElement.getAttribute('data-episode-id');
-            if (epId) {
-                const sKey = `ep_${epId}_viewed_today`;
-                
-                if (sessionStorage.getItem(sKey)) {
-                    embedOverlay.style.display = 'none';
-                } else {
-                    embedOverlay.addEventListener('click', function() {
-                        
-                        const playIcon = embedOverlay.querySelector('i');
-                        playIcon.className = 'fas fa-spinner fa-spin fa-2x';
-
-                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-                        fetch(WATCH_API_URL, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'X-CSRF-TOKEN': csrfToken
-                            },
-                            body: JSON.stringify({ episodeId: epId })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                sessionStorage.setItem(sKey, 'true');
-                                embedOverlay.style.opacity = '0';
-                                setTimeout(() => embedOverlay.style.display = 'none', 300);
-                                console.log('Analytics: View recorded (Embed).');
-                            } 
-                            else if (data.status === 'limit_reached') {
-                                playIcon.className = 'fas fa-play fa-2x';
-                                
-                                Swal.fire({
-                                    icon: 'info',
-                                    iconHtml: '<i class="fas fa-crown" style="color: #fbbf24;"></i>',
-                                    title: '<span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">BATAS HARIAN TERCAPAI</span>',
-                                    html: `
-                                        <div style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-top: 10px;">
-                                            Anda telah menggunakan kuota <b>5 Episode / Hari</b> untuk pengguna <i>Basic</i>.<br><br>
-                                            <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 15px; border-radius: 12px; color: #fbbf24; text-align: left;">
-                                                <i class="fas fa-gem mr-2"></i> Ingin menonton tanpa batas?<br>
-                                                <span style="color:#cbd5e1; font-size: 0.85rem; display:block; margin-top:5px;">Upgrade ke <b>Wotakus PRO</b> sekarang juga!</span>
-                                            </div>
-                                        </div>
-                                    `,
-                                    background: '#1e293b', 
-                                    color: '#f8fafc',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#fbbf24', 
-                                    cancelButtonColor: '#334155', 
-                                    confirmButtonText: '<i class="fas fa-rocket mr-2"></i> UPGRADE PRO',
-                                    cancelButtonText: 'Nanti Saja',
-                                    customClass: {
-                                        popup: 'premium-swal-popup',
-                                        confirmButton: 'premium-swal-btn',
-                                        cancelButton: 'premium-swal-cancel-btn'
-                                    },
-                                    allowOutsideClick: false
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.href = "<?= base_url('upgrade') ?>"; 
-                                    } else {
-                                        window.location.href = "<?= base_url('dashboard') ?>"; 
-                                    }
-                                });
-                            }
-                        })
-                        .catch(err => {
-                            console.error('Failed view count:', err);
-                            playIcon.className = 'fas fa-play fa-2x'; 
-                        });
-                    });
-                }
-            }
-        }
-
-    // INI ADALAH PENUTUP CATCH YANG HILANG DI KODE KAMU SEBELUMNYA!
-    } catch (error) {
-        console.warn("Peringatan Video Player:", error);
-    }
-
-    // ==========================================
-    // 2. LOGIKA DAFTAR EPISODE (SEARCH, SORT, PAGINATION)
-    // ==========================================
-    try {
-        const epSearch = document.getElementById('epSearchInput');
-        const container = document.getElementById('episodeContainer');
-        const skeleton = document.getElementById('epSearchSkeleton');
-        const paginationBox = document.getElementById('epPagination');
-        const noResult = document.getElementById('epNotFound');
-        const btnNewest = document.getElementById('sortNewest');
-        const btnOldest = document.getElementById('sortOldest');
+    document.addEventListener('DOMContentLoaded', function() {
         
-        if (!container) return; 
+        // ==========================================
+        // 1. LOGIKA VIDEO PLAYER & VIEW COUNTER
+        // ==========================================
+        try {
+            const triggerViewCounter = (episodeId, sessionKey, playerInst) => {
+                if (!sessionStorage.getItem(sessionKey)) {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-        const itemsPerPage = 12;
-        let currentPage = 1;
-        let searchTimeout;
-        const items = Array.from(document.querySelectorAll('.episode-item'));
-
-        function updateDisplay(withSkeleton = true) {
-            if (withSkeleton) {
-                container.style.display = 'none';
-                if (skeleton) skeleton.style.display = 'grid';
-                if(paginationBox) paginationBox.style.opacity = '0.3';
-            }
-
-            const visibleItems = items.filter(item => item.getAttribute('data-search-match') !== 'false');
-            const totalPages = Math.ceil(visibleItems.length / itemsPerPage);
-
-            setTimeout(() => {
-                if (withSkeleton) {
-                    if (skeleton) skeleton.style.display = 'none';
-                    container.style.display = 'grid';
-                    if(paginationBox) paginationBox.style.opacity = '1';
+                    fetch(WATCH_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify({ episodeId: episodeId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            sessionStorage.setItem(sessionKey, 'true');
+                            console.log('Analytics: View recorded.');
+                        } 
+                        else if (data.status === 'limit_reached') {
+                            if (playerInst) playerInst.pause(); 
+                            
+                            Swal.fire({
+                                icon: 'info',
+                                iconHtml: '<i class="fas fa-crown" style="color: #fbbf24;"></i>',
+                                title: '<span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">BATAS HARIAN TERCAPAI</span>',
+                                html: `
+                                    <div style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-top: 10px;">
+                                        Anda telah menggunakan kuota <b>5 Episode / Hari</b> untuk pengguna <i>Basic</i>.<br><br>
+                                        <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 15px; border-radius: 12px; color: #fbbf24; text-align: left;">
+                                            <i class="fas fa-gem mr-2"></i> Ingin menonton tanpa batas?<br>
+                                            <span style="color:#cbd5e1; font-size: 0.85rem; display:block; margin-top:5px;">Upgrade ke <b>Wotakus PRO</b> sekarang juga!</span>
+                                        </div>
+                                    </div>
+                                `,
+                                background: '#1e293b', 
+                                color: '#f8fafc',
+                                showCancelButton: true,
+                                confirmButtonColor: '#fbbf24', 
+                                cancelButtonColor: '#334155', 
+                                confirmButtonText: '<i class="fas fa-rocket mr-2"></i> UPGRADE PRO',
+                                cancelButtonText: 'Nanti Saja',
+                                customClass: {
+                                    popup: 'premium-swal-popup',
+                                    confirmButton: 'premium-swal-btn',
+                                    cancelButton: 'premium-swal-cancel-btn'
+                                },
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "<?= base_url('upgrade') ?>"; 
+                                } else {
+                                    window.location.href = "<?= base_url('dashboard') ?>"; 
+                                }
+                            });
+                        }
+                    })
+                    .catch(err => console.error('Failed view count:', err));
                 }
-
-                items.forEach(item => item.style.display = 'none');
-
-                const start = (currentPage - 1) * itemsPerPage;
-                const end = start + itemsPerPage;
-                const currentItems = visibleItems.slice(start, end);
-
-                currentItems.forEach(item => {
-                    item.style.display = 'block';
-                    if (withSkeleton) item.classList.add('fade-in-smooth');
-                });
-
-                renderPagination(totalPages);
-                if(noResult) noResult.style.display = (visibleItems.length === 0) ? 'block' : 'none';
-            }, withSkeleton ? 400 : 0);
-        }
-
-        function performSort(isAscending) {
-            items.sort((a, b) => {
-                const valA = parseInt(a.getAttribute('data-number'));
-                const valB = parseInt(b.getAttribute('data-number'));
-                return isAscending ? valA - valB : valB - valA;
-            });
-            items.forEach(el => container.appendChild(el));
-            
-            if(btnOldest) btnOldest.classList.toggle('active', isAscending);
-            if(btnNewest) btnNewest.classList.toggle('active', !isAscending);
-            
-            currentPage = 1;
-            updateDisplay(true);
-        }
-
-        function renderPagination(totalPages) {
-            if(!paginationBox) return;
-            paginationBox.innerHTML = '';
-            if (totalPages <= 1) return;
-
-            const createPill = (content, target, isDisabled, isActive = false) => {
-                const pill = document.createElement('div');
-                const isArrow = (typeof content === 'string' && content.includes('fas'));
-                pill.className = isArrow ? 'page-nav-pill' : `page-pill ${isActive ? 'active' : ''}`;
-                if (isDisabled) { pill.style.opacity = '0.2'; pill.style.pointerEvents = 'none'; }
-                pill.innerHTML = content;
-                pill.onclick = () => {
-                    currentPage = target;
-                    updateDisplay(true);
-                    const section = document.querySelector('.episode-list-section');
-                    if (section) window.scrollTo({ top: section.offsetTop - 100, behavior: 'smooth' });
-                };
-                return pill;
             };
 
-            paginationBox.appendChild(createPill('<i class="fas fa-chevron-left"></i>', currentPage - 1, currentPage === 1));
-            for (let i = 1; i <= totalPages; i++) {
-                paginationBox.appendChild(createPill(i, i, false, i === currentPage));
+            const videoElement = document.getElementById('video-player');
+            const embedElement = document.getElementById('embed-wrapper');
+            const embedOverlay = document.getElementById('embed-play-overlay'); 
+
+            // KONDISI A: LOKAL (Video.js)
+            if (videoElement && typeof videojs !== 'undefined') {
+                const playerInstance = videojs(videoElement);
+                const epId = videoElement.getAttribute('data-episode-id');
+                if (epId) {
+                    const sKey = `ep_${epId}_viewed_today`;
+                    
+                    if (!sessionStorage.getItem(sKey)) {
+                        playerInstance.on('play', function() {
+                            triggerViewCounter(epId, sKey, playerInstance);
+                        });
+                    }
+                }
+            } 
+            // KONDISI B: EMBED (Iframe)
+            else if (embedElement && embedOverlay) {
+                const epId = embedElement.getAttribute('data-episode-id');
+                if (epId) {
+                    const sKey = `ep_${epId}_viewed_today`;
+                    
+                    if (sessionStorage.getItem(sKey)) {
+                        embedOverlay.style.display = 'none';
+                    } else {
+                        embedOverlay.addEventListener('click', function() {
+                            
+                            const playIcon = embedOverlay.querySelector('i');
+                            playIcon.className = 'fas fa-spinner fa-spin fa-2x';
+
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+                            fetch(WATCH_API_URL, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': csrfToken
+                                },
+                                body: JSON.stringify({ episodeId: epId })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    sessionStorage.setItem(sKey, 'true');
+                                    embedOverlay.style.opacity = '0';
+                                    setTimeout(() => embedOverlay.style.display = 'none', 300);
+                                    console.log('Analytics: View recorded (Embed).');
+                                } 
+                                else if (data.status === 'limit_reached') {
+                                    playIcon.className = 'fas fa-play fa-2x';
+                                    
+                                    Swal.fire({
+                                        icon: 'info',
+                                        iconHtml: '<i class="fas fa-crown" style="color: #fbbf24;"></i>',
+                                        title: '<span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">BATAS HARIAN TERCAPAI</span>',
+                                        html: `
+                                            <div style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-top: 10px;">
+                                                Anda telah menggunakan kuota <b>5 Episode / Hari</b> untuk pengguna <i>Basic</i>.<br><br>
+                                                <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 15px; border-radius: 12px; color: #fbbf24; text-align: left;">
+                                                    <i class="fas fa-gem mr-2"></i> Ingin menonton tanpa batas?<br>
+                                                    <span style="color:#cbd5e1; font-size: 0.85rem; display:block; margin-top:5px;">Upgrade ke <b>Wotakus PRO</b> sekarang juga!</span>
+                                                </div>
+                                            </div>
+                                        `,
+                                        background: '#1e293b', 
+                                        color: '#f8fafc',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#fbbf24', 
+                                        cancelButtonColor: '#334155', 
+                                        confirmButtonText: '<i class="fas fa-rocket mr-2"></i> UPGRADE PRO',
+                                        cancelButtonText: 'Nanti Saja',
+                                        customClass: {
+                                            popup: 'premium-swal-popup',
+                                            confirmButton: 'premium-swal-btn',
+                                            cancelButton: 'premium-swal-cancel-btn'
+                                        },
+                                        allowOutsideClick: false
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = "<?= base_url('upgrade') ?>"; 
+                                        } else {
+                                            window.location.href = "<?= base_url('dashboard') ?>"; 
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(err => {
+                                console.error('Failed view count:', err);
+                                playIcon.className = 'fas fa-play fa-2x'; 
+                            });
+                        });
+                    }
+                }
             }
-            paginationBox.appendChild(createPill('<i class="fas fa-chevron-right"></i>', currentPage + 1, currentPage === totalPages));
+
+        // INI ADALAH PENUTUP CATCH YANG HILANG DI KODE KAMU SEBELUMNYA!
+        } catch (error) {
+            console.warn("Peringatan Video Player:", error);
         }
 
-        if (epSearch) {
-            epSearch.addEventListener('input', function() {
-                const query = this.value.toLowerCase().trim();
-                clearTimeout(searchTimeout);
-                container.style.display = 'none';
-                if (skeleton) skeleton.style.display = 'grid';
+        // ==========================================
+        // 2. LOGIKA DAFTAR EPISODE (SEARCH, SORT, PAGINATION)
+        // ==========================================
+        try {
+            const epSearch = document.getElementById('epSearchInput');
+            const container = document.getElementById('episodeContainer');
+            const skeleton = document.getElementById('epSearchSkeleton');
+            const paginationBox = document.getElementById('epPagination');
+            const noResult = document.getElementById('epNotFound');
+            const btnNewest = document.getElementById('sortNewest');
+            const btnOldest = document.getElementById('sortOldest');
+            
+            if (!container) return; 
 
-                searchTimeout = setTimeout(() => {
-                    const isNumber = !isNaN(query) && query !== "";
-                    items.forEach(item => {
-                        const title = item.getAttribute('data-title');
-                        const num = item.getAttribute('data-number');
-                        let isMatch = (query === "") ? true : (isNumber ? (num === query) : title.includes(query));
-                        item.setAttribute('data-search-match', isMatch);
+            const itemsPerPage = 12;
+            let currentPage = 1;
+            let searchTimeout;
+            const items = Array.from(document.querySelectorAll('.episode-item'));
+
+            function updateDisplay(withSkeleton = true) {
+                if (withSkeleton) {
+                    container.style.display = 'none';
+                    if (skeleton) skeleton.style.display = 'grid';
+                    if(paginationBox) paginationBox.style.opacity = '0.3';
+                }
+
+                const visibleItems = items.filter(item => item.getAttribute('data-search-match') !== 'false');
+                const totalPages = Math.ceil(visibleItems.length / itemsPerPage);
+
+                setTimeout(() => {
+                    if (withSkeleton) {
+                        if (skeleton) skeleton.style.display = 'none';
+                        container.style.display = 'grid';
+                        if(paginationBox) paginationBox.style.opacity = '1';
+                    }
+
+                    items.forEach(item => item.style.display = 'none');
+
+                    const start = (currentPage - 1) * itemsPerPage;
+                    const end = start + itemsPerPage;
+                    const currentItems = visibleItems.slice(start, end);
+
+                    currentItems.forEach(item => {
+                        item.style.display = 'block';
+                        if (withSkeleton) item.classList.add('fade-in-smooth');
                     });
-                    currentPage = 1;
-                    updateDisplay(true);
-                }, 500);
-            });
+
+                    renderPagination(totalPages);
+                    if(noResult) noResult.style.display = (visibleItems.length === 0) ? 'block' : 'none';
+                }, withSkeleton ? 400 : 0);
+            }
+
+            function performSort(isAscending) {
+                items.sort((a, b) => {
+                    const valA = parseInt(a.getAttribute('data-number'));
+                    const valB = parseInt(b.getAttribute('data-number'));
+                    return isAscending ? valA - valB : valB - valA;
+                });
+                items.forEach(el => container.appendChild(el));
+                
+                if(btnOldest) btnOldest.classList.toggle('active', isAscending);
+                if(btnNewest) btnNewest.classList.toggle('active', !isAscending);
+                
+                currentPage = 1;
+                updateDisplay(true);
+            }
+
+            function renderPagination(totalPages) {
+                if(!paginationBox) return;
+                paginationBox.innerHTML = '';
+                if (totalPages <= 1) return;
+
+                const createPill = (content, target, isDisabled, isActive = false) => {
+                    const pill = document.createElement('div');
+                    const isArrow = (typeof content === 'string' && content.includes('fas'));
+                    pill.className = isArrow ? 'page-nav-pill' : `page-pill ${isActive ? 'active' : ''}`;
+                    if (isDisabled) { pill.style.opacity = '0.2'; pill.style.pointerEvents = 'none'; }
+                    pill.innerHTML = content;
+                    pill.onclick = () => {
+                        currentPage = target;
+                        updateDisplay(true);
+                        const section = document.querySelector('.episode-list-section');
+                        if (section) window.scrollTo({ top: section.offsetTop - 100, behavior: 'smooth' });
+                    };
+                    return pill;
+                };
+
+                paginationBox.appendChild(createPill('<i class="fas fa-chevron-left"></i>', currentPage - 1, currentPage === 1));
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationBox.appendChild(createPill(i, i, false, i === currentPage));
+                }
+                paginationBox.appendChild(createPill('<i class="fas fa-chevron-right"></i>', currentPage + 1, currentPage === totalPages));
+            }
+
+            if (epSearch) {
+                epSearch.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+                    clearTimeout(searchTimeout);
+                    container.style.display = 'none';
+                    if (skeleton) skeleton.style.display = 'grid';
+
+                    searchTimeout = setTimeout(() => {
+                        const isNumber = !isNaN(query) && query !== "";
+                        items.forEach(item => {
+                            const title = item.getAttribute('data-title');
+                            const num = item.getAttribute('data-number');
+                            let isMatch = (query === "") ? true : (isNumber ? (num === query) : title.includes(query));
+                            item.setAttribute('data-search-match', isMatch);
+                        });
+                        currentPage = 1;
+                        updateDisplay(true);
+                    }, 500);
+                });
+            }
+
+            if(btnNewest) btnNewest.addEventListener('click', () => performSort(false));
+            if(btnOldest) btnOldest.addEventListener('click', () => performSort(true));
+
+            performSort(false); 
+
+        } catch (error) {
+            console.error("Daftar Episode Init Error:", error);
         }
-
-        if(btnNewest) btnNewest.addEventListener('click', () => performSort(false));
-        if(btnOldest) btnOldest.addEventListener('click', () => performSort(true));
-
-        performSort(false); 
-
-    } catch (error) {
-        console.error("Daftar Episode Init Error:", error);
-    }
-});
+    });
 </script>
 
 <?= $this->endSection() ?>
