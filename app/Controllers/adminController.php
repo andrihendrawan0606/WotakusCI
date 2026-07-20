@@ -1091,123 +1091,139 @@ public function createEpisode($slug)
 //--------------------------------------------------------------------------
 
     public function updateEpisode()
-    {
-        $id = $this->request->getPost('id');
+        {
+            $id = $this->request->getPost('id');
+            $oldEpisode = $this->episodeModel->find($id);
 
-        if (!$this->validate([
-            'judul' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => '{field} Episode Anime Harus diisi'
-                ]
-            ],
-            'episodeNumber' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => '{field} Anime Harus diisi'
-                ]
-            ],
-            'Deskripsi' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => '{field} Harus diisi'
-                ]
-            ],
-            'video_path' => [
-                'rules' => 'max_size[video_path,102400]|ext_in[video_path,mp4,avi,mkv]',
-                'errors' => [
-                    'max_size' => 'Ukuran video maksimal 100MB',
-                    'ext_in' => 'Format video harus mp4, avi, atau mkv'
-                ]
-            ]
-        ])) {
-            return $this->response->setStatusCode(400)->setJSON(['error' => $this->validator->getErrors()]);
-        }
-
-        $oldEpisode = $this->episodeModel->find($id); // Dapatkan data episode lama untuk perbandingan log
-
-        $oldVideoPath = $this->request->getPost('old_video_path');
-        $videoFile = $this->request->getFile('video_path');
-        $newName = null;
-
-        if ($videoFile && $videoFile->isValid() && !$videoFile->hasMoved()) {
-            $newName = $videoFile->getName();
-            $videoFile->move(FCPATH . 'assets/videos', $newName);
-
-            // Hapus video lama
-            if ($oldVideoPath && file_exists(FCPATH . 'assets/videos/' . $oldVideoPath)) {
-                unlink(FCPATH . 'assets/videos/' . $oldVideoPath);
+            if (!$oldEpisode) {
+                return $this->response->setStatusCode(404)->setJSON(['error' => 'Episode tidak ditemukan.']);
             }
+
+            $videoSourceType = $this->request->getPost('video_source_type');
+
+            // 1. VALIDASI DATA TEKS
+            $validationRules = [
+                'judul'         => ['rules' => 'required', 'errors' => ['required' => 'Judul Episode Harus diisi']],
+                'episodeNumber' => ['rules' => 'required', 'errors' => ['required' => 'Nomor Episode Harus diisi']],
+                'Deskripsi'     => ['rules' => 'required', 'errors' => ['required' => 'Deskripsi Harus diisi']]
+            ];
+
+            // 2. VALIDASI JENIS VIDEO BILA DIGANTI
+            $isChangingVideo = false;
+            $tempFilename = trim($this->request->getPost('uploaded_temp_video') ?? '');
+            $embedLink    = trim($this->request->getPost('video_embed_link') ?? '');
+
+            if ($videoSourceType === 'upload' && !empty($tempFilename)) {
+                $isChangingVideo = true;
+            } elseif ($videoSourceType === 'embed' && !empty($embedLink)) {
+                $isImage = preg_match('/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i', $embedLink);
+                if ($isImage) {
+                    return $this->response->setStatusCode(400)->setJSON(['error' => ['video_embed_link' => 'Link yang dimasukkan adalah gambar. Harap masukkan URL Video atau iFrame!']]);
+                }
+                $isChangingVideo = true;
+            }
+
+            if (!$this->validate($validationRules)) {
+                return $this->response->setStatusCode(400)->setJSON(['error' => $this->validator->getErrors()]);
+            }
+
+            $animeData = [
+                'episode_number' => $this->request->getPost('episodeNumber'),
+                'judul'          => $this->request->getPost('judul'),
+                'deskripsi'      => $this->request->getPost('Deskripsi'),
+            ];
+
+            // ==========================================
+            // 3. PROSES PENGGANTIAN VIDEO
+            // ==========================================
+            if ($isChangingVideo) {
+                $oldVideo = $oldEpisode['video_path'];
+
+                if ($videoSourceType === 'embed') {
+                    // Jika diganti jadi Embed
+                    $animeData['video_path'] = base64_decode($embedLink) ?: $embedLink;
+                    
+                    // Hapus file video lama JIKA video lamanya adalah file lokal (mp4/mkv)
+                    if (!empty($oldVideo) && !filter_var($oldVideo, FILTER_VALIDATE_URL) && strpos($oldVideo, '<iframe') === false) {
+                        $pathLama = FCPATH . 'assets/videos/' . $oldVideo;
+                        if (file_exists($pathLama)) unlink($pathLama);
+                    }
+                } 
+                else {
+                    // Jika diganti jadi Upload File Local Baru
+                    $tempPath = FCPATH . 'assets/videos/temp/' . $tempFilename;
+                    $finalPath = FCPATH . 'assets/videos/' . $tempFilename;
+
+                    if (file_exists($tempPath)) {
+                        rename($tempPath, $finalPath);
+                        $animeData['video_path'] = $tempFilename;
+
+                        // Hapus file video lama JIKA video lamanya adalah file lokal
+                        if (!empty($oldVideo) && !filter_var($oldVideo, FILTER_VALIDATE_URL) && strpos($oldVideo, '<iframe') === false) {
+                            $pathLama = FCPATH . 'assets/videos/' . $oldVideo;
+                            if (file_exists($pathLama)) unlink($pathLama);
+                        }
+                    }
+                }
+            }
+
+            // ==========================================
+            // 4. PROSES PENGGANTIAN GAMBAR PREVIEW
+            // ==========================================
+            $autoThumbData = $this->request->getPost('auto_generated_thumbnail');
+            
+            if (!empty($autoThumbData)) {
+                // Jika pakai fitur Jepret Otomatis
+                $image_parts = explode(";base64,", $autoThumbData);
+                $image_base64 = base64_decode($image_parts[1]);
+                $namaGambarPreview = time() . '_auto_thumbnail.jpg';
+                file_put_contents(FCPATH . 'assets/imgPreview/' . $namaGambarPreview, $image_base64);
+                $animeData['GambarPreview'] = $namaGambarPreview;
+            } else {
+                // Jika upload gambar manual
+                $fileGambarPreview = $this->request->getFile('gambarPreview');
+                if ($fileGambarPreview && $fileGambarPreview->isValid() && !$fileGambarPreview->hasMoved()) {
+                    $namaGambarPreview = time() . '_' . $fileGambarPreview->getName();
+                    $fileGambarPreview->move('assets/imgPreview', $namaGambarPreview);
+                    $animeData['GambarPreview'] = $namaGambarPreview;
+                }
+            }
+
+            // Hapus gambar lama JIKA ada gambar baru yang masuk
+            if (isset($animeData['GambarPreview']) && !empty($oldEpisode['GambarPreview']) && $oldEpisode['GambarPreview'] !== 'default.png') {
+                $pathGambarLama = FCPATH . 'assets/imgPreview/' . $oldEpisode['GambarPreview'];
+                if (file_exists($pathGambarLama)) unlink($pathGambarLama);
+            }
+
+            // UPDATE DATABASE
+            $this->episodeModel->update($id, $animeData);
+
+            // ==========================================
+            // 5. LOG AKTIVITAS ADMIN
+            // ==========================================
+            $anime = $this->animeModel->find($oldEpisode['anime_id']);
+            $animeJudul = $anime ? $anime['Judul'] : 'Unknown Anime';
+
+            $perubahan = [];
+            if ($oldEpisode['judul'] !== $animeData['judul']) $perubahan[] = "Judul Diubah";
+            if ($oldEpisode['episode_number'] != $animeData['episode_number']) $perubahan[] = "No. Eps Diubah";
+            if (isset($animeData['GambarPreview'])) $perubahan[] = "Thumbnail Diganti";
+            if (isset($animeData['video_path'])) $perubahan[] = "Video Diganti (" . strtoupper($videoSourceType) . ")";
+
+            $detailUbah = !empty($perubahan) ? implode(", ", $perubahan) : "Mengubah deskripsi atau detail lainnya.";
+
+            $this->adminLogsModel->insert([
+                'admin_id'    => session()->get('id'),
+                'admin_name'  => session()->get('nama'),
+                'action'      => 'EDIT',
+                'item'        => 'Episode',
+                'item_id'     => $id,
+                'description' => "Memodifikasi Episode {$oldEpisode['episode_number']} pada seri: " . $animeJudul,
+                'change_type' => "Perubahan: " . $detailUbah
+            ]);
+
+            return $this->response->setJSON(['success' => true]);
         }
-
-        $fileGambarPreview = $this->request->getFile('gambarPreview');
-        if ($fileGambarPreview && $fileGambarPreview->isValid() && !$fileGambarPreview->hasMoved()) {
-            $originalPreviewName = $fileGambarPreview->getName();
-            $namaGambarPreview = time() . '_' . $originalPreviewName;
-            $fileGambarPreview->move('assets/imgPreview', $namaGambarPreview);
-        }
-
-        $anime_id = $this->request->getPost('anime_id');
-        $episodeNumber = $this->request->getPost('episodeNumber');
-        $judul = $this->request->getPost('judul');
-        $Deskripsi = $this->request->getPost('Deskripsi');
-
-        $animeData = [
-            'episode_number' => $episodeNumber,
-            'judul' => $judul,
-            'deskripsi' => $Deskripsi,
-        ];
-
-        if (isset($namaGambarPreview)) {
-            $animeData['GambarPreview'] = $namaGambarPreview;
-        }
-
-        if (isset($newName)) {
-            $animeData['video_path'] = $newName;
-        }
-
-        $this->episodeModel->update($id, $animeData);
-        // ==========================================
-        // TAMBAHAN BARU: LOG AKTIVITAS ADMIN (UPDATE EPISODE)
-        // ==========================================
-        
-        // 1. Ambil Judul Anime dari Episode Lama agar lognya jelas
-        $anime = $this->animeModel->find($oldEpisode['anime_id']);
-        $animeJudul = $anime ? $anime['Judul'] : 'Unknown Anime';
-
-        // 2. Deteksi Perubahan (Cek apa saja yang diubah admin)
-        $perubahan = [];
-        if ($oldEpisode['judul'] !== $judul) {
-            $perubahan[] = "Judul (<strong>{$oldEpisode['judul']}</strong> ➔ <strong>{$judul}</strong>)";
-        }
-        if ($oldEpisode['episode_number'] != $episodeNumber) {
-            $perubahan[] = "No. Eps (<strong>{$oldEpisode['episode_number']}</strong> ➔ <strong>{$episodeNumber}</strong>)";
-        }
-        if (isset($namaGambarPreview)) {
-            $perubahan[] = "Thumbnail diperbarui";
-        }
-        if (isset($newName)) {
-            $perubahan[] = "File Video diganti";
-        }
-
-        // Jika tidak ada perubahan signifikan (misal cuma ubah deskripsi), buat pesan standar
-        $detailUbah = !empty($perubahan) ? implode(", ", $perubahan) : "Mengubah deskripsi atau detail lainnya.";
-
-        // 3. Simpan ke Database
-        $this->adminLogsModel->insert([
-            'admin_id'    => session()->get('id'),
-            'admin_name'  => session()->get('nama'),
-            'action'      => 'EDIT', // Aksi terstandar (Sesuai Filter)
-            'item'        => 'Episode',
-            'item_id'     => $id, // ID Episode yang diedit
-            'description' => "Memodifikasi Episode {$oldEpisode['episode_number']} pada seri: " . $animeJudul,
-            'change_type' => "Perubahan: " . $detailUbah
-        ]);
-        // ==========================================
-
-        session()->setFlashdata('pesan', 'Episode berhasil diupdate');
-        return $this->response->setJSON(['success' => true]);
-    }
             
     // public function create()
     // {
@@ -2390,7 +2406,7 @@ public function delete($slug)
     }
 
     public function scanPage($source = 'seasons/now', $page = 1)
-{
+    {
     $client = \Config\Services::curlrequest();
     $apiPath = str_replace('-', '/', $source); 
     

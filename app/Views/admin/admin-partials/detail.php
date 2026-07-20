@@ -1162,60 +1162,62 @@
         const desc = $(this).data('desc');
         const episodeNumber = $(this).data('episode');
         const gambar = $(this).data('gambar');
-        const video = $(this).data('video');
+        const rawVideo = $(this).data('video'); // Video asli (Bisa nama file mp4, atau link Embed)
+
+        // Deteksi apakah video saat ini adalah Embed atau Local
+        let isCurrentEmbed = false;
+        let videoUrlOrIframe = "";
+        let localFileName = "";
+
+        if (rawVideo && (rawVideo.includes('<iframe') || rawVideo.startsWith('http'))) {
+            isCurrentEmbed = true;
+            videoUrlOrIframe = rawVideo;
+        } else if (rawVideo) {
+            localFileName = rawVideo;
+            videoUrlOrIframe = "<?= base_url('assets/videos/') ?>" + rawVideo;
+        }
 
         Swal.fire({
             title: null, 
-            customClass: {
-                popup: 'swal-edit-modal'
-            },
-            
-            // 1. UBAH UKURAN LEBAR DI SINI (Gunakan % agar responsif mengikuti layar monitor)
+            customClass: { popup: 'swal-edit-modal' },
             width: '75%', 
-
-            // 2. KUNCI POP-UP (Mencegah pop-up tertutup jika klik di luar atau pencet tombol ESC di keyboard)
             allowOutsideClick: false,
             allowEscapeKey: false, 
-
             showConfirmButton: false,
             showCancelButton: false,
             html: `
-                <!-- HEADER MIRIP HALAMAN TAMBAH -->
                 <div class="anime-card-header d-flex justify-content-between align-items-center flex-wrap" style="background: #ffffff; padding: 25px 30px; border-bottom: 1px solid #f0f0f0;">
                     <h4 class="m-0 font-weight-bold d-flex align-items-center" style="color: #32325d;">
                         <i class="fas fa-edit mr-3" style="color: #5e72e4;"></i> 
                         <div>
                             <span class="d-block" style="font-size: 1.2rem; text-align: left;">Edit Episode ${episodeNumber}</span>
-                            <small class="d-block mt-1" style="font-size: 0.85rem; font-weight: 500; color: #8898aa; text-align: left;">
-                                Lakukan perubahan data pada episode ini.
-                            </small>
+                            <small class="d-block mt-1" style="font-size: 0.85rem; font-weight: 500; color: #8898aa; text-align: left;">Lakukan perubahan data pada episode ini.</small>
                         </div>
                     </h4>
                     <button type="button" class="close" onclick="Swal.close()" style="font-size: 1.5rem;">&times;</button>
                 </div>
 
-                <!-- BODY FORM MIRIP HALAMAN TAMBAH -->
                 <div class="swal-edit-wrapper">
                     <form id="editEpisodeForm" action="<?= url_to('updateEpisode'); ?>" method="POST" enctype="multipart/form-data">
                         <?= csrf_field(); ?>
                         <input type="hidden" name="id" value="${id}">
-                        <input type="hidden" name="old_video_path" value="${video}">
                         
+                        <!-- HIDDEN INPUTS SAMA SEPERTI TAMBAH EPISODE -->
+                        <input type="hidden" name="auto_generated_thumbnail" id="edit_auto_generated_thumbnail">
+                        <input type="hidden" name="uploaded_temp_video" id="edit_uploaded_temp_video" value="">
+
                         <div class="row">
                             <!-- KOLOM KIRI: DATA TEKS -->
                             <div class="col-lg-6 pr-lg-4 border-right">
                                 <span class="form-section-title">Informasi Episode</span>
-
                                 <div class="form-group custom-group">
                                     <label>Judul Episode</label>
                                     <input type="text" name="judul" class="form-control custom-input-style" value="${title}" required>
                                 </div>
-
                                 <div class="form-group custom-group">
                                     <label>Episode Ke-Berapa? <span class="text-danger">*</span></label>
                                     <input type="number" name="episodeNumber" class="form-control custom-input-style" value="${episodeNumber}" required>
                                 </div>
-
                                 <div class="form-group custom-group">
                                     <label>Deskripsi Ringkas</label>
                                     <textarea name="Deskripsi" class="form-control custom-input-style" rows="5" required>${desc}</textarea>
@@ -1226,59 +1228,80 @@
                             <div class="col-lg-6 pl-lg-4 mt-4 mt-lg-0">
                                 <span class="form-section-title">Media Preview</span>
 
-                                <!-- Box Upload Gambar -->
+                                <!-- GAMBAR PREVIEW -->
                                 <div class="upload-box p-3 mb-4 text-left">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <label class="font-weight-bold m-0 text-dark" style="font-size: 14px;">
-                                            <i class="fas fa-image mr-1" style="color: #5e72e4;"></i> Gambar Preview
-                                        </label>
-                                        <span class="badge badge-light" style="color: #8898aa;"><i class="fas fa-file-image"></i> JPG/PNG</span>
+                                        <label class="font-weight-bold m-0 text-dark" style="font-size: 14px;"><i class="fas fa-image mr-1" style="color: #5e72e4;"></i> Gambar Preview</label>
                                     </div>
-                                    
                                     <div class="custom-file text-left mb-3">
-                                        <input type="file" name="gambarPreview" id="gambarPreview" class="custom-file-input" accept="image/jpeg, image/png, image/webp" onchange="GambarPreview()">
-                                        <label class="custom-file-label" for="gambarPreview" id="labelGambarPreview" style="border-radius: 8px;">Pilih gambar manual...</label>
+                                        <input type="file" name="gambarPreview" id="edit_gambarPreview" class="custom-file-input" accept="image/jpeg, image/png, image/webp">
+                                        <label class="custom-file-label" for="edit_gambarPreview" id="edit_labelGambarPreview" style="border-radius: 8px;">Pilih gambar manual...</label>
                                     </div>                                    
-                                    <img src="${gambar}" class="img-preview-episode mt-3" id="img-preview-episode" style="width: 100%; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); object-fit: cover; aspect-ratio: 16/9;">
+                                    <img src="${gambar}" class="img-preview-episode mt-3" id="edit_img-preview-episode" style="width: 100%; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); object-fit: cover; aspect-ratio: 16/9;">
                                 </div>
 
-                                <!-- Box Upload Video -->
+                                <!-- VIDEO EPISODE -->
                                 <div class="upload-box p-3 text-left">
                                     <label class="font-weight-bold m-0 text-dark d-block mb-2" style="font-size: 14px;">
-                                        <i class="fas fa-video mr-1" style="color: #5e72e4;"></i> Video Episode
+                                        <i class="fas fa-video mr-1" style="color: #5e72e4;"></i> Ganti Video Episode
                                     </label>
                                     
-                                    <div id="drop-zone" class="drop-zone ${video ? 'hide' : ''}" style="background: #ffffff; border-radius: 10px; border: 1px dashed #dee2e6;">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                        <span>Tarik Video Ke Sini atau Klik</span><br>
-                                        <small class="text-muted">(Abaikan jika tidak ingin mengganti video)</small>
-                                    </div>
-                                    <input type="file" name="video_path" id="video_path" accept="video/*" style="display: none;" onchange="displayFileDetails()">
-                                    
-                                    <!-- Progress Bar Lokal (Bawaan Anda sebelumnya) -->
-                                    <div id="loading-bar" style="display: none; margin-top: 10px;">
-                                        <progress id="progress-bar" class="custom-progress" value="0" max="100" style="width: 100%;"></progress>
+                                    <!-- TOGGLE LOCAL VS EMBED -->
+                                    <div class="img-source-toggle mb-3">
+                                        <input type="radio" name="video_source_type" id="edit_videoTypeUpload" value="upload" ${!isCurrentEmbed ? 'checked' : ''}>
+                                        <label for="edit_videoTypeUpload"><i class="fas fa-file-upload mr-1"></i> Local</label>
+                                        
+                                        <input type="radio" name="video_source_type" id="edit_videoTypeEmbed" value="embed" ${isCurrentEmbed ? 'checked' : ''}>
+                                        <label for="edit_videoTypeEmbed"><i class="fas fa-code mr-1"></i> Embed</label>
                                     </div>
 
-                                    <!-- Preview Video Lama/Baru -->
-                                    <div id="video-container" class="mt-3 position-relative bg-dark rounded-lg overflow-hidden shadow-sm" style="display: ${video ? 'block' : 'none'}; border: 1px solid rgba(255,255,255,0.1);">
-                                        <button type="button" class="btn btn-danger btn-sm position-absolute" onclick="removeVideo()" style="top: 10px; right: 10px; z-index: 10; border-radius: 50%; width: 30px; height: 30px; padding: 0;">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                        <video id="video-preview" width="100%" height="auto" controls style="display: ${video ? 'block' : 'none'}; max-height: 250px;">
-                                            <source id="video-source" src="${video}" type="video/mp4">
-                                        </video>
+                                    <!-- AREA 1: UPLOAD LOCAL -->
+                                    <div id="edit_videoUploadArea" style="display: ${!isCurrentEmbed ? 'block' : 'none'};">
+                                        <div id="edit_drop-zone" class="drop-zone" style="background: #ffffff; border-radius: 10px; border: 1px dashed #dee2e6;">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <span>Tarik File MP4/MKV Kesini</span>
+                                        </div>
+                                        <input type="file" id="edit_video_path_input" accept="video/mp4, video/mkv, video/*, .mkv, .mp4" style="display: none;">
+                                        
+                                        <!-- Progress Bar Lokal -->
+                                        <div id="edit_local-progress-container" class="mt-3" style="display: none; background: #fdfafr; padding: 15px; border-radius: 10px; border: 1px solid rgba(94, 114, 228, 0.2);">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <small class="font-weight-bold" id="edit_upload-filename">Uploading...</small>
+                                                <small class="font-weight-bold text-primary" id="edit_upload-percentage">0%</small>
+                                            </div>
+                                            <div class="progress" style="height: 6px; border-radius: 6px;">
+                                                <div id="edit_local-progress-bar" class="progress-bar bg-primary" style="width: 0%;"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Preview Video Lokal -->
+                                        <div id="edit_video-preview-container" class="mt-3" style="display: ${!isCurrentEmbed && rawVideo ? 'block' : 'none'};">
+                                            <div class="bg-dark rounded-lg overflow-hidden shadow-sm position-relative">
+                                                <video id="edit_video-display" width="100%" height="auto" controls style="max-height: 250px;">
+                                                    <source src="${!isCurrentEmbed ? videoUrlOrIframe : ''}" type="video/mp4">
+                                                </video>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <!-- AREA 2: EMBED URL -->
+                                    <div id="edit_videoEmbedArea" style="display: ${isCurrentEmbed ? 'block' : 'none'};">
+                                        <textarea name="video_embed_link" id="edit_video_embed_input" class="form-control custom-input-style" rows="3" placeholder="Masukkan Link Iframe / URL...">${isCurrentEmbed ? rawVideo : ''}</textarea>
+                                        <div id="edit_embed-preview-container" class="mt-3 bg-dark rounded overflow-hidden" style="display: ${isCurrentEmbed ? 'block' : 'none'}; aspect-ratio: 16/9;">
+                                            <div id="edit_embed-display" style="width:100%; height:100%; pointer-events: none;">
+                                                ${isCurrentEmbed ? rawVideo : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                <!-- Tombol Aksi di dalam Form Kanan -->
+                                <!-- Tombol Aksi -->
                                 <div class="mt-4">
-                                    <button type="submit" class="btn btn-save shadow-sm">
+                                    <button type="submit" id="btnEditSubmit" class="btn btn-save shadow-sm">
                                         <i class="fas fa-save mr-2"></i> Simpan Perubahan
                                     </button>
-                                    <button type="button" class="btn btn-cancel" onclick="Swal.close()">
-                                        Batal & Tutup
-                                    </button>
+                                    <button type="button" class="btn btn-cancel" onclick="Swal.close()">Batal & Tutup</button>
                                 </div>
                             </div>
                         </div>
@@ -1286,78 +1309,173 @@
                 </div>
             `,
             didOpen: () => {
-                const dropZone = document.getElementById('drop-zone');
-                const fileInput = document.getElementById('video_path');
-                if (!video) {
-                    dropZone.classList.remove('hide');
+                // LOGIKA TOGGLE LOCAL VS EMBED
+                const rLocal = document.getElementById('edit_videoTypeUpload');
+                const rEmbed = document.getElementById('edit_videoTypeEmbed');
+                const areaLocal = document.getElementById('edit_videoUploadArea');
+                const areaEmbed = document.getElementById('edit_videoEmbedArea');
+                
+                const toggleView = () => {
+                    if (rLocal.checked) {
+                        areaLocal.style.display = 'block';
+                        areaEmbed.style.display = 'none';
+                    } else {
+                        areaLocal.style.display = 'none';
+                        areaEmbed.style.display = 'block';
+                    }
+                };
+                rLocal.addEventListener('change', toggleView);
+                rEmbed.addEventListener('change', toggleView);
+
+                // LOGIKA PREVIEW GAMBAR MANUAL
+                const inputGambar = document.getElementById('edit_gambarPreview');
+                inputGambar.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        document.getElementById('edit_labelGambarPreview').textContent = this.files[0].name;
+                        const reader = new FileReader();
+                        reader.onload = e => document.getElementById('edit_img-preview-episode').src = e.target.result;
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+
+                // LOGIKA PREVIEW EMBED
+                const inputEmbed = document.getElementById('edit_video_embed_input');
+                const embedPreview = document.getElementById('edit_embed-preview-container');
+                const embedDisplay = document.getElementById('edit_embed-display');
+                inputEmbed.addEventListener('input', function() {
+                    if (this.value.trim() !== '') {
+                        embedPreview.style.display = 'block';
+                        embedDisplay.innerHTML = this.value;
+                    } else {
+                        embedPreview.style.display = 'none';
+                    }
+                });
+
+                // LOGIKA UPLOAD TEMP VIDEO (DRAG & DROP / KLIK)
+                const dropZone = document.getElementById('edit_drop-zone');
+                const videoInput = document.getElementById('edit_video_path_input');
+                
+                dropZone.addEventListener('click', () => videoInput.click());
+                dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = '#5e72e4'; });
+                dropZone.addEventListener('dragleave', e => { e.preventDefault(); dropZone.style.borderColor = '#dee2e6'; });
+                dropZone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = '#dee2e6';
+                    if (e.dataTransfer.files.length > 0) {
+                        videoInput.files = e.dataTransfer.files;
+                        uploadEditTempVideo();
+                    }
+                });
+                videoInput.addEventListener('change', uploadEditTempVideo);
+
+                function uploadEditTempVideo() {
+                    const file = videoInput.files[0];
+                    if (!file) return;
+
+                    // Tampilkan UI Loading
+                    dropZone.style.display = 'none';
+                    document.getElementById('edit_local-progress-container').style.display = 'block';
+                    document.getElementById('edit_video-preview-container').style.display = 'none';
+                    document.getElementById('btnEditSubmit').disabled = true;
+                    
+                    document.getElementById('edit_upload-filename').innerText = file.name;
+
+                    let formData = new FormData();
+                    formData.append('video_path', file);
+                    formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+
+                    $.ajax({
+                        url: '<?= base_url('dashboard/detail/uploadTempVideo') ?>', 
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        xhr: function() {
+                            var xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", function(evt) {
+                                if (evt.lengthComputable) {
+                                    var percent = parseInt((evt.loaded / evt.total) * 100);
+                                    $('#edit_local-progress-bar').css('width', percent + '%');
+                                    $('#edit_upload-percentage').text(percent + '%');
+                                }
+                            }, false);
+                            return xhr;
+                        },
+                        success: function(response) {
+                            document.getElementById('edit_local-progress-container').style.display = 'none';
+                            document.getElementById('edit_uploaded_temp_video').value = response.filename;
+                            
+                            // Load ke Video Player
+                            const videoPreview = document.getElementById('edit_video-display');
+                            videoPreview.src = URL.createObjectURL(file);
+                            videoPreview.load();
+                            document.getElementById('edit_video-preview-container').style.display = 'block';
+                            
+                            document.getElementById('btnEditSubmit').disabled = false;
+                        },
+                        error: function(xhr) {
+                            document.getElementById('edit_local-progress-container').style.display = 'none';
+                            dropZone.style.display = 'block';
+                            document.getElementById('btnEditSubmit').disabled = false;
+                            
+                            let errMsg = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Gagal upload video.';
+                            Swal.fire('Gagal!', errMsg, 'error');
+                        }
+                    });
                 }
-                dropZone.addEventListener('click', () => fileInput.click());
-                dropZone.addEventListener('dragover', (event) => {
-                    event.preventDefault();
-                    dropZone.style.borderColor = '#5e72e4';
-                    dropZone.style.background = '#f0f2ff';
-                });
-                dropZone.addEventListener('dragleave', () => {
-                    dropZone.style.borderColor = '#dee2e6';
-                    dropZone.style.background = '#ffffff';
-                });
-                dropZone.addEventListener('drop', (event) => {
-                    event.preventDefault();
-                    dropZone.style.borderColor = '#dee2e6';
-                    dropZone.style.background = '#ffffff';
-                    fileInput.files = event.dataTransfer.files;
-                    displayFileDetails();
-                });
             }
         });
+    });
 
-        $(document).on('submit', '#editEpisodeForm', function(e) {
+    // 3. LOGIKA SUBMIT FORM EDIT
+    $(document).on('submit', '#editEpisodeForm', function(e) {
         e.preventDefault();
 
+        // Encode Base64 untuk Iframe (Sama seperti Tambah Episode)
+        const isUpload = document.getElementById('edit_videoTypeUpload').checked;
+        let embedInput = document.getElementById('edit_video_embed_input');
+        let originalEmbedValue = embedInput ? embedInput.value : '';
+
+        if (!isUpload && embedInput && embedInput.value.trim() !== '') {
+            embedInput.value = btoa(unescape(encodeURIComponent(embedInput.value))); 
+        }
+
         Swal.fire({
-            title: 'Mengunggah...',
-            text: 'Silakan tunggu beberapa saat video sedang diunggah.',
+            title: 'Menyimpan Perubahan...',
+            text: 'Mohon tunggu sebentar.',
             allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
+            didOpen: () => { Swal.showLoading(); }
         });
 
         const formData = new FormData(this);
 
-        formData.forEach((value, key) => {
-            console.log(key + ": " + value);
-        });
+        // Hapus file fisik dari form agar tidak dobel upload (Karena sudah masuk Temp)
+        formData.delete('video_path');
 
         $.ajax({
             url: $(this).attr('action'),
-            method: $(this).attr('method'),
+            method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             success: function(response) {
-                Swal.close();
-                Swal.fire({
-                    title: 'Sukses!',
-                    text: 'Episode berhasil diupdate.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();
-                });
+                Swal.fire('Sukses!', 'Episode berhasil diupdate.', 'success')
+                .then(() => location.reload());
             },
-            error: function() {
-                Swal.close();
-                Swal.fire({
-                    title: 'Gagal!',
-                    text: 'Terjadi kesalahan saat mengupdate episode.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
+            error: function(xhr) {
+                if(embedInput) embedInput.value = originalEmbedValue; // Kembalikan nilai textarea
+                let errMsg = 'Terjadi kesalahan saat mengupdate episode.';
+                if(xhr.responseJSON && xhr.responseJSON.error) {
+                    if (typeof xhr.responseJSON.error === 'object') {
+                        errMsg = Object.values(xhr.responseJSON.error).join("<br>");
+                    } else {
+                        errMsg = xhr.responseJSON.error;
+                    }
+                }
+                Swal.fire('Gagal!', errMsg, 'error');
             }
         });
     });
-});
 
     function GambarPreview() {
         const GambarPreview = document.querySelector('#gambarPreview');
