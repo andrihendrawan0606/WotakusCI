@@ -791,14 +791,49 @@
     transform: translateY(-2px);
 }
 
-    .img-source-toggle input[type="radio"] {
-        display: none !important; /* WAJIB ADA !important */
+        /* ==========================================
+       TOGGLE RADIO BUTTON (UPLOAD VS EMBED)
+       ========================================== */
+       .img-source-toggle {
+        display: flex;
+        background: rgba(241, 245, 249, 0.5);
+        border-radius: 10px;
+        padding: 4px;
+        margin-bottom: 15px;
+        border: 1px solid #e2e8f0;
     }
-    
-    /* Tambahan agar lebih kebal di dalam SweetAlert */
-    .swal2-popup .img-source-toggle input[type="radio"] {
+
+    /* 1. Sembunyikan bulat-bulatan radio button bawaan browser (Memaksa SweetAlert juga) */
+    .img-source-toggle input[type="radio"],
+    .swal2-popup .img-source-toggle input[type="radio"],
+    .swal-edit-modal .img-source-toggle input[type="radio"] {
         display: none !important;
     }
+
+    /* 2. Desain Label (Teks) agar berbentuk seperti tombol */
+    .img-source-toggle label {
+        flex: 1;
+        text-align: center;
+        padding: 8px 0;
+        margin: 0;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #64748b;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    /* 3. Efek saat tombol tersebut dipilih (Checked) - Berlaku juga di dalam pop-up SweetAlert */
+    .img-source-toggle input[type="radio"]:checked + label,
+    .swal2-popup .img-source-toggle input[type="radio"]:checked + label,
+    .swal-edit-modal .img-source-toggle input[type="radio"]:checked + label {
+        background: #fff !important;
+        color: #ac11e9 !important; /* Ungu Neon khas web kamu */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+    }
+
+    
 
 </style>
 <!-- Breadcrumb -->
