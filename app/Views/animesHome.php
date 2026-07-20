@@ -352,245 +352,197 @@
     .rank-text { font-size: 7px; }
     .rank-number { font-size: 1rem; }
 }
-.section-personalized { padding: 0 40px; }
+/* =========================================
+   SECTION PERSONALIZED (CLEAN & ELEGANT)
+   ========================================= */
+   .section-personalized {
+    padding: 0; /* Hapus padding pinggir agar slider bisa full */
+    margin: 40px 0;
+}
 
-/* .ai-card {
+.section-personalized .container {
+    padding: 0 40px; /* Padding hanya untuk judulnya saja, bukan slidernya */
+}
+
+/* Header Section */
+.ai-section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.ai-icon-box {
+    background: linear-gradient(135deg, #f59e0b, #d97706); /* Emas elegan */
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); /* Shadow sangat lembut */
+}
+
+.ai-icon-box i {
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.ai-section-title {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.ai-section-subtitle {
+    color: #64748b; /* Abu-abu kebiruan kalem */
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+/* Wrapper Slider agar potongannya pas */
+.personalized-swiper-container {
+    padding-left: 40px; /* Samakan dengan padding container */
+    padding-bottom: 40px;
+}
+
+/* Card Styling */
+.ai-card {
     display: block;
     text-decoration: none !important;
-    transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    border-radius: 12px;
 }
 
 .ai-poster-wrapper {
     position: relative;
     width: 100%;
-    aspect-ratio: 2/3; /* Memaksa kotak menjadi standar poster seragam */
-    border-radius: 15px;
+    aspect-ratio: 2/3;
+    border-radius: 12px;
     overflow: hidden;
-    background: #111;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    background: #1e1e2d;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
 }
 
 .ai-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: 0.5s ease;
+    transition: transform 0.6s ease;
 }
 
-.ai-card:hover { transform: translateY(-8px); }
-.ai-card:hover .ai-img { transform: scale(1.08); filter: brightness(0.6); }
+/* Efek Hover Elegan (Tanpa Glow) */
+.ai-card:hover .ai-poster-wrapper {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5); /* Shadow membesar, bukan berwarna */
+}
 
-/* Badges (Tipe & Persentase) */
-.ai-tags {
+.ai-card:hover .ai-img {
+    transform: scale(1.05); /* Zoom perlahan */
+}
+
+/* Badge Match (Premium Look) */
+.badge-match-modern {
+    background: rgba(15, 23, 42, 0.85); /* Dark slate transparan */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #10b981; /* Hijau solid (bukan neon) */
+    font-weight: 800;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
     position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
-    display: flex;
-    justify-content: space-between;
+    top: 12px;
+    right: 12px;
     z-index: 10;
 }
 
-.ai-type-tag {
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 10px;
-    font-weight: 800;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.ai-match-tag {
-    background: #2dce89; /* Warna hijau cerah khas Netflix Match Score */
-    color: #000;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 10px;
-    font-weight: 900;
-    box-shadow: 0 0 10px rgba(45, 206, 137, 0.4);
-}
-
-/* Play Icon Overlay */
+/* Play Overlay Transparan */
 .ai-play-overlay {
     position: absolute;
     inset: 0;
+    background: rgba(0, 0, 0, 0.4); /* Gelap biasa, bukan biru */
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     opacity: 0;
-    transition: 0.3s;
+    transition: opacity 0.3s ease;
     z-index: 5;
 }
 
+.ai-card:hover .ai-play-overlay { opacity: 1; }
+
 .ai-play-overlay i {
-    font-size: 3.5rem;
-    color: #fff;
-    filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.8)); /* Glow biru muda */
-    transform: scale(0.5);
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 3rem;
+    color: #ffffff;
+    opacity: 0.9;
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.ai-card:hover .ai-play-overlay { opacity: 1; }
 .ai-card:hover .ai-play-overlay i { transform: scale(1); }
 
-/* Bagian Teks Bawah */
+/* Typography Teks Bawah */
+.ai-text-container {
+    padding: 12px 4px 0 4px;
+}
+
 .ai-anime-title {
-    color: #fff;
-    font-size: 15px;
-    font-weight: 800;
+    color: #f8fafc;
+    font-weight: 700;
+    font-size: 1rem;
     line-height: 1.3;
-}
-
-.ai-reason-box {
-    margin-top: 5px;
-    padding: 6px 10px;
-    background: rgba(0, 210, 255, 0.05); /* Background biru sangat tipis */
-    border-left: 2px solid #00d2ff;
-    border-radius: 0 6px 6px 0;
-}
-
-.reason-text {
-    color: #a0a0a0;
-    font-size: 11px;
-    line-height: 1.4;
+    margin-bottom: 6px;
+    transition: color 0.3s;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Batasi teks alasan agar tidak terlalu panjang */
+    -webkit-line-clamp: 1; /* Cukup 1 baris agar rapi, sisanya (...) */
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-/* Navigasi Swiper AI */
-.ai-nav-next, .ai-nav-prev {
-    color: #00d2ff !important;
-    transform: scale(0.6);
-    opacity: 0;
+.ai-card:hover .ai-anime-title {
+    color: #f59e0b; /* Berubah emas kalem saat disentuh */
+}
+
+.ai-reason-text {
+    color: #64748b; /* Abu-abu kalem standar profesional */
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Batasi 2 baris agar tinggi seragam */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Navigasi Swiper yang Kalem */
+.ai-nav-btn {
+    color: rgba(255,255,255,0.5) !important;
+    transform: scale(0.7);
     transition: 0.3s;
 }
-.personalized-swiper:hover .ai-nav-next, 
-.personalized-swiper:hover .ai-nav-prev {
-    opacity: 1;
-} */
 
-@media (max-width: 768px) {
-    .section-personalized { padding: 0 15px; }
+.ai-nav-btn:hover {
+    color: #ffffff !important;
+    transform: scale(0.8);
 }
 
-@keyframes fadeInUpAI {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .ai-card-animated {
-        animation: fadeInUpAI 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        opacity: 0; /* Mulai dari tidak terlihat */
-    }
-
-    /* Efek Lift & Glow saat Hover */
-    .ai-card {
-        display: block;
-        transition: all 0.3s ease;
-        border-radius: 12px;
-        background: transparent;
-        height: 100%;
-        text-decoration: none !important;
-    }
-    
-    .ai-card:hover {
-        transform: translateY(-8px);
-    }
-    
-    .ai-poster-wrapper {
-        position: relative;
-        overflow: hidden;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        transition: all 0.3s ease;
-        aspect-ratio: 2 / 3; /* Memastikan proporsi poster anime konsisten */
-    }
-
-    .ai-card:hover .ai-poster-wrapper {
-        box-shadow: 0 10px 25px rgba(0, 210, 255, 0.3); /* Glow Cyan */
-    }
-
-    .ai-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-
-    .ai-card:hover .ai-img {
-        transform: scale(1.08); /* Efek zoom in pelan pada gambar */
-    }
-
-    /* Play Button Overlay Modern */
-    .ai-play-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.6); /* Backdrop blur semi-transparan */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        backdrop-filter: blur(2px);
-    }
-
-    .ai-card:hover .ai-play-overlay {
-        opacity: 1;
-    }
-
-    .ai-play-overlay i {
-        font-size: 3rem;
-        color: #fff;
-        text-shadow: 0 0 15px rgba(0, 210, 255, 0.8);
-        transform: scale(0.8);
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .ai-card:hover .ai-play-overlay i {
-        transform: scale(1); /* Efek memantul (bounce) pada play button */
-    }
-
-    /* Badge Match Modern */
-    .badge-match-modern {
-        background: linear-gradient(135deg, #00e676, #00b0ff); /* Gradasi Hijau ke Biru */
-        color: #000;
-        font-weight: 800;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 10px;
-        box-shadow: 0 2px 8px rgba(0, 230, 118, 0.4);
-        letter-spacing: 0.5px;
-    }
-
-    /* Styling Teks Reason */
-    .ai-reason-text {
-        color: #94a3b8;
-        font-size: 11px;
-        line-height: 1.5;
-        margin-top: 6px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3; /* Maksimal 3 baris agar tidak merusak layout */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    
-    .ai-anime-title {
-        color: #fff;
-        font-weight: 700;
-        font-size: 14px;
-        margin-top: 10px;
-        margin-bottom: 2px;
-        transition: color 0.3s;
-    }
-    
-    .ai-card:hover .ai-anime-title {
-        color: #00d2ff;
-    }
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+    .section-personalized .container { padding: 0 15px; }
+    .personalized-swiper-container { padding-left: 15px; }
+    .ai-section-title { font-size: 1.25rem; }
+    .ai-icon-box { width: 35px; height: 35px; margin-right: 12px; }
+    .ai-icon-box i { font-size: 1rem; }
+    .ai-anime-title { font-size: 0.9rem; }
+    .ai-reason-text { font-size: 0.75rem; }
+    .badge-match-modern { padding: 4px 8px; font-size: 0.65rem; top: 8px; right: 8px; }
+}
 
 </style>
 
@@ -601,7 +553,7 @@
 
 $heroList = array_slice($heroList, 0, 5); 
 ?>
-
+<div class="container">
 <div class="section-hero">
     <div class="swiper hero-swiper shadow-premium">
         <div class="swiper-wrapper">
@@ -667,6 +619,7 @@ $heroList = array_slice($heroList, 0, 5);
         <div class="swiper-pagination custom-pagination"></div>
     </div>
 </div>
+        </div>
 
 <!-- SECTION: PERSONALIZED DISCOVERY (EXPLAINABLE AI) -->
 <?php if (session()->get('isLoggedIn') && !empty($personalizedAnimes)) : ?>
@@ -676,105 +629,95 @@ $heroList = array_slice($heroList, 0, 5);
         <p class="text-muted small mt-1">Disusun oleh AI berdasarkan riwayat penilaian Anda.</p>
     </div>
 
-    <!-- Gunakan Swiper agar tampilannya mewah (Anda bisa copy class popular-swiper) -->
-<!-- SECTION: PERSONALIZED DISCOVERY (EXPLAINABLE AI) -->
+   <!-- SECTION: PERSONALIZED DISCOVERY (EXPLAINABLE AI) -->
 <?php if (session()->get('isLoggedIn') && !empty($personalizedAnimes)) : ?>
-    <div class="section-personalized mb-5 mt-5">
-    <div class="section-title-container mb-4 px-2">
-        <h1 class="m-0 text-white font-weight-bold" style="font-size: 1.8rem; display: flex; align-items: center;">
-            <i class="fas fa-magic mr-3" style="color: #00d2ff; filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.6)); font-size: 1.5rem;"></i> 
-            Pilihan Untukmu, <?= strtoupper(session()->get('nama')) ?>
-        </h1>
-        <p class="text-muted small mt-2" style="font-size: 13px; letter-spacing: 0.3px; padding-left: 42px;">
-            Rekomendasi cerdas AI berdasarkan riwayat aktivitas dan penilaian Anda.
-        </p>
+<div class="section-personalized">
+    
+    <!-- 1. HEADER (Di dalam container agar sejajar dengan web) -->
+    <div class="container">
+        <div class="ai-section-header">
+            <div class="ai-icon-box">
+                <i class="fas fa-magic"></i>
+            </div>
+            <div>
+                <h1 class="ai-section-title">Pilihan Untukmu, <?= strtoupper(session()->get('nama')) ?></h1>
+                <p class="ai-section-subtitle">Rekomendasi cerdas AI berdasarkan riwayat penilaian Anda.</p>
+            </div>
+        </div>
     </div>
 
-    <div class="swiper personalized-swiper" style="padding-bottom: 40px; padding-top: 10px;">
-        <div class="swiper-wrapper">
-            <?php 
-                $delay = 0; // Untuk efek animasi muncul bergiliran (staggered)
-                foreach ($personalizedAnimes as $anime) : 
-            ?>
-                <!-- Style in-line untuk delay animasi masing-masing card -->
-                <div class="swiper-slide ai-card-animated" style="animation-delay: <?= $delay ?>s;">
-                    <a href="<?= url_to('animeDetail', $anime['slug']) ?>" class="ai-card">
-                        
-                        <div class="ai-poster-wrapper">
-                            <?php $imgSrc = (filter_var($anime['Poster'], FILTER_VALIDATE_URL)) ? $anime['Poster'] : base_url('assets/images/' . $anime['Poster']); ?>
-                            <img src="<?= $imgSrc ?>" class="ai-img" alt="<?= esc($anime['Judul']) ?>" loading="lazy">
+    <!-- 2. SLIDER (Di luar container, padding khusus agar tidak kepotong) -->
+    <div class="personalized-swiper-container">
+        <div class="swiper personalized-swiper">
+            <div class="swiper-wrapper">
+                <?php foreach ($personalizedAnimes as $anime) : ?>
+                    
+                    <div class="swiper-slide">
+                        <a href="<?= url_to('animeDetail', $anime['slug']) ?>" class="ai-card">
                             
-                            <!-- PERSENTASE MATCH -->
-                            <div style="position: absolute; top: 10px; right: 10px; z-index: 2;">
-                                <span class="badge-match-modern">
+                            <div class="ai-poster-wrapper">
+                                <?php $imgSrc = (filter_var($anime['Poster'], FILTER_VALIDATE_URL)) ? $anime['Poster'] : base_url('assets/images/' . $anime['Poster']); ?>
+                                <img src="<?= $imgSrc ?>" class="ai-img" alt="<?= esc($anime['Judul']) ?>" loading="lazy">
+                                
+                                <!-- PERSENTASE MATCH -->
+                                <div class="badge-match-modern">
                                     <i class="fas fa-percentage mr-1"></i><?= isset($anime['match_percentage']) ? $anime['match_percentage'] : '85' ?> MATCH
-                                </span>
+                                </div>
+                                
+                                <!-- Play Icon Hover -->
+                                <div class="ai-play-overlay">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
                             </div>
                             
-                            <!-- Play Icon Hover -->
-                            <div class="ai-play-overlay">
-                                <i class="fas fa-play-circle"></i>
-                            </div>
-                        </div>
-                        
-                        <!-- Informasi Teks -->
-                        <div class="px-1">
-                            <h3 class="ai-anime-title text-truncate" title="<?= esc($anime['Judul']) ?>">
-                                <?= esc($anime['Judul']) ?>
-                            </h3>
-                            
-                            <?php 
-                                $reasonText = isset($anime['reason']) ? $anime['reason'] : 'Disarankan oleh sistem cerdas.';
+                            <!-- Informasi Teks (Tipografi Elegan) -->
+                            <div class="ai-text-container">
+                                <h3 class="ai-anime-title" title="<?= esc($anime['Judul']) ?>">
+                                    <?= esc($anime['Judul']) ?>
+                                </h3>
                                 
-                                // LOGIKA HIGHLIGHT TEKS CERDAS (Mencakup pola baru dari Python)
-                                // Kita akan menghighlight kata-kata penting: judul base anime, genre, dsb.
-                                
-                                // Ambil judul referensi (base_anime) dari array jika ada (dari Python)
-                                // Jika tidak ada key 'base_anime', kita coba deteksi dari string
-                                $baseTitleToHighlight = isset($anime['base_anime']) ? $anime['base_anime'] : '';
-                                
-                                // Daftar frasa yang ingin diberi warna mencolok (Cyan muda & Bold)
-                                $highlightSpan = '<span style="color: #38bdf8; font-weight: 600;">'; // Tailwind light blue
-                                
-                                // 1. Jika ada judul spesifik dari Python
-                                if (!empty($baseTitleToHighlight)) {
-                                    $reasonText = str_ireplace(
-                                        $baseTitleToHighlight, 
-                                        $highlightSpan . $baseTitleToHighlight . '</span>', 
-                                        $reasonText
-                                    );
-                                } 
-                                // 2. Jika tidak, gunakan pola kalimat
-                                else {
-                                    $phrases = ['Karena Anda menyukai', 'Penonton yang menyukai', 'Mirip dengan', 'Masih dalam satu seri/waralaba dengan'];
-                                    foreach ($phrases as $phrase) {
-                                        $reasonText = str_replace($phrase, '<span style="color: #94a3b8;">' . $phrase . '</span>', $reasonText);
+                                <?php 
+                                    $reasonText = isset($anime['reason']) ? $anime['reason'] : 'Disarankan oleh sistem cerdas.';
+                                    $baseTitleToHighlight = isset($anime['base_anime']) ? $anime['base_anime'] : '';
+                                    
+                                    // HIGHLIGHT TEKS ELEGAN (Warna putih biasa dengan ketebalan font)
+                                    $highlightSpan = '<span style="color: #f8fafc; font-weight: 700;">'; 
+                                    
+                                    if (!empty($baseTitleToHighlight)) {
+                                        $reasonText = str_ireplace(
+                                            $baseTitleToHighlight, 
+                                            $highlightSpan . $baseTitleToHighlight . '</span>', 
+                                            $reasonText
+                                        );
+                                    } 
+                                    else {
+                                        $phrases = ['Karena Anda menyukai', 'Penonton yang menyukai', 'Mirip dengan'];
+                                        foreach ($phrases as $phrase) {
+                                            $reasonText = str_replace($phrase, '<span style="color: #94a3b8;">' . $phrase . '</span>', $reasonText);
+                                        }
                                     }
-                                }
+                                    
+                                    $keywords = ['Action', 'Romance', 'School', 'Drama', 'Comedy', 'Fantasy', 'Isekai', 'Suspense'];
+                                    foreach ($keywords as $kw) {
+                                        $reasonText = str_ireplace($kw, '<span style="color: #cbd5e1; font-weight: 600;">' . $kw . '</span>', $reasonText);
+                                    }
+                                ?>
                                 
-                                // 3. Highlight kata-kata khusus (Genre)
-                                $keywords = ['Action', 'Romance', 'School', 'Drama', 'Comedy', 'Fantasy', 'Isekai', 'Suspense'];
-                                foreach ($keywords as $kw) {
-                                    $reasonText = str_ireplace($kw, '<span style="color: #cbd5e1; font-weight: 500;">' . $kw . '</span>', $reasonText);
-                                }
-                            ?>
-                            
-                            <div class="ai-reason-text">
-                                <?= $reasonText ?>
+                                <div class="ai-reason-text">
+                                    <?= $reasonText ?>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                </div>
-            <?php 
-                $delay += 0.1; // Tambah delay 0.1 detik untuk card berikutnya
-                endforeach; 
-            ?>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            
+            <!-- Navigasi Swiper (Opsional) -->
+            <div class="swiper-button-next ai-nav-btn"></div>
+            <div class="swiper-button-prev ai-nav-btn"></div>
         </div>
-        
-        <!-- Navigasi Swiper (Opsional, pastikan class-nya sesuai dengan inisialisasi JS Anda) -->
-        <div class="swiper-button-next ai-nav-next" style="color: #00d2ff; transform: scale(0.7);"></div>
-        <div class="swiper-button-prev ai-nav-prev" style="color: #00d2ff; transform: scale(0.7);"></div>
     </div>
+
 </div>
 
 
