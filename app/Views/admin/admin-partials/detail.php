@@ -1278,34 +1278,54 @@
         const id = $(this).data('id');
         const title = $(this).data('title');
         const desc = $(this).data('desc');
-        const episodeNumber = $(this).data('episode');
+        const episodeNumber = parseInt($(this).data('episode')); // Pastikan jadi angka
         const gambar = $(this).data('gambar');
+        const rawVideo = $(this).data('video');
+
+        // ==========================================
+        // 🔥 LOGIKA PEMBUATAN DROPDOWN EPISODE (MIRIP HALAMAN TAMBAH)
+        // ==========================================
+        // 1. Ambil Max Episode dari PHP
+        const maxEps = <?= ($animes['Eps'] > 0) ? $animes['Eps'] : 1000 ?>;
         
-        // DECODE KEMBALI VIDEO DARI DATATABLE
-        let rawVideo = $(this).data('video');
-        if (rawVideo) {
-            rawVideo = decodeURIComponent(rawVideo);
+        // 2. Kumpulkan semua episode yang sudah terunggah dari tombol di halaman ini
+        let uploadedEps = [];
+        $('.edit-episode').each(function() {
+            uploadedEps.push(parseInt($(this).data('episode')));
+        });
+
+        // 3. Bangun HTML untuk tag <select>
+        let selectHtml = `<select name="episodeNumber" class="form-control custom-input-style" style="cursor: pointer;" required>`;
+        if (maxEps === 1000) {
+            selectHtml += `<option value="" disabled>-- Pilih Episode (Total TBA) --</option>`;
         }
+
+        for (let i = 1; i <= maxEps; i++) {
+            if (i === episodeNumber) {
+                // Ini adalah episode yang SEDANG DIEDIT saat ini (Boleh dipilih & Selected)
+                selectHtml += `<option value="${i}" selected style="font-weight: 700; color: #ac11e9; background: #fdfafr;">Episode ${i} (Sedang Diedit)</option>`;
+            } 
+            else if (uploadedEps.includes(i)) {
+                // Episode ini sudah milik data lain (Di-disable/Dikunci)
+                selectHtml += `<option value="${i}" disabled style="color: #a0aec0; background: #f8f9fa;">Episode ${i} (Sudah Diunggah)</option>`;
+            } 
+            else {
+                // Episode ini masih kosong dan tersedia
+                selectHtml += `<option value="${i}" style="font-weight: 600; color: #32325d;">Episode ${i}</option>`;
+            }
+        }
+        selectHtml += `</select>`;
+        // ==========================================
 
         let isCurrentEmbed = false;
         let videoUrlOrIframe = "";
 
-        // ==========================================
-        //  LOGIKA PENDETEKSI LOCAL VS EMBED 
-        // ==========================================
-        if (rawVideo) {
-            // JIKA ISI DATABASE ADALAH IFRAME ATAU LINK HTTP TAPI BUKAN MP4/MKV
-            if (rawVideo.includes('<iframe') || (rawVideo.startsWith('http') && !rawVideo.includes('.mp4') && !rawVideo.includes('.mkv') && !rawVideo.includes('.avi'))) {
-                isCurrentEmbed = true;
-                videoUrlOrIframe = rawVideo;
-            } 
-            // JIKA ISI DATABASE ADALAH NAMA FILE (FILE LOKAL)
-            else {
-                isCurrentEmbed = false;
-                videoUrlOrIframe = "<?= base_url('assets/videos/') ?>" + rawVideo;
-            }
+        if (rawVideo && (rawVideo.includes('<iframe') || (rawVideo.startsWith('http') && !rawVideo.includes('.mp4') && !rawVideo.includes('.mkv') && !rawVideo.includes('.avi')))) {
+            isCurrentEmbed = true;
+            videoUrlOrIframe = rawVideo;
+        } else if (rawVideo) {
+            videoUrlOrIframe = "<?= base_url('assets/videos/') ?>" + rawVideo;
         }
-
 
         Swal.fire({
             title: null, 
@@ -1339,14 +1359,18 @@
                             <!-- KOLOM KIRI: DATA TEKS -->
                             <div class="col-lg-6 pr-lg-4 border-right">
                                 <span class="form-section-title">Informasi Episode</span>
+                                
                                 <div class="form-group custom-group">
                                     <label>Judul Episode</label>
                                     <input type="text" name="judul" class="form-control custom-input-style" value="${title}" required>
                                 </div>
+                                
                                 <div class="form-group custom-group">
                                     <label>Episode Ke-Berapa? <span class="text-danger">*</span></label>
-                                    <input type="number" name="episodeNumber" class="form-control custom-input-style" value="${episodeNumber}" required>
+                                    <!--  DROPDOWN YANG SUDAH DIBUAT DARI JAVASCRIPT DISUNTIKKAN KE SINI  -->
+                                    ${selectHtml}
                                 </div>
+                                
                                 <div class="form-group custom-group">
                                     <label>Deskripsi Ringkas</label>
                                     <textarea name="Deskripsi" class="form-control custom-input-style" rows="5" required>${desc}</textarea>
@@ -1391,7 +1415,6 @@
                                         <i class="fas fa-video mr-1" style="color: #5e72e4;"></i> Ganti Video Episode
                                     </label>
                                     
-                                    <!-- TOGGLE LOCAL VS EMBED -->
                                     <div class="img-source-toggle mb-3">
                                         <input type="radio" name="video_source_type" id="edit_videoTypeUpload" value="upload" ${!isCurrentEmbed ? 'checked' : ''}>
                                         <label for="edit_videoTypeUpload"><i class="fas fa-file-upload mr-1"></i> Local</label>
@@ -1400,7 +1423,6 @@
                                         <label for="edit_videoTypeEmbed"><i class="fas fa-code mr-1"></i> Embed</label>
                                     </div>
 
-                                    <!-- AREA 1: UPLOAD LOCAL -->
                                     <div id="edit_videoUploadArea" style="display: ${!isCurrentEmbed ? 'block' : 'none'};">
                                         <div id="edit_drop-zone" class="drop-zone" style="background: #ffffff; border-radius: 10px; border: 1px dashed #dee2e6;">
                                             <i class="fas fa-cloud-upload-alt"></i>
@@ -1408,7 +1430,6 @@
                                         </div>
                                         <input type="file" id="edit_video_path_input" accept="video/mp4, video/mkv, video/*, .mkv, .mp4" style="display: none;">
                                         
-                                        <!-- Progress Bar Lokal -->
                                         <div id="edit_local-progress-container" class="mt-3" style="display: none; background: #fdfafr; padding: 15px; border-radius: 10px; border: 1px solid rgba(94, 114, 228, 0.2);">
                                             <div class="d-flex justify-content-between mb-2">
                                                 <small class="font-weight-bold" id="edit_upload-filename">Uploading...</small>
@@ -1419,7 +1440,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Preview Video Lokal -->
                                         <div id="edit_video-preview-container" class="mt-3" style="display: ${!isCurrentEmbed && rawVideo ? 'block' : 'none'};">
                                             <div class="bg-dark rounded-lg overflow-hidden shadow-sm position-relative">
                                                 <video id="edit_video-display" width="100%" height="auto" controls crossorigin="anonymous" style="max-height: 250px;">
@@ -1429,7 +1449,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- AREA 2: EMBED URL -->
                                     <div id="edit_videoEmbedArea" style="display: ${isCurrentEmbed ? 'block' : 'none'};">
                                         <textarea name="video_embed_link" id="edit_video_embed_input" class="form-control custom-input-style" rows="3" placeholder="Masukkan Link Iframe / URL...">${isCurrentEmbed ? rawVideo : ''}</textarea>
                                         <div id="edit_embed-preview-container" class="mt-3 bg-dark rounded overflow-hidden" style="display: ${isCurrentEmbed ? 'block' : 'none'}; aspect-ratio: 16/9;">
@@ -1441,7 +1460,6 @@
 
                                 </div>
 
-                                <!-- Tombol Aksi -->
                                 <div class="mt-4">
                                     <button type="submit" id="btnEditSubmit" class="btn btn-save shadow-sm w-100">
                                         <i class="fas fa-save mr-2"></i> Simpan Perubahan
@@ -1454,6 +1472,7 @@
                 </div>
             `,
             didOpen: () => {
+                // (BAGIAN didOpen TIDAK BERUBAH DARI YANG SEBELUMNYA)
                 const rLocal = document.getElementById('edit_videoTypeUpload');
                 const rEmbed = document.getElementById('edit_videoTypeEmbed');
                 const areaLocal = document.getElementById('edit_videoUploadArea');
@@ -1572,7 +1591,6 @@
                             document.getElementById('edit_video-preview-container').style.display = 'block';
                             document.getElementById('btnEditSubmit').disabled = false;
 
-                            // UNLOCK TOMBOL POTRET
                             if (btnAuto) {
                                 btnAuto.disabled = false;
                                 btnAuto.classList.replace('btn-outline-primary', 'btn-primary');
@@ -1591,20 +1609,21 @@
                         }
                     });
                 }
+
+                // ==========================================
+                // 🔥 PENGAMAN: LOGIKA SUBMIT FORM
+                // ==========================================
                 const editForm = document.getElementById('editEpisodeForm');
                 
                 editForm.addEventListener('submit', function(e) {
-                    // 1. MENCEGAH HALAMAN BERPINDAH (MENCEGAH LAYAR HITAM JSON)
                     e.preventDefault(); 
 
-                    // 2. CEK JIKA VIDEO MASIH UPLOADING
                     const btnSubmit = document.getElementById('btnEditSubmit');
                     if (btnSubmit.disabled) {
-                        Swal.fire('Tunggu!', 'Video masih dalam proses unggah. Harap tunggu hingga 100%.', 'warning');
+                        Swal.fire('Tunggu!', 'Video masih dalam proses unggah.', 'warning');
                         return;
                     }
 
-                    // 3. ENCODE EMBED (Sama seperti halaman Tambah)
                     const isUpload = document.getElementById('edit_videoTypeUpload').checked;
                     let embedInput = document.getElementById('edit_video_embed_input');
                     let originalEmbedValue = embedInput ? embedInput.value : '';
@@ -1613,7 +1632,6 @@
                         embedInput.value = btoa(unescape(encodeURIComponent(embedInput.value))); 
                     }
 
-                    // 4. MUNCULKAN LOADING
                     Swal.fire({
                         title: 'Menyimpan Perubahan...',
                         text: 'Mohon tunggu sebentar.',
@@ -1621,11 +1639,9 @@
                         didOpen: () => { Swal.showLoading(); }
                     });
 
-                    // 5. KEMAS DATA (Hapus file fisik agar tidak dobel upload)
                     const formData = new FormData(this);
                     formData.delete('video_path');
 
-                    // 6. KIRIM KE PHP VIA AJAX
                     $.ajax({
                         url: this.action,
                         method: 'POST',
@@ -1637,8 +1653,8 @@
                             .then(() => location.reload());
                         },
                         error: function(xhr) {
-                            if(embedInput) embedInput.value = originalEmbedValue; // Kembalikan nilai textarea
-                            let errMsg = 'Terjadi kesalahan saat mengupdate episode.';
+                            if(embedInput) embedInput.value = originalEmbedValue; 
+                            let errMsg = 'Terjadi kesalahan saat mengupdate.';
                             if(xhr.responseJSON && xhr.responseJSON.error) {
                                 if (typeof xhr.responseJSON.error === 'object') {
                                     errMsg = Object.values(xhr.responseJSON.error).join("<br>");
@@ -1651,7 +1667,6 @@
                     });
                 });
             }
-            
         });
     });
 
