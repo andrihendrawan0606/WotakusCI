@@ -1165,8 +1165,7 @@
         });
     });
 
-    $(document).on('click', '.edit-episode', function() {
-        window.generateEditThumbnail = function() {
+    window.generateEditThumbnail = function() {
         const videoElement = document.getElementById('edit_video-display');
         const imgPreview = document.getElementById('edit_img-preview-episode');
         const hiddenInput = document.getElementById('edit_auto_generated_thumbnail');
