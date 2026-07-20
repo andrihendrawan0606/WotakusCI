@@ -1257,263 +1257,163 @@ h4{
 /* ------------------------------------------------------------------------------------------------------------------------------------------------ */
 
 
-/* BEGIN CARD DESIGN */
-.section-hero {
-  padding: 20px 40px;
-  width: 100%;
+/* =========================================
+   HERO BANNER PREMIUM STYLING
+   ========================================= */
+   .section-hero {
+    padding: 20px 0; /* Ubah padding agar melebar elegan */
+    width: 100%;
+    max-width: 1400px; /* Batas lebar di layar PC Ultra-wide */
+    margin: 0 auto;
+}
+
+.shadow-premium {
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
 }
 
 .hero-modern {
-  position: relative;
-  width: 100%;
-  height: 450px; 
-  border-radius: 25px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    position: relative;
+    width: 100%;
+    height: 500px; /* Ukuran ideal */
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: #111;
 }
 
 .hero-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center 20%;
-  z-index: 1;
-  transition: transform 5s ease;
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 25%;
+    z-index: 1;
+    transform: scale(1.01); /* Mencegah border putih */
+    transition: transform 6s ease;
 }
 
-.hero-modern:hover .hero-bg {
-  transform: scale(1.05);
+/* Animasi Zoom pelan seperti efek Bioskop */
+.swiper-slide-active .hero-bg {
+    transform: scale(1.05); 
 }
 
-/* Overlay Gradasi Modern */
+/* Gradasi Gelap Elegan */
 .hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, 
-      rgba(18, 18, 18, 0.9) 20%, 
-      rgba(18, 18, 18, 0.4) 50%, 
-      transparent 100%);
-  z-index: 2;
-}
-
-/* Konten Hero */
-.section-hero {
-  padding: 20px 40px;
-}
-
-.hero-modern {
-  position: relative;
-  width: 100%;
-  height: 480px;
-  border-radius: 30px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-}
-
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center 20%; 
-  z-index: 1;
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, 
-      rgba(18, 18, 18, 1) 10%, 
-      rgba(18, 18, 18, 0.7) 40%, 
-      transparent 100%);
-  z-index: 2;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(15,15,20,1) 0%, rgba(15,15,20,0.85) 30%, rgba(15,15,20,0) 80%);
+    z-index: 2;
 }
 
 .hero-content {
-  position: relative;
-  z-index: 3;
-  padding-left: 60px;
-  max-width: 650px;
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 60px;
+    max-width: 550px;
 }
 
 .hero-badge {
-  background: rgba(172, 17, 233, 0.2);
-  color: #ac11e9;
-  padding: 6px 16px;
-  border-radius: 50px;
-  font-size: 11px;
-  font-weight: 800;
-  border: 1px solid rgba(172, 17, 233, 0.4);
-  letter-spacing: 1px;
+    background: linear-gradient(45deg, #ac11e9, #ff3d00);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    display: inline-block;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(172, 17, 233, 0.4);
 }
 
 .hero-title {
-  font-size: 3.5rem;
-  font-weight: 800;
-  color: #fff;
-  margin: 15px 0;
-  line-height: 1.1;
-  text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    font-size: 3rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Batasi maksimal 2 baris agar judul panjang tidak numpuk */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .hero-meta {
-  display: flex;
-  gap: 20px;
-  color: #eee;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-.hero-meta i { color: #ac11e9; }
-
-.hero-desc {
-  color: #bbb;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin-bottom: 30px;
-  /* Potong teks jika kepanjangan */
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.btn-watch {
-  background: #ac11e9;
-  color: white !important;
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-weight: 700;
-  text-decoration: none;
-  display: inline-block;
-  transition: 0.3s;
-}
-
-.btn-details {
-  background: rgba(255, 255, 255, 0.1);
-  color: white !important;
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-weight: 700;
-  text-decoration: none;
-  display: inline-block;
-  backdrop-filter: blur(10px);
-  margin-left: 10px;
-  transition: 0.3s;
-}
-
-.btn-watch:hover, .btn-details:hover {
-  transform: translateY(-3px);
-  filter: brightness(1.2);
-}
-
-/* --- PERBAIKAN HERO MODERN MOBILE --- */
-@media (max-width: 768px) {
-  .section-hero { 
-    padding: 15px; /* Beri sedikit ruang di pinggir layar */
-  }
-
-  .hero-modern { 
-    height: 480px; /* Sedikit lebih tinggi agar konten tidak sesak */
-    border-radius: 25px;
-    align-items: flex-end; /* Dorong konten ke bawah */
-    text-align: center; /* Pusatkan semua teks */
-  }
-
-  /* KUNCI: Ubah gradasi jadi vertikal agar gambar di atas tetap terlihat */
-  .hero-overlay {
-    background: linear-gradient(to top, 
-        rgba(18, 18, 18, 1) 0%, 
-        rgba(18, 18, 18, 0.8) 40%, 
-        rgba(18, 18, 18, 0.2) 100%);
-  }
-
-  .hero-content { 
-    padding: 0 20px 50px 20px; /* Padding bawah extra untuk ruang titik pagination */
-    max-width: 100%; 
-  }
-
-  .hero-badge {
-    font-size: 10px;
-    padding: 4px 12px;
-  }
-
-  .hero-title { 
-    font-size: 1.8rem; /* Ukuran pas untuk HP */
-    margin: 10px 0;
-    line-height: 1.2;
-  }
-
-  .hero-meta { 
-    justify-content: center; /* Pusatkan meta info */
-    gap: 15px;
-    font-size: 13px;
-    margin-bottom: 15px;
-  }
-
-  .hero-desc { 
-    font-size: 0.85rem;
-    line-height: 1.5;
-    margin-bottom: 25px;
-    -webkit-line-clamp: 2; /* Batasi maksimal 2 baris agar rapi */
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .btn-watch, .btn-details {
-    flex: 1; /* Tombol membagi rata ruang (sama lebar) */
-    padding: 12px 10px;
-    font-size: 13px;
-    margin: 0; /* Reset margin kiri */
     display: flex;
     align-items: center;
-    justify-content: center;
-  }
-
-  .btn-watch i, .btn-details i {
-    margin-right: 5px;
-  }
-
-  /* Posisikan ulang pagination agar tidak menempel tombol */
-  .swiper-pagination {
-    bottom: 10px !important;
-  }
+    gap: 15px;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 20px;
 }
 
-/* Container slider */
-.hero-swiper {
-  width: 100%;
-  border-radius: 30px;
+.meta-separator { color: #ac11e9; }
+
+.hero-desc {
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Maksimal 3 baris deskripsi */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
-/* Mengatur warna titik navigasi agar sesuai tema ungu */
-.swiper-pagination-bullet {
-  background: #fff !important;
-  opacity: 0.5;
+/* Tombol Premium */
+.hero-actions { display: flex; gap: 15px; }
+
+.btn-watch-modern {
+    background: #fff;
+    color: #1e1e1e !important;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: 0.3s ease;
 }
 
-.swiper-pagination-bullet-active {
-  background: #ac11e9 !important;
-  opacity: 1;
-  width: 25px !important; /* Membuat titik yang aktif jadi lebih panjang (modern style) */
-  border-radius: 5px !important;
+.btn-detail-modern {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    color: #fff !important;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Pastikan konten hero tetap tampil rapi di dalam slide */
-.hero-modern {
-  margin-left: 0; /* Reset margin slider */
+.btn-watch-modern:hover { background: #e2e8f0; transform: scale(1.05); }
+.btn-detail-modern:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+
+/* Custom Nav & Pagination */
+.custom-pagination { bottom: 20px !important; text-align: right; padding-right: 40px; }
+.custom-pagination .swiper-pagination-bullet { background: #fff; opacity: 0.4; }
+.custom-pagination .swiper-pagination-bullet-active { background: #ac11e9; opacity: 1; width: 30px; border-radius: 5px; }
+.custom-nav-btn { color: rgba(255,255,255,0.5); transform: scale(0.7); transition: 0.3s; }
+.custom-nav-btn:hover { color: #fff; transform: scale(0.9); }
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+    .section-hero { padding: 10px 15px; }
+    .hero-modern { height: 450px; border-radius: 15px; }
+    .hero-overlay { background: linear-gradient(to top, rgba(15,15,20,1) 0%, rgba(15,15,20,0.8) 40%, rgba(15,15,20,0.2) 100%); }
+    .hero-content { left: 0; top: auto; bottom: 0; transform: none; padding: 30px 20px; width: 100%; text-align: center; }
+    .hero-title { font-size: 2rem; margin-bottom: 10px; }
+    .hero-meta { justify-content: center; margin-bottom: 15px; }
+    .hero-desc { -webkit-line-clamp: 2; margin-bottom: 25px; }
+    .btn-watch-modern, .btn-detail-modern { flex: 1; text-align: center; padding: 12px 10px; font-size: 0.85rem; }
+    .custom-pagination { text-align: center; padding-right: 0; bottom: 10px !important; }
+    .custom-nav-btn { display: none; /* Hilangkan panah di HP */ }
 }
-/* END CARD DESIGN */
 
 
 

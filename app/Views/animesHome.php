@@ -603,46 +603,54 @@ $heroList = array_slice($heroList, 0, 5);
 ?>
 
 <div class="section-hero">
-    <div class="swiper hero-swiper">
+    <div class="swiper hero-swiper shadow-premium">
         <div class="swiper-wrapper">
             <?php foreach ($heroList as $hero) : ?>
                 <div class="swiper-slide">
                     <div class="hero-modern">
-                        <div class="hero-overlay"></div>
-                        
                         <?php 
                             $imgName = !empty($hero['BackgroundCover']) ? $hero['BackgroundCover'] : $hero['Poster'];
                             $imgSrc = (filter_var($imgName, FILTER_VALIDATE_URL)) ? $imgName : base_url('assets/images/' . $imgName);
                         ?>
                         
+                        <!-- Gambar Background Utama -->
                         <div class="hero-bg" style="background-image: url('<?= $imgSrc ?>');"></div>
+                        
+                        <!-- Layer Gradasi Kegelapan -->
+                        <div class="hero-overlay"></div>
 
+                        <!-- Konten Teks -->
                         <div class="hero-content">
-                            <span class="hero-badge">FEATURED ANIME</span>
-                            <h1 class="hero-title"><?= esc($hero['Judul']) ?></h1>
+                            <span class="hero-badge">
+                                <i class="fas fa-fire mr-1"></i> FEATURED ANIME
+                            </span>
                             
-                            <p class="hero-meta">
-                                <span><i class="fas fa-play-circle"></i> <?= esc($hero['tipeAnime']) ?></span>
-                                <span>
+                            <!-- Batasi judul agar tidak kepanjangan dan merusak layout -->
+                            <h1 class="hero-title text-truncate-2"><?= esc($hero['Judul']) ?></h1>
+                            
+                            <div class="hero-meta">
+                                <span class="meta-item"><i class="fas fa-play-circle"></i> <?= esc($hero['tipeAnime']) ?></span>
+                                <span class="meta-separator">•</span>
+                                <span class="meta-item">
                                     <i class="fas fa-star" style="color: #ffcc00;"></i> 
                                     <?php if ($hero['rating_user'] > 0) : ?>
-                                        <?= number_format($hero['rating_user'], 1) ?> Rating
+                                        <?= number_format($hero['rating_user'], 1) ?>
                                     <?php else : ?>
-                                        <span style="font-weight: normal; color: #888;">Belum ada rating</span>
+                                        <span class="text-muted" style="font-weight: 500;">T/A</span>
                                     <?php endif; ?>
                                 </span>
-                            </p>
+                            </div>
                             
                             <div class="hero-desc">
                                 <?= strip_tags($hero['Desc']) ?>
                             </div>
                             
                             <div class="hero-actions">
-                                <a href="<?= url_to('animeDetail', $hero['slug']) ?>" class="btn-watch">
-                                    <i class="fas fa-play"></i> Watch Now
+                                <a href="<?= url_to('animeDetail', $hero['slug']) ?>" class="btn-watch-modern">
+                                    <i class="fas fa-play"></i> TONTON SEKARANG
                                 </a>
-                                <a href="<?= url_to('animeDetail', $hero['slug']) ?>" class="btn-details">
-                                    <i class="fas fa-info-circle"></i> Details
+                                <a href="<?= url_to('animeDetail', $hero['slug']) ?>" class="btn-detail-modern">
+                                    <i class="fas fa-info-circle"></i> DETAIL
                                 </a>
                             </div>
                         </div>
@@ -651,7 +659,12 @@ $heroList = array_slice($heroList, 0, 5);
             <?php endforeach; ?>
         </div>
 
-        <div class="swiper-pagination"></div>
+        <!-- Tombol Navigasi Swiper (Opsional tapi elegan) -->
+        <div class="swiper-button-next custom-nav-btn"></div>
+        <div class="swiper-button-prev custom-nav-btn"></div>
+
+        <!-- Pagination -->
+        <div class="swiper-pagination custom-pagination"></div>
     </div>
 </div>
 
@@ -1042,23 +1055,26 @@ function switchStatus(status, btn) {
 }
 
 // 2. INISIALISASI SWIPER (DIBETULKAN SINTAKS-NYA)
-const swiper = new Swiper('.hero-swiper', {
-    loop: true, 
-    spaceBetween: 30, 
-    effect: 'fade', 
-    fadeEffect: {
-        crossFade: true
-    },
-    autoplay: {
-        delay: 5000, 
-        disableOnInteraction: false, 
-    },
-    pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-        dynamicBullets: true,
-    },
-    speed: 1000
+document.addEventListener("DOMContentLoaded", function() {
+    const heroSwiper = new Swiper('.hero-swiper', {
+        loop: true, 
+        spaceBetween: 0, 
+        speed: 800, // Kecepatan transisi yang sangat elegan (0.8 detik)
+        autoplay: {
+            delay: 6000, // Ganti slide setiap 6 detik
+            disableOnInteraction: false, 
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            dynamicBullets: false, // Matikan dynamic agar titiknya stabil bentuk kapsul
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        grabCursor: true // Ubah cursor jadi ikon tangan (UX friendly)
+    });
 });
 if(document.getElementById('fetch-anime-button')) {
     document.getElementById('fetch-anime-button').addEventListener('click', () => {
