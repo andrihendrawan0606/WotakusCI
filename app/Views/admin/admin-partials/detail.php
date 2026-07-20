@@ -1297,33 +1297,14 @@
         const id = $(this).data('id');
         const title = $(this).data('title');
         const desc = $(this).data('desc');
-        const episodeNumber = parseInt($(this).data('episode')); 
+        const episodeNumber = parseInt($(this).data('episode')); // Pastikan jadi angka
         const gambar = $(this).data('gambar');
-        
-        // Ambil data video (jQuery otomatis membaca kembali kode HTML dengan benar)
-        let rawVideo = $(this).data('video');
-        if (rawVideo) {
-            rawVideo = String(rawVideo); // Pastikan terbaca sebagai teks
-        }
+        const rawVideo = $(this).data('video');
 
         // ==========================================
-        //  LOGIKA PENDETEKSI LOCAL VS EMBED
+        //  LOGIKA PEMBUATAN DROPDOWN EPISODE (MIRIP HALAMAN TAMBAH)
         // ==========================================
-        let isCurrentEmbed = false;
-        let videoUrlOrIframe = "";
-
-        if (rawVideo) {
-            // Jika mengandung <iframe atau berawalan HTTP tapi bukan mp4/mkv/avi
-            if (rawVideo.includes('<iframe') || (rawVideo.startsWith('http') && !rawVideo.includes('.mp4') && !rawVideo.includes('.mkv') && !rawVideo.includes('.avi'))) {
-                isCurrentEmbed = true;
-                videoUrlOrIframe = rawVideo;
-            } else {
-                isCurrentEmbed = false;
-                videoUrlOrIframe = "<?= base_url('assets/videos/') ?>" + rawVideo;
-            }
-        }
-
-        // --- Logika Pembuatan Dropdown Episode ---
+        // 1. Ambil Max Episode dari PHP
         const maxEps = <?= ($animes['Eps'] > 0) ? $animes['Eps'] : 1000 ?>;
         
         // 2. Kumpulkan semua episode yang sudah terunggah dari tombol di halaman ini
