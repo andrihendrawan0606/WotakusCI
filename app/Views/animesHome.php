@@ -718,7 +718,7 @@ $heroList = array_slice($heroList, 0, 5);
         </div>
     </div>
 
-</div>
+
 
 
 <!-- SECTION: TOP POPULAR (ULTRA PREMIUM GLASS) -->
