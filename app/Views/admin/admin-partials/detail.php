@@ -1211,12 +1211,15 @@
         const fileLabel = document.getElementById('edit_labelGambarPreview');
         const resetFlag = document.getElementById('edit_ThumbnailReset');
         const btnReset = document.getElementById('edit_btn-reset-thumbnail');
+        const btnAuto = document.getElementById('edit_btn-auto-thumbnail');
 
+        // 1. Validasi Video Siap (Gunakan Alert biasa agar Swal tidak tertutup)
         if (!videoElement || videoElement.readyState < 2) {
-            Swal.fire({ icon: 'warning', title: 'Video Belum Siap', text: 'Tunggu video dimuat atau putar sedikit videonya.' });
+            alert('Video Belum Siap! Harap putar video sebentar lalu pause di adegan yang diinginkan.');
             return;
         }
 
+        // 2. Proses Jepret Kanvas
         const canvas = document.createElement('canvas');
         canvas.width = videoElement.videoWidth;
         canvas.height = videoElement.videoHeight;
@@ -1224,18 +1227,40 @@
         ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
         try {
+            // 3. Konversi ke Base64
             const dataURL = canvas.toDataURL('image/jpeg', 0.85);
+            
+            // 4. Update UI
             imgPreview.src = dataURL;
             hiddenInput.value = dataURL;
             if(resetFlag) resetFlag.value = '0';
             if(fileInput) fileInput.value = '';
             if(btnReset) btnReset.classList.remove('d-none');
-            if(fileLabel) fileLabel.innerHTML = '<span class="text-success"><i class="fas fa-check-circle"></i> Auto-Generated</span>';
             
-            // Pop-up sukses kecil
-            Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}).fire({icon: 'success', title: 'Frame dipotret!'});
+            // 5. Efek Visual Sukses (TanPA SWEETALERT!)
+            if(fileLabel) {
+                fileLabel.innerHTML = '<span class="text-success" id="edit_autoGenLabel"><i class="fas fa-check-circle"></i> Auto-Generated</span>';
+                setTimeout(() => {
+                    const autoLabel = document.getElementById('edit_autoGenLabel');
+                    if (autoLabel) fileLabel.innerHTML = 'Pilih gambar manual...';
+                }, 4000);
+            }
+
+            // Ubah tombol jepret jadi hijau sebentar
+            if(btnAuto) {
+                const originalHtml = btnAuto.innerHTML;
+                btnAuto.classList.replace('btn-primary', 'btn-success');
+                btnAuto.innerHTML = '<i class="fas fa-check"></i> Berhasil Dipotret!';
+                
+                setTimeout(() => {
+                    btnAuto.classList.replace('btn-success', 'btn-primary');
+                    btnAuto.innerHTML = originalHtml;
+                }, 2000);
+            }
+
         } catch (e) {
             console.error("Gagal membuat thumbnail:", e);
+            alert("Gagal memotret frame! Pastikan video berasal dari domain yang sama (bukan dari link luar).");
         }
     };
 
@@ -1397,7 +1422,7 @@
                                         <!-- Preview Video Lokal -->
                                         <div id="edit_video-preview-container" class="mt-3" style="display: ${!isCurrentEmbed && rawVideo ? 'block' : 'none'};">
                                             <div class="bg-dark rounded-lg overflow-hidden shadow-sm position-relative">
-                                                <video id="edit_video-display" width="100%" height="auto" controls style="max-height: 250px;">
+                                                <video id="edit_video-display" width="100%" height="auto" controls crossorigin="anonymous" style="max-height: 250px;">
                                                     <source src="${!isCurrentEmbed ? videoUrlOrIframe : ''}" type="video/mp4">
                                                 </video>
                                             </div>
