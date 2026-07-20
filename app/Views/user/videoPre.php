@@ -351,9 +351,20 @@
                             .then(data => {
                                 if (data.status === 'success') {
                                     sessionStorage.setItem(sKey, 'true');
+                                    const iframe = embedElement.querySelector('iframe');
+                                    if (iframe) {
+                                        let currentSrc = iframe.src;
+                                        
+
+                                        if (!currentSrc.includes('autoplay=1')) {
+                                            const separator = currentSrc.includes('?') ? '&' : '?';
+                                            iframe.src = currentSrc + separator + 'autoplay=1';
+                                        }
+                                    }
                                     embedOverlay.style.opacity = '0';
                                     setTimeout(() => embedOverlay.style.display = 'none', 300);
-                                    console.log('Analytics: View recorded (Embed).');
+                                    
+                                    console.log('Analytics: View recorded and Iframe Autoplay Triggered.');
                                 } 
                                 else if (data.status === 'limit_reached') {
                                     playIcon.className = 'fas fa-play fa-2x';
