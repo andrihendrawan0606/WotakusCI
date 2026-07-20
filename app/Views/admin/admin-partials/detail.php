@@ -791,6 +791,15 @@
     transform: translateY(-2px);
 }
 
+    .img-source-toggle input[type="radio"] {
+        display: none !important; /* WAJIB ADA !important */
+    }
+    
+    /* Tambahan agar lebih kebal di dalam SweetAlert */
+    .swal2-popup .img-source-toggle input[type="radio"] {
+        display: none !important;
+    }
+
 </style>
 <!-- Breadcrumb -->
 <div class="container-fluid py-4 px-4">
@@ -1157,23 +1166,67 @@
     });
 
     $(document).on('click', '.edit-episode', function() {
+        window.generateEditThumbnail = function() {
+        const videoElement = document.getElementById('edit_video-display');
+        const imgPreview = document.getElementById('edit_img-preview-episode');
+        const hiddenInput = document.getElementById('edit_auto_generated_thumbnail');
+        const fileInput = document.getElementById('edit_gambarPreview');
+        const fileLabel = document.getElementById('edit_labelGambarPreview');
+        const resetFlag = document.getElementById('edit_ThumbnailReset');
+        const btnReset = document.getElementById('edit_btn-reset-thumbnail');
+
+        if (!videoElement || videoElement.readyState < 2) {
+            Swal.fire({ icon: 'warning', title: 'Video Belum Siap', text: 'Tunggu video dimuat atau putar sedikit videonya.' });
+            return;
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+        try {
+            const dataURL = canvas.toDataURL('image/jpeg', 0.85);
+            imgPreview.src = dataURL;
+            hiddenInput.value = dataURL;
+            if(resetFlag) resetFlag.value = '0';
+            if(fileInput) fileInput.value = '';
+            if(btnReset) btnReset.classList.remove('d-none');
+            if(fileLabel) fileLabel.innerHTML = '<span class="text-success"><i class="fas fa-check-circle"></i> Auto-Generated</span>';
+            
+            // Pop-up sukses kecil
+            Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}).fire({icon: 'success', title: 'Frame dipotret!'});
+        } catch (e) {
+            console.error("Gagal membuat thumbnail:", e);
+        }
+    };
+
+    window.resetEditThumbnail = function() {
+        document.getElementById('edit_img-preview-episode').src = '<?= base_url('assets/images/default.jpg') ?>';
+        document.getElementById('edit_gambarPreview').value = '';
+        document.getElementById('edit_labelGambarPreview').innerHTML = 'Pilih gambar manual...';
+        document.getElementById('edit_auto_generated_thumbnail').value = '';
+        document.getElementById('edit_ThumbnailReset').value = '1';
+        document.getElementById('edit_btn-reset-thumbnail').classList.add('d-none');
+    };
+
+    // --- LOGIKA UTAMA KLIK EDIT ---
+    $(document).on('click', '.edit-episode', function() {
         const id = $(this).data('id');
         const title = $(this).data('title');
         const desc = $(this).data('desc');
         const episodeNumber = $(this).data('episode');
         const gambar = $(this).data('gambar');
-        const rawVideo = $(this).data('video'); // Video asli (Bisa nama file mp4, atau link Embed)
+        const rawVideo = $(this).data('video');
 
-        // Deteksi apakah video saat ini adalah Embed atau Local
         let isCurrentEmbed = false;
         let videoUrlOrIframe = "";
-        let localFileName = "";
 
         if (rawVideo && (rawVideo.includes('<iframe') || rawVideo.startsWith('http'))) {
             isCurrentEmbed = true;
             videoUrlOrIframe = rawVideo;
         } else if (rawVideo) {
-            localFileName = rawVideo;
             videoUrlOrIframe = "<?= base_url('assets/videos/') ?>" + rawVideo;
         }
 
@@ -1201,10 +1254,9 @@
                     <form id="editEpisodeForm" action="<?= url_to('updateEpisode'); ?>" method="POST" enctype="multipart/form-data">
                         <?= csrf_field(); ?>
                         <input type="hidden" name="id" value="${id}">
-                        
-                        <!-- HIDDEN INPUTS SAMA SEPERTI TAMBAH EPISODE -->
                         <input type="hidden" name="auto_generated_thumbnail" id="edit_auto_generated_thumbnail">
                         <input type="hidden" name="uploaded_temp_video" id="edit_uploaded_temp_video" value="">
+                        <input type="hidden" name="ThumbnailReset" id="edit_ThumbnailReset" value="0">
 
                         <div class="row">
                             <!-- KOLOM KIRI: DATA TEKS -->
@@ -1229,15 +1281,31 @@
                                 <span class="form-section-title">Media Preview</span>
 
                                 <!-- GAMBAR PREVIEW -->
-                                <div class="upload-box p-3 mb-4 text-left">
+                                <div class="upload-box p-3 mb-4 text-left" style="background:#f8f9fe; border-radius:15px; border:2px dashed #dee2e6; position: relative;">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <label class="font-weight-bold m-0 text-dark" style="font-size: 14px;"><i class="fas fa-image mr-1" style="color: #5e72e4;"></i> Gambar Preview</label>
                                     </div>
                                     <div class="custom-file text-left mb-3">
                                         <input type="file" name="gambarPreview" id="edit_gambarPreview" class="custom-file-input" accept="image/jpeg, image/png, image/webp">
                                         <label class="custom-file-label" for="edit_gambarPreview" id="edit_labelGambarPreview" style="border-radius: 8px;">Pilih gambar manual...</label>
-                                    </div>                                    
-                                    <img src="${gambar}" class="img-preview-episode mt-3" id="edit_img-preview-episode" style="width: 100%; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); object-fit: cover; aspect-ratio: 16/9;">
+                                    </div>  
+                                    
+                                    <!-- TOMBOL POTRET -->
+                                    <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between p-2 mb-3" style="background: rgba(172, 17, 233, 0.05); border-radius: 8px; border: 1px solid rgba(172, 17, 233, 0.1);">
+                                        <button type="button" id="edit_btn-auto-thumbnail" class="btn btn-sm ${!isCurrentEmbed && rawVideo ? 'btn-primary' : 'btn-outline-primary'} mb-2 mb-sm-0" ${!isCurrentEmbed && rawVideo ? '' : 'disabled'} onclick="window.generateEditThumbnail()" style="border-radius: 6px; font-weight: 600; white-space: nowrap;">
+                                            <i class="fas fa-camera retro-camera mr-1"></i> Potret dari Video
+                                        </button>
+                                        <small id="edit_auto-thumb-help" class="${!isCurrentEmbed && rawVideo ? 'text-success font-weight-bold' : 'text-muted'} text-center text-sm-right w-100 ml-sm-2" style="font-size: 0.75rem; line-height: 1.2;">
+                                            ${!isCurrentEmbed && rawVideo ? 'Geser video ke scene favorit, lalu klik tombol ini.' : '(Unggah video lokal terlebih dahulu)'}
+                                        </small>
+                                    </div>
+
+                                    <div class="position-relative text-center mt-2">
+                                        <img src="${gambar}" class="img-preview-episode mt-3 shadow-sm" id="edit_img-preview-episode" style="width: 100%; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); object-fit: cover; aspect-ratio: 16/9; cursor: pointer;" onclick="window.zoomThumbnail(this.src)">
+                                        <button type="button" class="btn btn-danger btn-sm position-absolute d-none" style="top: 10px; right: 10px; border-radius: 50%; width: 32px; height: 32px; z-index: 10; box-shadow: 0 4px 8px rgba(0,0,0,0.3);" id="edit_btn-reset-thumbnail" onclick="window.resetEditThumbnail()" title="Hapus Thumbnail">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <!-- VIDEO EPISODE -->
@@ -1298,10 +1366,10 @@
 
                                 <!-- Tombol Aksi -->
                                 <div class="mt-4">
-                                    <button type="submit" id="btnEditSubmit" class="btn btn-save shadow-sm">
+                                    <button type="submit" id="btnEditSubmit" class="btn btn-save shadow-sm w-100">
                                         <i class="fas fa-save mr-2"></i> Simpan Perubahan
                                     </button>
-                                    <button type="button" class="btn btn-cancel" onclick="Swal.close()">Batal & Tutup</button>
+                                    <button type="button" class="btn btn-cancel w-100 mt-2" onclick="Swal.close()">Batal & Tutup</button>
                                 </div>
                             </div>
                         </div>
@@ -1309,36 +1377,58 @@
                 </div>
             `,
             didOpen: () => {
-                // LOGIKA TOGGLE LOCAL VS EMBED
                 const rLocal = document.getElementById('edit_videoTypeUpload');
                 const rEmbed = document.getElementById('edit_videoTypeEmbed');
                 const areaLocal = document.getElementById('edit_videoUploadArea');
                 const areaEmbed = document.getElementById('edit_videoEmbedArea');
+                const btnAuto = document.getElementById('edit_btn-auto-thumbnail');
+                const helpText = document.getElementById('edit_auto-thumb-help');
                 
                 const toggleView = () => {
                     if (rLocal.checked) {
                         areaLocal.style.display = 'block';
                         areaEmbed.style.display = 'none';
+                        const tempVideo = document.getElementById('edit_uploaded_temp_video').value;
+                        const hasOldVideo = !isCurrentEmbed && rawVideo !== '';
+                        
+                        if (tempVideo || hasOldVideo) {
+                            btnAuto.disabled = false;
+                            btnAuto.classList.replace('btn-outline-primary', 'btn-primary');
+                            helpText.innerHTML = "Geser video ke scene favorit, lalu klik tombol ini.";
+                            helpText.className = "text-success font-weight-bold ml-2 text-center text-sm-right w-100";
+                        } else {
+                            btnAuto.disabled = true;
+                            btnAuto.classList.replace('btn-primary', 'btn-outline-primary');
+                            helpText.innerHTML = "(Unggah/putar video lokal terlebih dahulu)";
+                            helpText.className = "text-muted text-center text-sm-right w-100 ml-sm-2";
+                        }
                     } else {
                         areaLocal.style.display = 'none';
                         areaEmbed.style.display = 'block';
+                        btnAuto.disabled = true;
+                        btnAuto.classList.replace('btn-primary', 'btn-outline-primary');
+                        helpText.innerHTML = '<i class="fas fa-info-circle text-warning"></i> Fitur potret layar tidak tersedia untuk Embed.';
+                        helpText.className = "text-muted text-center text-sm-right w-100 ml-sm-2";
                     }
                 };
                 rLocal.addEventListener('change', toggleView);
                 rEmbed.addEventListener('change', toggleView);
 
-                // LOGIKA PREVIEW GAMBAR MANUAL
                 const inputGambar = document.getElementById('edit_gambarPreview');
                 inputGambar.addEventListener('change', function() {
                     if (this.files && this.files[0]) {
                         document.getElementById('edit_labelGambarPreview').textContent = this.files[0].name;
                         const reader = new FileReader();
-                        reader.onload = e => document.getElementById('edit_img-preview-episode').src = e.target.result;
+                        reader.onload = e => {
+                            document.getElementById('edit_img-preview-episode').src = e.target.result;
+                            document.getElementById('edit_btn-reset-thumbnail').classList.remove('d-none');
+                            document.getElementById('edit_auto_generated_thumbnail').value = '';
+                            document.getElementById('edit_ThumbnailReset').value = '0';
+                        }
                         reader.readAsDataURL(this.files[0]);
                     }
                 });
 
-                // LOGIKA PREVIEW EMBED
                 const inputEmbed = document.getElementById('edit_video_embed_input');
                 const embedPreview = document.getElementById('edit_embed-preview-container');
                 const embedDisplay = document.getElementById('edit_embed-display');
@@ -1351,7 +1441,6 @@
                     }
                 });
 
-                // LOGIKA UPLOAD TEMP VIDEO (DRAG & DROP / KLIK)
                 const dropZone = document.getElementById('edit_drop-zone');
                 const videoInput = document.getElementById('edit_video_path_input');
                 
@@ -1372,12 +1461,10 @@
                     const file = videoInput.files[0];
                     if (!file) return;
 
-                    // Tampilkan UI Loading
                     dropZone.style.display = 'none';
                     document.getElementById('edit_local-progress-container').style.display = 'block';
                     document.getElementById('edit_video-preview-container').style.display = 'none';
                     document.getElementById('btnEditSubmit').disabled = true;
-                    
                     document.getElementById('edit_upload-filename').innerText = file.name;
 
                     let formData = new FormData();
@@ -1386,10 +1473,7 @@
 
                     $.ajax({
                         url: '<?= base_url('dashboard/detail/uploadTempVideo') ?>', 
-                        method: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
+                        method: 'POST', data: formData, processData: false, contentType: false,
                         xhr: function() {
                             var xhr = new window.XMLHttpRequest();
                             xhr.upload.addEventListener("progress", function(evt) {
@@ -1405,74 +1489,31 @@
                             document.getElementById('edit_local-progress-container').style.display = 'none';
                             document.getElementById('edit_uploaded_temp_video').value = response.filename;
                             
-                            // Load ke Video Player
                             const videoPreview = document.getElementById('edit_video-display');
                             videoPreview.src = URL.createObjectURL(file);
                             videoPreview.load();
                             document.getElementById('edit_video-preview-container').style.display = 'block';
-                            
                             document.getElementById('btnEditSubmit').disabled = false;
+
+                            // UNLOCK TOMBOL POTRET
+                            if (btnAuto) {
+                                btnAuto.disabled = false;
+                                btnAuto.classList.replace('btn-outline-primary', 'btn-primary');
+                            }
+                            if (helpText) {
+                                helpText.innerHTML = "Geser video ke scene favorit, lalu klik tombol ini.";
+                                helpText.className = "text-success font-weight-bold ml-2 text-center text-sm-right w-100";
+                            }
                         },
                         error: function(xhr) {
                             document.getElementById('edit_local-progress-container').style.display = 'none';
                             dropZone.style.display = 'block';
                             document.getElementById('btnEditSubmit').disabled = false;
-                            
                             let errMsg = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Gagal upload video.';
                             Swal.fire('Gagal!', errMsg, 'error');
                         }
                     });
                 }
-            }
-        });
-    });
-
-    // 3. LOGIKA SUBMIT FORM EDIT
-    $(document).on('submit', '#editEpisodeForm', function(e) {
-        e.preventDefault();
-
-        // Encode Base64 untuk Iframe (Sama seperti Tambah Episode)
-        const isUpload = document.getElementById('edit_videoTypeUpload').checked;
-        let embedInput = document.getElementById('edit_video_embed_input');
-        let originalEmbedValue = embedInput ? embedInput.value : '';
-
-        if (!isUpload && embedInput && embedInput.value.trim() !== '') {
-            embedInput.value = btoa(unescape(encodeURIComponent(embedInput.value))); 
-        }
-
-        Swal.fire({
-            title: 'Menyimpan Perubahan...',
-            text: 'Mohon tunggu sebentar.',
-            allowOutsideClick: false,
-            didOpen: () => { Swal.showLoading(); }
-        });
-
-        const formData = new FormData(this);
-
-        // Hapus file fisik dari form agar tidak dobel upload (Karena sudah masuk Temp)
-        formData.delete('video_path');
-
-        $.ajax({
-            url: $(this).attr('action'),
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                Swal.fire('Sukses!', 'Episode berhasil diupdate.', 'success')
-                .then(() => location.reload());
-            },
-            error: function(xhr) {
-                if(embedInput) embedInput.value = originalEmbedValue; // Kembalikan nilai textarea
-                let errMsg = 'Terjadi kesalahan saat mengupdate episode.';
-                if(xhr.responseJSON && xhr.responseJSON.error) {
-                    if (typeof xhr.responseJSON.error === 'object') {
-                        errMsg = Object.values(xhr.responseJSON.error).join("<br>");
-                    } else {
-                        errMsg = xhr.responseJSON.error;
-                    }
-                }
-                Swal.fire('Gagal!', errMsg, 'error');
             }
         });
     });
