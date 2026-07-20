@@ -1072,17 +1072,22 @@
                         </span>`; 
             }},
             
-            // Kolom 5: Action Buttons
+            // Kolom 5: Action Buttons (ANTI-CRASH)
             { data: null, render: function(data, type, row) {
-                // 1. Enkripsi string video ke Base64 agar karakter iframe (<, >, ") tidak merusak HTML
+                // Pastikan jadi String lalu ubah tanda kutip agar tidak merusak tombol HTML
+                let safeTitle = row.judul ? String(row.judul).replace(/"/g, '&quot;').replace(/'/g, '&#39;') : '';
+                let safeDesc = row.deskripsi ? String(row.deskripsi).replace(/"/g, '&quot;').replace(/'/g, '&#39;') : '';
+                
+                // Ubah <iframe...> menjadi aman (&lt;iframe...&gt;)
                 let safeVideo = '';
                 if (row.video_path) {
-                    safeVideo = btoa(unescape(encodeURIComponent(row.video_path)));
+                    safeVideo = String(row.video_path)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;');
                 }
-
-                // 2. Amankan juga judul dan deskripsi dari tanda kutip ganda yang bisa merusak atribut
-                let safeTitle = row.judul ? row.judul.replace(/"/g, '&quot;') : '';
-                let safeDesc = row.deskripsi ? row.deskripsi.replace(/"/g, '&quot;') : '';
 
                 return `<div class="ep-action-buttons">
                             <button type="button" class="btn btn-warning text-white edit-episode" 
@@ -1295,15 +1300,10 @@
         const episodeNumber = parseInt($(this).data('episode')); 
         const gambar = $(this).data('gambar');
         
-        // BUKA SANDI BASE64 DARI TOMBOL DATATABLES
-        let encodedVideo = $(this).data('video');
-        let rawVideo = '';
-        if (encodedVideo) {
-            try {
-                rawVideo = decodeURIComponent(escape(atob(encodedVideo)));
-            } catch(e) {
-                rawVideo = encodedVideo; // Fallback jika format lama
-            }
+        // Ambil data video (jQuery otomatis membaca kembali kode HTML dengan benar)
+        let rawVideo = $(this).data('video');
+        if (rawVideo) {
+            rawVideo = String(rawVideo); // Pastikan terbaca sebagai teks
         }
 
         // ==========================================
@@ -1313,7 +1313,7 @@
         let videoUrlOrIframe = "";
 
         if (rawVideo) {
-            // Jika mengandung <iframe atau berawalan HTTP tapi bukan file mp4/mkv
+            // Jika mengandung <iframe atau berawalan HTTP tapi bukan mp4/mkv/avi
             if (rawVideo.includes('<iframe') || (rawVideo.startsWith('http') && !rawVideo.includes('.mp4') && !rawVideo.includes('.mkv') && !rawVideo.includes('.avi'))) {
                 isCurrentEmbed = true;
                 videoUrlOrIframe = rawVideo;
@@ -1323,7 +1323,7 @@
             }
         }
 
-        // (Logika pembuatan dropdown episode tetap sama seperti sebelumnya)
+        // --- Logika Pembuatan Dropdown Episode ---
         const maxEps = <?= ($animes['Eps'] > 0) ? $animes['Eps'] : 1000 ?>;
         
         // 2. Kumpulkan semua episode yang sudah terunggah dari tombol di halaman ini
