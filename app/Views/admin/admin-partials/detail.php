@@ -1074,8 +1074,11 @@
             
             // Kolom 5: Action Buttons
             { data: null, render: function(data, type, row) {
+                // Amankan data video agar tidak merusak HTML
+                let safeVideo = row.video_path ? encodeURIComponent(row.video_path) : '';
+                
                 return `<div class="ep-action-buttons">
-                            <button type="button" class="btn btn-warning text-white edit-episode" data-id="${row.id}" data-title="${row.judul}" data-desc="${row.deskripsi}" data-episode="${row.episode_number}" data-gambar="${basePath}imgPreview/${row.GambarPreview}" data-video="${row.video_path ? basePath + 'videos/' + row.video_path : ''}" title="Edit Episode">
+                            <button type="button" class="btn btn-warning text-white edit-episode" data-id="${row.id}" data-title="${row.judul}" data-desc="${row.deskripsi}" data-episode="${row.episode_number}" data-gambar="${basePath}imgPreview/${row.GambarPreview}" data-video="${safeVideo}" title="Edit Episode">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button type="button" class="btn btn-danger delete-episode" data-id="${row.id}" title="Hapus Episode">
@@ -1252,17 +1255,32 @@
         const desc = $(this).data('desc');
         const episodeNumber = $(this).data('episode');
         const gambar = $(this).data('gambar');
-        const rawVideo = $(this).data('video');
+        
+        // DECODE KEMBALI VIDEO DARI DATATABLE
+        let rawVideo = $(this).data('video');
+        if (rawVideo) {
+            rawVideo = decodeURIComponent(rawVideo);
+        }
 
         let isCurrentEmbed = false;
         let videoUrlOrIframe = "";
 
-        if (rawVideo && (rawVideo.includes('<iframe') || rawVideo.startsWith('http'))) {
-            isCurrentEmbed = true;
-            videoUrlOrIframe = rawVideo;
-        } else if (rawVideo) {
-            videoUrlOrIframe = "<?= base_url('assets/videos/') ?>" + rawVideo;
+        // ==========================================
+        //  LOGIKA PENDETEKSI LOCAL VS EMBED 
+        // ==========================================
+        if (rawVideo) {
+            // JIKA ISI DATABASE ADALAH IFRAME ATAU LINK HTTP TAPI BUKAN MP4/MKV
+            if (rawVideo.includes('<iframe') || (rawVideo.startsWith('http') && !rawVideo.includes('.mp4') && !rawVideo.includes('.mkv') && !rawVideo.includes('.avi'))) {
+                isCurrentEmbed = true;
+                videoUrlOrIframe = rawVideo;
+            } 
+            // JIKA ISI DATABASE ADALAH NAMA FILE (FILE LOKAL)
+            else {
+                isCurrentEmbed = false;
+                videoUrlOrIframe = "<?= base_url('assets/videos/') ?>" + rawVideo;
+            }
         }
+
 
         Swal.fire({
             title: null, 
