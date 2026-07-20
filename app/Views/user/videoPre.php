@@ -305,12 +305,15 @@
             const embedElement = document.getElementById('embed-wrapper');
             const embedOverlay = document.getElementById('embed-play-overlay'); 
 
+            // Ambil ID User yang sedang login dari PHP
+            const currentUserId = "<?= session()->get('id') ?? 'guest' ?>";
+
             // KONDISI A: LOKAL (Video.js)
             if (videoElement && typeof videojs !== 'undefined') {
                 const playerInstance = videojs(videoElement);
                 const epId = videoElement.getAttribute('data-episode-id');
                 if (epId) {
-                    const sKey = `ep_${epId}_viewed_today`;
+                    const sKey = `user_${currentUserId}_ep_${epId}_viewed_today`;
                     
                     if (!sessionStorage.getItem(sKey)) {
                         playerInstance.on('play', function() {
@@ -323,7 +326,7 @@
             else if (embedElement && embedOverlay) {
                 const epId = embedElement.getAttribute('data-episode-id');
                 if (epId) {
-                    const sKey = `ep_${epId}_viewed_today`;
+                    const sKey = `user_${currentUserId}_ep_${epId}_viewed_today`;
                     
                     if (sessionStorage.getItem(sKey)) {
                         embedOverlay.style.display = 'none';
