@@ -353,15 +353,29 @@
     .rank-number { font-size: 1rem; }
 }
 /* =========================================
-   SECTION PERSONALIZED (CLEAN & ELEGANT)
+   SECTION PERSONALIZED (FIXED ALIGNMENT & OPACITY)
    ========================================= */
    .section-personalized {
-    padding: 0; /* Hapus padding pinggir agar slider bisa full */
     margin: 40px 0;
+    width: 100%;
 }
 
-.section-personalized .container {
-    padding: 0 40px; /* Padding hanya untuk judulnya saja, bukan slidernya */
+/* 1. Samakan Jarak Kiri Header dan Slider */
+.ai-header-wrapper {
+    padding-left: 40px; 
+    padding-right: 40px;
+}
+
+.personalized-swiper-container {
+    padding-left: 40px; /* Jarak dari kiri layar */
+    padding-bottom: 20px;
+    /* Tanpa padding kanan agar slider mengalir cantik sampai ujung kanan layar */
+}
+
+/* 2. Paksa Semua Slide Terang (Menghilangkan Bug Pudar Swiper) */
+.personalized-swiper .swiper-slide {
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 /* Header Section */
@@ -372,7 +386,7 @@
 }
 
 .ai-icon-box {
-    background: linear-gradient(135deg, #f59e0b, #d97706); /* Emas elegan */
+    background: linear-gradient(135deg, #f59e0b, #d97706); 
     width: 40px;
     height: 40px;
     border-radius: 10px;
@@ -380,34 +394,12 @@
     justify-content: center;
     align-items: center;
     margin-right: 15px;
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); /* Shadow sangat lembut */
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); 
 }
 
-.ai-icon-box i {
-    color: #ffffff;
-    font-size: 1.2rem;
-}
-
-.ai-section-title {
-    color: #ffffff;
-    font-size: 1.5rem;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: 0.5px;
-}
-
-.ai-section-subtitle {
-    color: #64748b; /* Abu-abu kebiruan kalem */
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-top: 4px;
-}
-
-/* Wrapper Slider agar potongannya pas */
-.personalized-swiper-container {
-    padding-left: 40px; /* Samakan dengan padding container */
-    padding-bottom: 40px;
-}
+.ai-icon-box i { color: #ffffff; font-size: 1.2rem; }
+.ai-section-title { color: #ffffff; font-size: 1.5rem; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
+.ai-section-subtitle { color: #64748b; font-size: 0.85rem; font-weight: 500; margin-top: 4px; }
 
 /* Card Styling */
 .ai-card {
@@ -435,23 +427,20 @@
     transition: transform 0.6s ease;
 }
 
-/* Efek Hover Elegan (Tanpa Glow) */
 .ai-card:hover .ai-poster-wrapper {
     transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.5); /* Shadow membesar, bukan berwarna */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5); 
 }
 
-.ai-card:hover .ai-img {
-    transform: scale(1.05); /* Zoom perlahan */
-}
+.ai-card:hover .ai-img { transform: scale(1.05); }
 
-/* Badge Match (Premium Look) */
+/* Badge Match */
 .badge-match-modern {
-    background: rgba(15, 23, 42, 0.85); /* Dark slate transparan */
+    background: rgba(15, 23, 42, 0.85); 
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #10b981; /* Hijau solid (bukan neon) */
+    color: #10b981; 
     font-weight: 800;
     padding: 6px 10px;
     border-radius: 8px;
@@ -462,11 +451,11 @@
     z-index: 10;
 }
 
-/* Play Overlay Transparan */
+/* Play Overlay */
 .ai-play-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4); /* Gelap biasa, bukan biru */
+    background: rgba(0, 0, 0, 0.4); 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -488,9 +477,7 @@
 .ai-card:hover .ai-play-overlay i { transform: scale(1); }
 
 /* Typography Teks Bawah */
-.ai-text-container {
-    padding: 12px 4px 0 4px;
-}
+.ai-text-container { padding: 12px 4px 0 4px; }
 
 .ai-anime-title {
     color: #f8fafc;
@@ -500,42 +487,32 @@
     margin-bottom: 6px;
     transition: color 0.3s;
     display: -webkit-box;
-    -webkit-line-clamp: 1; /* Cukup 1 baris agar rapi, sisanya (...) */
+    -webkit-line-clamp: 1; 
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.ai-card:hover .ai-anime-title {
-    color: #f59e0b; /* Berubah emas kalem saat disentuh */
-}
+.ai-card:hover .ai-anime-title { color: #f59e0b; }
 
 .ai-reason-text {
-    color: #64748b; /* Abu-abu kalem standar profesional */
+    color: #64748b; 
     font-size: 0.8rem;
     font-weight: 500;
     line-height: 1.5;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Batasi 2 baris agar tinggi seragam */
+    -webkit-line-clamp: 2; 
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-/* Navigasi Swiper yang Kalem */
-.ai-nav-btn {
-    color: rgba(255,255,255,0.5) !important;
-    transform: scale(0.7);
-    transition: 0.3s;
-}
-
-.ai-nav-btn:hover {
-    color: #ffffff !important;
-    transform: scale(0.8);
-}
+/* Navigasi Swiper */
+.ai-nav-btn { color: rgba(255,255,255,0.5) !important; transform: scale(0.7); transition: 0.3s; }
+.ai-nav-btn:hover { color: #ffffff !important; transform: scale(0.8); }
 
 /* --- RESPONSIVE MOBILE --- */
 @media (max-width: 768px) {
-    .section-personalized .container { padding: 0 15px; }
-    .personalized-swiper-container { padding-left: 15px; }
+    .ai-header-wrapper, .personalized-swiper-container { padding-left: 15px; }
+    .ai-header-wrapper { padding-right: 15px; }
     .ai-section-title { font-size: 1.25rem; }
     .ai-icon-box { width: 35px; height: 35px; margin-right: 12px; }
     .ai-icon-box i { font-size: 1rem; }
@@ -543,7 +520,6 @@
     .ai-reason-text { font-size: 0.75rem; }
     .badge-match-modern { padding: 4px 8px; font-size: 0.65rem; top: 8px; right: 8px; }
 }
-
 </style>
 
 <!-- Tombol -->
@@ -629,12 +605,12 @@ $heroList = array_slice($heroList, 0, 5);
         <p class="text-muted small mt-1">Disusun oleh AI berdasarkan riwayat penilaian Anda.</p>
     </div>
 
-   <!-- SECTION: PERSONALIZED DISCOVERY (EXPLAINABLE AI) -->
+ <!-- SECTION: PERSONALIZED DISCOVERY (EXPLAINABLE AI) -->
 <?php if (session()->get('isLoggedIn') && !empty($personalizedAnimes)) : ?>
 <div class="section-personalized">
     
-    <!-- 1. HEADER (Di dalam container agar sejajar dengan web) -->
-    <div class="container">
+    <!-- 1. HEADER (Menggunakan wrapper khusus agar padding kiri sama dengan slider) -->
+    <div class="ai-header-wrapper">
         <div class="ai-section-header">
             <div class="ai-icon-box">
                 <i class="fas fa-magic"></i>
@@ -652,6 +628,7 @@ $heroList = array_slice($heroList, 0, 5);
             <div class="swiper-wrapper">
                 <?php foreach ($personalizedAnimes as $anime) : ?>
                     
+                    <!-- HAPUS CLASS ANIMASI DARI SINI AGAR TIDAK PUDAR -->
                     <div class="swiper-slide">
                         <a href="<?= url_to('animeDetail', $anime['slug']) ?>" class="ai-card">
                             
@@ -717,6 +694,8 @@ $heroList = array_slice($heroList, 0, 5);
             <div class="swiper-button-prev ai-nav-btn"></div>
         </div>
     </div>
+
+</div>
 
 
 
