@@ -1261,9 +1261,9 @@ h4{
    HERO BANNER PREMIUM STYLING
    ========================================= */
    .section-hero {
-    padding: 20px 0; /* Ubah padding agar melebar elegan */
+    padding: 20px 0; 
     width: 100%;
-    max-width: 1400px; /* Batas lebar di layar PC Ultra-wide */
+    /* max-width: 1400px; Batas lebar di layar PC Ultra-wide */
     margin: 0 auto;
 }
 
