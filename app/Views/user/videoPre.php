@@ -93,8 +93,15 @@
                     
                     <!-- BUNGKUS IFRAME -->
                     <?php if (!empty($cleanIframe)): ?>
-                        <div id="embed-wrapper" style="width: 100%; height: 100%; display: block;" data-episode-id="<?= $episode['id'] ?>">
+                        <div id="embed-wrapper" style="width: 100%; height: 100%; position: relative; display: block;" data-episode-id="<?= $episode['id'] ?>">
+                            <!-- Iframe Asli -->
                             <?= $cleanIframe ?>
+                            
+                            <div id="embed-play-overlay" style="position: absolute; inset: 0; z-index: 10; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.3s ease;">
+                                <div style="background: rgba(172, 17, 233, 0.9); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(172, 17, 233, 0.5);">
+                                    <i class="fas fa-play fa-2x" style="color: white; margin-left: 5px;"></i>
+                                </div>
+                            </div>
                         </div>
                     <?php else: ?>
                         <!-- Fallback jika gagal mengekstrak URL -->
@@ -304,6 +311,7 @@
             // CEK ELEMEN: Apakah halaman ini pakai Video.js atau IFrame?
             const videoElement = document.getElementById('video-player');
             const embedElement = document.getElementById('embed-wrapper');
+            const embedOverlay = document.getElementById('embed-play-overlay'); // Ambil overlay play palsu
 
             // KONDISI A: LOKAL (Video.js)
             if (videoElement && typeof videojs !== 'undefined') {
@@ -311,27 +319,108 @@
                 const epId = videoElement.getAttribute('data-episode-id');
                 if (epId) {
                     const sKey = `ep_${epId}_viewed_today`;
-                    playerInstance.on('play', function() {
-                        triggerViewCounter(epId, sKey, playerInstance);
-                    });
+                    
+                    // Cek apakah user SUDAH nonton hari ini (agar tidak tembak API berkali-kali jika di-pause lalu di-play lagi)
+                    if (sessionStorage.getItem(sKey)) {
+                        // Lolos, biarkan play
+                    } else {
+                        // Cegat play pertama kali
+                        playerInstance.on('play', function() {
+                            triggerViewCounter(epId, sKey, playerInstance);
+                        });
+                    }
                 }
             } 
             // KONDISI B: EMBED (Iframe)
-            else if (embedElement) {
+            else if (embedElement && embedOverlay) {
                 const epId = embedElement.getAttribute('data-episode-id');
                 if (epId) {
                     const sKey = `ep_${epId}_viewed_today`;
-                    // Catat view saat mouse masuk ke area video pertama kali
-                    embedElement.addEventListener('mouseenter', function() {
-                        triggerViewCounter(epId, sKey, null);
-                    }, { once: true });
+                    
+                    // Jika user sudah terverifikasi nonton hari ini, hilangkan tombol palsunya langsung
+                    if (sessionStorage.getItem(sKey)) {
+                        embedOverlay.style.display = 'none';
+                    } else {
+                        // Jika belum, pasang event klik di tombol palsu kita
+                        embedOverlay.addEventListener('click', function() {
+                            
+                            // Munculkan loading sebentar saat ngecek API
+                            const playIcon = embedOverlay.querySelector('i');
+                            playIcon.className = 'fas fa-spinner fa-spin fa-2x';
+
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+                            fetch(WATCH_API_URL, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': csrfToken
+                                },
+                                body: JSON.stringify({ episodeId: epId })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    // JIKA SUKSES ATAU SUDAH NONTON:
+                                    sessionStorage.setItem(sKey, 'true');
+                                    
+                                    // Hilangkan layar hitam & tombol palsu kita agar user bisa ngeklik video asli
+                                    embedOverlay.style.opacity = '0';
+                                    setTimeout(() => embedOverlay.style.display = 'none', 300);
+                                    
+                                    console.log('Analytics: View recorded (Embed).');
+                                } 
+                                else if (data.status === 'limit_reached') {
+                                    // JIKA LIMIT HABIS:
+                                    // Kembalikan ikon play
+                                    playIcon.className = 'fas fa-play fa-2x';
+                                    
+                                    // MUNCULKAN PENAWARAN PREMIUM (Copas kode SweetAlert-mu ke sini)
+                                    Swal.fire({
+                                        icon: 'info',
+                                        iconHtml: '<i class="fas fa-crown" style="color: #fbbf24;"></i>',
+                                        title: '<span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">BATAS HARIAN TERCAPAI</span>',
+                                        html: `
+                                            <div style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-top: 10px;">
+                                                Anda telah menggunakan kuota <b>5 Episode / Hari</b> untuk pengguna <i>Basic</i>.<br><br>
+                                                <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 15px; border-radius: 12px; color: #fbbf24; text-align: left;">
+                                                    <i class="fas fa-gem mr-2"></i> Ingin menonton tanpa batas?<br>
+                                                    <span style="color:#cbd5e1; font-size: 0.85rem; display:block; margin-top:5px;">Upgrade ke <b>Wotakus PRO</b> sekarang juga!</span>
+                                                </div>
+                                            </div>
+                                        `,
+                                        background: '#1e293b', 
+                                        color: '#f8fafc',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#fbbf24', 
+                                        cancelButtonColor: '#334155', 
+                                        confirmButtonText: '<i class="fas fa-rocket mr-2"></i> UPGRADE PRO',
+                                        cancelButtonText: 'Nanti Saja',
+                                        customClass: {
+                                            popup: 'premium-swal-popup',
+                                            confirmButton: 'premium-swal-btn',
+                                            cancelButton: 'premium-swal-cancel-btn'
+                                        },
+                                        allowOutsideClick: false
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = "<?= base_url('upgrade') ?>"; 
+                                        } else {
+                                            window.location.href = "<?= base_url('dashboard') ?>"; 
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(err => {
+                                console.error('Failed view count:', err);
+                                playIcon.className = 'fas fa-play fa-2x'; // Reset ikon jika error
+                            });
+
+                        });
+                    }
                 }
             }
-
-        } catch (error) {
-            // Jika Video Player error, cetak di console, TAPI JANGAN HENTIKAN SCRIPT BAWAH!
-            console.warn("Peringatan Video Player:", error);
-        }
 
 
         // ==========================================
