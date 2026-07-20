@@ -353,12 +353,12 @@
     .rank-number { font-size: 1rem; }
 }
 /* =========================================
-   HERO BANNER PREMIUM STYLING (FIXED ALIGNMENT & ANIMATION)
+   1. HERO BANNER PREMIUM STYLING
    ========================================= */
    .section-hero {
-    padding: 30px 40px 10px 40px; /* Samakan padding kiri-kanan dengan AI Section (40px) */
+    padding: 30px 40px 10px 40px; /* Jarak kiri 40px */
     width: 100%;
-    max-width: 100%; /* Lepas batas lebar agar memanjang di layar besar */
+    max-width: 100%;
     margin: 0;
 }
 
@@ -376,23 +376,20 @@
     background-color: #111;
 }
 
-/* --- PERBAIKAN BUG ANIMASI DELAY --- */
 .hero-bg {
     position: absolute;
     inset: 0;
     background-size: cover;
     background-position: center 25%;
     z-index: 1;
-    transform: scale(1); /* Ukuran normal */
-    transition: none; /* KUNCI FIX: Reset instan saat slide tidak aktif agar tidak delay */
+    transform: scale(1); 
+    transition: none; 
 }
 
-/* Animasi Zoom pelan HANYA saat slide aktif */
 .swiper-slide-active .hero-bg {
     transform: scale(1.08); 
-    transition: transform 8s ease-out; /* Zoom sangat pelan selama 8 detik */
+    transition: transform 8s ease-out; 
 }
-/* ----------------------------------- */
 
 .hero-overlay {
     position: absolute;
@@ -410,7 +407,6 @@
     max-width: 550px;
 }
 
-/* (Bagian Typografi Teks Hero Biarkan Sama) */
 .hero-badge {
     background: linear-gradient(45deg, #ac11e9, #ff3d00);
     color: #fff;
@@ -433,113 +429,79 @@
     text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
-.text-truncate-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2; 
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+.text-truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-.hero-meta {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    color: #e2e8f0;
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-}
-
+.hero-meta { display: flex; align-items: center; gap: 15px; color: #e2e8f0; font-size: 0.95rem; font-weight: 600; margin-bottom: 20px; }
 .meta-separator { color: #ac11e9; }
+.hero-desc { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; margin-bottom: 30px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
-.hero-desc {
-    color: #cbd5e1;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 30px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3; 
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-}
-
-/* --- PERBAIKAN TOMBOL (DIPAKSA AGAR TIDAK TUMBANG) --- */
-.hero-actions { 
-    display: flex !important; 
-    gap: 15px !important; 
-}
-
-.btn-watch-modern {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: #ffffff !important;
-    color: #111111 !important;
-    padding: 12px 28px !important;
-    border-radius: 12px !important;
-    font-weight: 800 !important;
-    font-size: 0.95rem !important;
-    text-decoration: none !important;
-    box-shadow: 0 4px 15px rgba(255,255,255,0.2) !important;
-    transition: all 0.3s ease !important;
-}
-
+.hero-actions { display: flex !important; gap: 15px !important; }
+.btn-watch-modern { display: inline-flex !important; align-items: center !important; justify-content: center !important; background: #ffffff !important; color: #111111 !important; padding: 12px 28px !important; border-radius: 12px !important; font-weight: 800 !important; font-size: 0.95rem !important; text-decoration: none !important; box-shadow: 0 4px 15px rgba(255,255,255,0.2) !important; transition: all 0.3s ease !important; }
 .btn-watch-modern i { margin-right: 8px !important; font-size: 1.1rem !important; }
-
-.btn-detail-modern {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    color: #ffffff !important;
-    padding: 12px 28px !important;
-    border-radius: 12px !important;
-    font-weight: 700 !important;
-    font-size: 0.95rem !important;
-    text-decoration: none !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    transition: all 0.3s ease !important;
-}
-
+.btn-detail-modern { display: inline-flex !important; align-items: center !important; justify-content: center !important; background: rgba(255, 255, 255, 0.15) !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; color: #ffffff !important; padding: 12px 28px !important; border-radius: 12px !important; font-weight: 700 !important; font-size: 0.95rem !important; text-decoration: none !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; transition: all 0.3s ease !important; }
 .btn-detail-modern i { margin-right: 8px !important; font-size: 1.1rem !important; }
 
 .btn-watch-modern:hover { transform: translateY(-3px) scale(1.02) !important; background: #e2e8f0 !important; text-decoration: none !important; }
 .btn-detail-modern:hover { background: rgba(255, 255, 255, 0.25) !important; transform: translateY(-3px) scale(1.02) !important; text-decoration: none !important; }
 
-/* Custom Nav & Pagination */
 .custom-pagination { bottom: 20px !important; text-align: right; padding-right: 40px; }
 .custom-pagination .swiper-pagination-bullet { background: #fff; opacity: 0.4; }
 .custom-pagination .swiper-pagination-bullet-active { background: #ac11e9; opacity: 1; width: 30px; border-radius: 5px; }
 
-/* PANAH SWIPER (ANTI-TEMPLATE) */
-.hero-swiper .swiper-button-next,
-.hero-swiper .swiper-button-prev {
-    width: 45px !important;
-    height: 45px !important;
-    background: rgba(15, 15, 20, 0.5) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 50% !important;
-    color: #ffffff !important; 
-    transition: all 0.3s ease !important;
-}
-
+.hero-swiper .swiper-button-next, .hero-swiper .swiper-button-prev { width: 45px !important; height: 45px !important; background: rgba(15, 15, 20, 0.5) !important; backdrop-filter: blur(8px) !important; -webkit-backdrop-filter: blur(8px) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; border-radius: 50% !important; color: #ffffff !important; transition: all 0.3s ease !important; }
 .hero-swiper .swiper-button-prev { left: 20px !important; }
 .hero-swiper .swiper-button-next { right: 20px !important; }
-.hero-swiper .swiper-button-next::after,
-.hero-swiper .swiper-button-prev::after { font-size: 1.1rem !important; font-weight: 900 !important; }
-.hero-swiper .swiper-button-next:hover,
-.hero-swiper .swiper-button-prev:hover {
-    background: rgba(172, 17, 233, 0.8) !important; 
-    border-color: rgba(172, 17, 233, 1) !important;
-    transform: scale(1.1) !important;
-}
+.hero-swiper .swiper-button-next::after, .hero-swiper .swiper-button-prev::after { font-size: 1.1rem !important; font-weight: 900 !important; }
+.hero-swiper .swiper-button-next:hover, .hero-swiper .swiper-button-prev:hover { background: rgba(172, 17, 233, 0.8) !important; border-color: rgba(172, 17, 233, 1) !important; transform: scale(1.1) !important; }
 
-/* --- RESPONSIVE MOBILE HERO --- */
+
+/* =========================================
+   2. SECTION PERSONALIZED (PILIHAN UNTUKMU)
+   ========================================= */
+.section-personalized { margin: 40px 0; width: 100%; }
+
+/* Samakan Jarak Kiri dengan Hero (40px) */
+.ai-header-wrapper { padding-left: 40px; padding-right: 40px; }
+.personalized-swiper-container { padding-left: 40px; padding-bottom: 20px; }
+
+/* Hilangkan Bug Pudar Swiper */
+.personalized-swiper .swiper-slide { opacity: 1 !important; visibility: visible !important; }
+
+/* Header AI Besar dan Mencolok */
+.ai-section-header { display: flex; align-items: center; margin-bottom: 30px; }
+.ai-icon-box { background: linear-gradient(135deg, #f59e0b, #d97706); width: 55px; height: 55px; border-radius: 14px; display: flex; justify-content: center; align-items: center; margin-right: 20px; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); }
+.ai-icon-box i { color: #ffffff; font-size: 1.8rem; }
+.ai-section-title { color: #ffffff; font-size: 2.2rem; font-weight: 900; margin: 0; letter-spacing: 0.5px; text-transform: uppercase; }
+.ai-section-subtitle { color: #94a3b8; font-size: 1.05rem; font-weight: 500; margin-top: 5px; letter-spacing: 0.2px; }
+
+/* Card Styling */
+.ai-card { display: block; text-decoration: none !important; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); border-radius: 12px; }
+.ai-poster-wrapper { position: relative; width: 100%; aspect-ratio: 2/3; border-radius: 12px; overflow: hidden; background: #1e1e2d; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s ease; }
+.ai-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+
+.ai-card:hover .ai-poster-wrapper { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+.ai-card:hover .ai-img { transform: scale(1.05); }
+
+/* Badge Match */
+.badge-match-modern { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.1); color: #10b981; font-weight: 800; padding: 6px 10px; border-radius: 8px; font-size: 0.7rem; position: absolute; top: 12px; right: 12px; z-index: 10; }
+
+/* Play Overlay */
+.ai-play-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; z-index: 5; }
+.ai-card:hover .ai-play-overlay { opacity: 1; }
+.ai-play-overlay i { font-size: 3rem; color: #ffffff; opacity: 0.9; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.ai-card:hover .ai-play-overlay i { transform: scale(1); }
+
+/* Typography Teks Bawah */
+.ai-text-container { padding: 12px 4px 0 4px; }
+.ai-anime-title { color: #f8fafc; font-weight: 700; font-size: 1rem; line-height: 1.3; margin-bottom: 6px; transition: color 0.3s; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.ai-card:hover .ai-anime-title { color: #f59e0b; }
+.ai-reason-text { color: #64748b; font-size: 0.8rem; font-weight: 500; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Navigasi Swiper AI (Tidak Kaku) */
+.ai-nav-btn { color: rgba(255,255,255,0.5) !important; transform: scale(0.7); transition: 0.3s; }
+.ai-nav-btn:hover { color: #ffffff !important; transform: scale(0.8); }
+
+/* --- RESPONSIVE MOBILE UMUM --- */
 @media (max-width: 768px) {
     .section-hero { padding: 10px 15px; }
     .hero-modern { height: 450px; border-radius: 15px; }
@@ -551,6 +513,16 @@
     .btn-watch-modern, .btn-detail-modern { flex: 1; text-align: center; padding: 12px 10px; font-size: 0.85rem; }
     .custom-pagination { text-align: center; padding-right: 0; bottom: 10px !important; }
     .hero-swiper .swiper-button-next, .hero-swiper .swiper-button-prev { display: none !important; }
+
+    .ai-header-wrapper, .personalized-swiper-container { padding-left: 15px; }
+    .ai-header-wrapper { padding-right: 15px; }
+    .ai-section-title { font-size: 1.4rem; }
+    .ai-section-subtitle { font-size: 0.85rem; }
+    .ai-icon-box { width: 45px; height: 45px; margin-right: 15px; }
+    .ai-icon-box i { font-size: 1.3rem; }
+    .ai-anime-title { font-size: 0.9rem; }
+    .ai-reason-text { font-size: 0.75rem; }
+    .badge-match-modern { padding: 4px 8px; font-size: 0.65rem; top: 8px; right: 8px; }
 }
 </style>
 
@@ -572,19 +544,11 @@ $heroList = array_slice($heroList, 0, 5);
                             $imgSrc = (filter_var($imgName, FILTER_VALIDATE_URL)) ? $imgName : base_url('assets/images/' . $imgName);
                         ?>
                         
-                        <!-- Gambar Background Utama -->
                         <div class="hero-bg" style="background-image: url('<?= $imgSrc ?>');"></div>
-                        
-                        <!-- Layer Gradasi Kegelapan -->
                         <div class="hero-overlay"></div>
 
-                        <!-- Konten Teks -->
                         <div class="hero-content">
-                            <span class="hero-badge">
-                                <i class="fas fa-fire mr-1"></i> FEATURED ANIME
-                            </span>
-                            
-                            <!-- Batasi judul agar tidak kepanjangan dan merusak layout -->
+                            <span class="hero-badge"><i class="fas fa-fire mr-1"></i> FEATURED ANIME</span>
                             <h1 class="hero-title text-truncate-2"><?= esc($hero['Judul']) ?></h1>
                             
                             <div class="hero-meta">
@@ -618,11 +582,9 @@ $heroList = array_slice($heroList, 0, 5);
             <?php endforeach; ?>
         </div>
 
-        <!-- Tombol Navigasi Swiper (Opsional tapi elegan) -->
+        <!-- Tombol Navigasi Swiper Hero -->
         <div class="swiper-button-next custom-nav-btn"></div>
         <div class="swiper-button-prev custom-nav-btn"></div>
-
-        <!-- Pagination -->
         <div class="swiper-pagination custom-pagination"></div>
     </div>
 </div>
@@ -638,9 +600,8 @@ $heroList = array_slice($heroList, 0, 5);
 
  <!-- SECTION: PERSONALIZED DISCOVERY (EXPLAINABLE AI) -->
 <?php if (session()->get('isLoggedIn') && !empty($personalizedAnimes)) : ?>
-<div class="section-personalized">
+    <div class="section-personalized">
     
-    <!-- 1. HEADER (Menggunakan wrapper khusus agar padding kiri sama dengan slider) -->
     <div class="ai-header-wrapper">
         <div class="ai-section-header">
             <div class="ai-icon-box">
@@ -648,7 +609,7 @@ $heroList = array_slice($heroList, 0, 5);
             </div>
             <div>
                 <h1 class="ai-section-title">Pilihan Untukmu, <?= strtoupper(session()->get('nama')) ?></h1>
-                <p class="ai-section-subtitle">Rekomendasi cerdas AI berdasarkan riwayat penilaian Anda.</p>
+                <p class="ai-section-subtitle">Rekomendasi cerdas AI berdasarkan riwayat aktivitas dan penilaian Anda.</p>
             </div>
         </div>
     </div>
@@ -658,11 +619,8 @@ $heroList = array_slice($heroList, 0, 5);
         <div class="swiper personalized-swiper">
             <div class="swiper-wrapper">
                 <?php foreach ($personalizedAnimes as $anime) : ?>
-                    
-                    <!-- HAPUS CLASS ANIMASI DARI SINI AGAR TIDAK PUDAR -->
                     <div class="swiper-slide">
                         <a href="<?= url_to('animeDetail', $anime['slug']) ?>" class="ai-card">
-                            
                             <div class="ai-poster-wrapper">
                                 <?php $imgSrc = (filter_var($anime['Poster'], FILTER_VALIDATE_URL)) ? $anime['Poster'] : base_url('assets/images/' . $anime['Poster']); ?>
                                 <img src="<?= $imgSrc ?>" class="ai-img" alt="<?= esc($anime['Judul']) ?>" loading="lazy">
@@ -678,27 +636,19 @@ $heroList = array_slice($heroList, 0, 5);
                                 </div>
                             </div>
                             
-                            <!-- Informasi Teks (Tipografi Elegan) -->
                             <div class="ai-text-container">
-                                <h3 class="ai-anime-title" title="<?= esc($anime['Judul']) ?>">
-                                    <?= esc($anime['Judul']) ?>
-                                </h3>
+                                <h3 class="ai-anime-title" title="<?= esc($anime['Judul']) ?>"><?= esc($anime['Judul']) ?></h3>
                                 
                                 <?php 
                                     $reasonText = isset($anime['reason']) ? $anime['reason'] : 'Disarankan oleh sistem cerdas.';
                                     $baseTitleToHighlight = isset($anime['base_anime']) ? $anime['base_anime'] : '';
                                     
-                                    // HIGHLIGHT TEKS ELEGAN (Warna putih biasa dengan ketebalan font)
+                                    // HIGHLIGHT TEKS ELEGAN
                                     $highlightSpan = '<span style="color: #f8fafc; font-weight: 700;">'; 
                                     
                                     if (!empty($baseTitleToHighlight)) {
-                                        $reasonText = str_ireplace(
-                                            $baseTitleToHighlight, 
-                                            $highlightSpan . $baseTitleToHighlight . '</span>', 
-                                            $reasonText
-                                        );
-                                    } 
-                                    else {
+                                        $reasonText = str_ireplace($baseTitleToHighlight, $highlightSpan . $baseTitleToHighlight . '</span>', $reasonText);
+                                    } else {
                                         $phrases = ['Karena Anda menyukai', 'Penonton yang menyukai', 'Mirip dengan'];
                                         foreach ($phrases as $phrase) {
                                             $reasonText = str_replace($phrase, '<span style="color: #94a3b8;">' . $phrase . '</span>', $reasonText);
@@ -710,17 +660,14 @@ $heroList = array_slice($heroList, 0, 5);
                                         $reasonText = str_ireplace($kw, '<span style="color: #cbd5e1; font-weight: 600;">' . $kw . '</span>', $reasonText);
                                     }
                                 ?>
-                                
-                                <div class="ai-reason-text">
-                                    <?= $reasonText ?>
-                                </div>
+                                <div class="ai-reason-text"><?= $reasonText ?></div>
                             </div>
                         </a>
                     </div>
                 <?php endforeach; ?>
             </div>
             
-            <!-- Navigasi Swiper (Opsional) -->
+            <!-- Navigasi Swiper AI -->
             <div class="swiper-button-next ai-nav-btn"></div>
             <div class="swiper-button-prev ai-nav-btn"></div>
         </div>
