@@ -1076,6 +1076,7 @@ document.addEventListener("DOMContentLoaded", function() {
         grabCursor: true // Ubah cursor jadi ikon tangan (UX friendly)
     });
 });
+
 if(document.getElementById('fetch-anime-button')) {
     document.getElementById('fetch-anime-button').addEventListener('click', () => {
         // Tampilkan SweetAlert2 "Mengambil Data..."

@@ -1366,33 +1366,96 @@ h4{
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
-/* Tombol Premium */
-.hero-actions { display: flex; gap: 15px; }
+.hero-actions { 
+  display: flex !important; 
+  gap: 15px !important; 
+  margin-top: 25px !important; 
+}
 
 .btn-watch-modern {
-    background: #fff;
-    color: #1e1e1e !important;
-    padding: 12px 25px;
-    border-radius: 10px;
-    font-weight: 800;
-    text-decoration: none;
-    transition: 0.3s ease;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  padding: 12px 28px !important;
+  border-radius: 12px !important;
+  font-weight: 800 !important;
+  font-size: 0.95rem !important;
+  text-decoration: none !important;
+  box-shadow: 0 4px 15px rgba(255,255,255,0.2) !important;
+  transition: all 0.3s ease !important;
 }
+
+.btn-watch-modern i { margin-right: 8px !important; font-size: 1.1rem !important; }
 
 .btn-detail-modern {
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
-    color: #fff !important;
-    padding: 12px 25px;
-    border-radius: 10px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: 0.3s ease;
-    border: 1px solid rgba(255,255,255,0.1);
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: #ffffff !important;
+  padding: 12px 28px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  text-decoration: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  transition: all 0.3s ease !important;
 }
 
-.btn-watch-modern:hover { background: #e2e8f0; transform: scale(1.05); }
-.btn-detail-modern:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+.btn-detail-modern i { margin-right: 8px !important; font-size: 1.1rem !important; }
+
+/* Efek saat mouse diarahkan ke tombol */
+.btn-watch-modern:hover { 
+  transform: translateY(-3px) scale(1.02) !important; 
+  background: #e2e8f0 !important; 
+  text-decoration: none !important;
+}
+.btn-detail-modern:hover { 
+  background: rgba(255, 255, 255, 0.25) !important; 
+  transform: translateY(-3px) scale(1.02) !important; 
+  text-decoration: none !important;
+}
+
+
+/* =========================================
+ PERBAIKAN PANAH SWIPER (ANTI-TEMPLATE)
+ ========================================= */
+/* Membuat latar belakang bulat transparan (Glassmorphism) */
+.hero-swiper .swiper-button-next,
+.hero-swiper .swiper-button-prev {
+  width: 45px !important;
+  height: 45px !important;
+  background: rgba(15, 15, 20, 0.5) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 50% !important;
+  color: #ffffff !important; /* Ubah warna panah jadi putih */
+  transition: all 0.3s ease !important;
+}
+
+/* Jarak panah dari ujung layar */
+.hero-swiper .swiper-button-prev { left: 20px !important; }
+.hero-swiper .swiper-button-next { right: 20px !important; }
+
+/* Memperkecil dan menebalkan ukuran panah bawannya */
+.hero-swiper .swiper-button-next::after,
+.hero-swiper .swiper-button-prev::after {
+  font-size: 1.1rem !important;
+  font-weight: 900 !important;
+}
+
+/* Efek hover pada panah (Berubah jadi ungu menyala saat disentuh) */
+.hero-swiper .swiper-button-next:hover,
+.hero-swiper .swiper-button-prev:hover {
+  background: rgba(172, 17, 233, 0.8) !important; /* Warna ungu khas Wotakus */
+  border-color: rgba(172, 17, 233, 1) !important;
+  transform: scale(1.1) !important;
+}
 
 /* Custom Nav & Pagination */
 .custom-pagination { bottom: 20px !important; text-align: right; padding-right: 40px; }
